@@ -679,11 +679,6 @@ function App(){
 }
 
 
-    {selected&&<PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP}/>}
-    {showPicker&&<RandomPicker onClose={()=>setShowPicker(false)} onOpen={x=>{setSelected(x);setActiveCol(null)}}/>}
-  </div>;
-}
-
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 // Hide loading screen
 setTimeout(() => { const el = document.getElementById('loading'); if(el) el.classList.add('done'); setTimeout(() => el?.remove(), 600); }, 100);
