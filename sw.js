@@ -1,4 +1,4 @@
-const CACHE_NAME = 'godostuff-v1';
+const CACHE_NAME = 'godostuff-v2';
 const ASSETS = [
   '/',
   '/index.html',
