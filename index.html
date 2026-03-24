@@ -421,8 +421,8 @@ function PlaceDetail({place:p,onClose,onNext,onPrev}){
       <div className="px-5 pt-2 pb-6">
         <h2 className="text-2xl font-black" style={{color:"#1a1a2e",lineHeight:1.2}}>{p.n}</h2>
         <p className="text-sm mt-1 font-medium" style={{color:"#888"}}>{p.s}</p>
-        {PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"200px"}}>
-          <img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",height:"200px",objectFit:"cover",display:"block"}}/>
+        {PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+          <img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
           <p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p>
         </div>}
         <div className="flex gap-1.5 mt-3 flex-wrap">
@@ -584,8 +584,8 @@ function App(){
       <div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
         <div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
           {["hf_20260324_091906_07915562-3860-4e64-980f-9b0282b514c1.jpeg","hf_20260324_093803_3f5e745b-0217-4aad-8e07-93066840db11.jpeg","hf_20260324_123219_fbc7ef29-b075-4ede-a5d7-1bb2b68c9a6b.jpeg","hf_20260324_123226_e7f59131-623d-4b70-85cb-a0bb95a47479.jpeg","hf_20260324_123608_ea7ee0e3-06d5-47eb-a014-60fa28f256e2.jpeg","hf_20260324_123113_0cb9ace2-e040-4f23-8563-95a836617329.jpeg"].map((img,i)=>
-            <div key={i} className="flex-shrink-0" style={{width:"140px",height:"90px"}}>
-              <img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"8px",display:"block"}}/>
+            <div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+              <img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
             </div>
           )}
         </div>
