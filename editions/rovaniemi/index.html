@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Rovaniemi's hidden world. 105 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Rovaniemi">
+<meta property="og:description" content="105 hidden, free, historically rich places in Rovaniemi.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Rovaniemi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6FF;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Rovaniemi...</p></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Finnish";
+
+const P = [
+  {id:1,n:"Arctic Circle Crossing",a:"Centre",v:["beautiful"],d:8,s:"Stand at 66°33\' where Arctic begins",st:"Walk from summer to winter hemisphere",im:"Ancient: Indigenous peoples here forever",t:"Midnight sun June-July",c:["beautiful"],r:"g",nn:"Arktinen Piiri",ns:"Napapiirin piiri",nst:"Kävele napapiirin yli",nt:"Yöaurinko kesällä"},
+  {id:2,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:3,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:4,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:5,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:6,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:7,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:8,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:9,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:10,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:11,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:12,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:13,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:14,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:15,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:16,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:17,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:18,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:19,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:20,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:21,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:22,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:23,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:24,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:25,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:26,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:27,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:28,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:29,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:30,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:31,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:32,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:33,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:34,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:35,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:36,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:37,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:38,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:39,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:40,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:41,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:42,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:43,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:44,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:45,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:46,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:47,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:48,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:49,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:50,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:51,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:52,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:53,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:54,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:55,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:56,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:57,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:58,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:59,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:60,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:61,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:62,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:63,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:64,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:65,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:66,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:67,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:68,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:69,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:70,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:71,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:72,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:73,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:74,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:75,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:76,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:77,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:78,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:79,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:80,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:81,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:82,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:83,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:84,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:85,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:86,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:87,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:88,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:89,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"g",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:90,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:91,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:92,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:93,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:94,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:95,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:96,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:97,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:98,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:99,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:100,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:101,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:102,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:103,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:104,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"},
+  {id:105,n:"Rovaniemi Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Aika",t:"Mene",c:["history_big"],r:"y",nn:"Paikka",ns:"Paikka",nst:"Käy",nt:"Mene"}
+];
+
+const M = [
+  {id:1,title:"The Area Deep Dive",desc:"Hit 5 hidden spots in Area. Walk slow, look up, read everything.",places:[2, 3, 4, 5, 6],time:"125 min"},
+  {id:2,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 4, 5, 6, 7],time:"120 min"},
+  {id:3,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
+
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"}
+];
+
+const AREAS = ["Area", "Centre"];
+
+const PHRASES = [
+  {native:"Terve",en:"Hello"},
+  {native:"Kiitos",en:"Thank you"},
+  {native:"Anteeksi",en:"Sorry"},
+  {native:"Missä on WC?",en:"Bathroom?"},
+  {native:"Paljonko maksaa?",en:"How much?"},
+  {native:"En ymmärrä",en:"Don\'t understand"},
+  {native:"Auta minua",en:"Help"},
+  {native:"Näkemiin",en:"Goodbye"},
+  {native:"Saako ottaa valokuvia?",en:"Photo?"},
+  {native:"Missä on uloskäynti?",en:"Exit?"}
+];
+
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+
+const PLACE_IMAGES={};
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(26,26,46,0.88) 0%,rgba(45,27,105,0.85) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
+<p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Rovaniemi Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+<p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
+{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Rovaniemi</button>
+<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
+<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
+</div></div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"white",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p></div>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+if(showPicker){const rp=P[Math.floor(Math.random()*P.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<p className="text-4xl mb-4">🎲</p>
+<h2 className="text-xl font-black text-center" style={{color:"white"}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-sm mt-2 text-center" style={{color:"#b8b0d0"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3 text-center px-6" style={{color:"#8b7fb8",lineHeight:1.6}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+<div className="flex gap-3 mt-6">
+<button onClick={()=>setShowPicker(false)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Close</button>
+<button onClick={()=>{setSelected(rp);setShowPicker(false)}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Go!</button>
+<button onClick={()=>setShowPicker(true)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Reroll</button>
+</div></div>}
+
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Rovaniemi Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={()=>setShowPicker(true)} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+
+<div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
+<div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+<div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+<img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
+</div>)}
+</div></div>
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Rovaniemi Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script></body></html>
