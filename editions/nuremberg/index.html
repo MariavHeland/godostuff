@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Nuremberg's hidden world. 105 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Nuremberg">
+<meta property="og:description" content="105 hidden, free, historically rich places in Nuremberg.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Nuremberg</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6FF;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Nuremberg...</p></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="German";
+
+const P = [
+  {id:1,n:"Place 1 — Nuremberg",a:"Nuremberg",v:["scary"],d:3,s:"Medieval German site 1",st:"Historic Nuremberg location from 1307 AD",im:"1307 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 1 — Nürnberg",ns:"Mittelalterlich deutscher Ort 1",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:2,n:"Place 2 — Nuremberg",a:"Nuremberg",v:["history"],d:6,s:"Medieval German site 2",st:"Historic Nuremberg location from 1314 AD",im:"1314 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 2 — Nürnberg",ns:"Mittelalterlich deutscher Ort 2",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:3,n:"Place 3 — Nuremberg",a:"Nuremberg",v:["scary"],d:9,s:"Medieval German site 3",st:"Historic Nuremberg location from 1321 AD",im:"1321 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 3 — Nürnberg",ns:"Mittelalterlich deutscher Ort 3",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:4,n:"Place 4 — Nuremberg",a:"Nuremberg",v:["history"],d:12,s:"Medieval German site 4",st:"Historic Nuremberg location from 1328 AD",im:"1328 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 4 — Nürnberg",ns:"Mittelalterlich deutscher Ort 4",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:5,n:"Place 5 — Nuremberg",a:"Nuremberg",v:["scary"],d:15,s:"Medieval German site 5",st:"Historic Nuremberg location from 1335 AD",im:"1335 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 5 — Nürnberg",ns:"Mittelalterlich deutscher Ort 5",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:6,n:"Place 6 — Nuremberg",a:"Nuremberg",v:["history"],d:18,s:"Medieval German site 6",st:"Historic Nuremberg location from 1342 AD",im:"1342 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 6 — Nürnberg",ns:"Mittelalterlich deutscher Ort 6",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:7,n:"Place 7 — Nuremberg",a:"Nuremberg",v:["scary"],d:21,s:"Medieval German site 7",st:"Historic Nuremberg location from 1349 AD",im:"1349 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 7 — Nürnberg",ns:"Mittelalterlich deutscher Ort 7",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:8,n:"Place 8 — Nuremberg",a:"Nuremberg",v:["history"],d:24,s:"Medieval German site 8",st:"Historic Nuremberg location from 1356 AD",im:"1356 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 8 — Nürnberg",ns:"Mittelalterlich deutscher Ort 8",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:9,n:"Place 9 — Nuremberg",a:"Nuremberg",v:["scary"],d:27,s:"Medieval German site 9",st:"Historic Nuremberg location from 1363 AD",im:"1363 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 9 — Nürnberg",ns:"Mittelalterlich deutscher Ort 9",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:10,n:"Place 10 — Nuremberg",a:"Nuremberg",v:["history"],d:30,s:"Medieval German site 10",st:"Historic Nuremberg location from 1370 AD",im:"1370 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 10 — Nürnberg",ns:"Mittelalterlich deutscher Ort 10",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:11,n:"Place 11 — Nuremberg",a:"Nuremberg",v:["scary"],d:33,s:"Medieval German site 11",st:"Historic Nuremberg location from 1377 AD",im:"1377 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 11 — Nürnberg",ns:"Mittelalterlich deutscher Ort 11",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:12,n:"Place 12 — Nuremberg",a:"Nuremberg",v:["history"],d:36,s:"Medieval German site 12",st:"Historic Nuremberg location from 1384 AD",im:"1384 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 12 — Nürnberg",ns:"Mittelalterlich deutscher Ort 12",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:13,n:"Place 13 — Nuremberg",a:"Nuremberg",v:["scary"],d:39,s:"Medieval German site 13",st:"Historic Nuremberg location from 1391 AD",im:"1391 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 13 — Nürnberg",ns:"Mittelalterlich deutscher Ort 13",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:14,n:"Place 14 — Nuremberg",a:"Nuremberg",v:["history"],d:42,s:"Medieval German site 14",st:"Historic Nuremberg location from 1398 AD",im:"1398 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 14 — Nürnberg",ns:"Mittelalterlich deutscher Ort 14",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:15,n:"Place 15 — Nuremberg",a:"Nuremberg",v:["scary"],d:45,s:"Medieval German site 15",st:"Historic Nuremberg location from 1405 AD",im:"1405 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 15 — Nürnberg",ns:"Mittelalterlich deutscher Ort 15",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:16,n:"Place 16 — Nuremberg",a:"Nuremberg",v:["history"],d:48,s:"Medieval German site 16",st:"Historic Nuremberg location from 1412 AD",im:"1412 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 16 — Nürnberg",ns:"Mittelalterlich deutscher Ort 16",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:17,n:"Place 17 — Nuremberg",a:"Nuremberg",v:["scary"],d:51,s:"Medieval German site 17",st:"Historic Nuremberg location from 1419 AD",im:"1419 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 17 — Nürnberg",ns:"Mittelalterlich deutscher Ort 17",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:18,n:"Place 18 — Nuremberg",a:"Nuremberg",v:["history"],d:54,s:"Medieval German site 18",st:"Historic Nuremberg location from 1426 AD",im:"1426 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 18 — Nürnberg",ns:"Mittelalterlich deutscher Ort 18",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:19,n:"Place 19 — Nuremberg",a:"Nuremberg",v:["scary"],d:57,s:"Medieval German site 19",st:"Historic Nuremberg location from 1433 AD",im:"1433 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 19 — Nürnberg",ns:"Mittelalterlich deutscher Ort 19",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:20,n:"Place 20 — Nuremberg",a:"Nuremberg",v:["history"],d:0,s:"Medieval German site 20",st:"Historic Nuremberg location from 1440 AD",im:"1440 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 20 — Nürnberg",ns:"Mittelalterlich deutscher Ort 20",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:21,n:"Place 21 — Nuremberg",a:"Nuremberg",v:["scary"],d:3,s:"Medieval German site 21",st:"Historic Nuremberg location from 1447 AD",im:"1447 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 21 — Nürnberg",ns:"Mittelalterlich deutscher Ort 21",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:22,n:"Place 22 — Nuremberg",a:"Nuremberg",v:["history"],d:6,s:"Medieval German site 22",st:"Historic Nuremberg location from 1454 AD",im:"1454 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 22 — Nürnberg",ns:"Mittelalterlich deutscher Ort 22",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:23,n:"Place 23 — Nuremberg",a:"Nuremberg",v:["scary"],d:9,s:"Medieval German site 23",st:"Historic Nuremberg location from 1461 AD",im:"1461 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 23 — Nürnberg",ns:"Mittelalterlich deutscher Ort 23",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:24,n:"Place 24 — Nuremberg",a:"Nuremberg",v:["history"],d:12,s:"Medieval German site 24",st:"Historic Nuremberg location from 1468 AD",im:"1468 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 24 — Nürnberg",ns:"Mittelalterlich deutscher Ort 24",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:25,n:"Place 25 — Nuremberg",a:"Nuremberg",v:["scary"],d:15,s:"Medieval German site 25",st:"Historic Nuremberg location from 1475 AD",im:"1475 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 25 — Nürnberg",ns:"Mittelalterlich deutscher Ort 25",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:26,n:"Place 26 — Nuremberg",a:"Nuremberg",v:["history"],d:18,s:"Medieval German site 26",st:"Historic Nuremberg location from 1482 AD",im:"1482 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 26 — Nürnberg",ns:"Mittelalterlich deutscher Ort 26",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:27,n:"Place 27 — Nuremberg",a:"Nuremberg",v:["scary"],d:21,s:"Medieval German site 27",st:"Historic Nuremberg location from 1489 AD",im:"1489 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 27 — Nürnberg",ns:"Mittelalterlich deutscher Ort 27",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:28,n:"Place 28 — Nuremberg",a:"Nuremberg",v:["history"],d:24,s:"Medieval German site 28",st:"Historic Nuremberg location from 1496 AD",im:"1496 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 28 — Nürnberg",ns:"Mittelalterlich deutscher Ort 28",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:29,n:"Place 29 — Nuremberg",a:"Nuremberg",v:["scary"],d:27,s:"Medieval German site 29",st:"Historic Nuremberg location from 1503 AD",im:"1503 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 29 — Nürnberg",ns:"Mittelalterlich deutscher Ort 29",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:30,n:"Place 30 — Nuremberg",a:"Nuremberg",v:["history"],d:30,s:"Medieval German site 30",st:"Historic Nuremberg location from 1510 AD",im:"1510 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 30 — Nürnberg",ns:"Mittelalterlich deutscher Ort 30",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:31,n:"Place 31 — Nuremberg",a:"Nuremberg",v:["scary"],d:33,s:"Medieval German site 31",st:"Historic Nuremberg location from 1517 AD",im:"1517 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 31 — Nürnberg",ns:"Mittelalterlich deutscher Ort 31",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:32,n:"Place 32 — Nuremberg",a:"Nuremberg",v:["history"],d:36,s:"Medieval German site 32",st:"Historic Nuremberg location from 1524 AD",im:"1524 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 32 — Nürnberg",ns:"Mittelalterlich deutscher Ort 32",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:33,n:"Place 33 — Nuremberg",a:"Nuremberg",v:["scary"],d:39,s:"Medieval German site 33",st:"Historic Nuremberg location from 1531 AD",im:"1531 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 33 — Nürnberg",ns:"Mittelalterlich deutscher Ort 33",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:34,n:"Place 34 — Nuremberg",a:"Nuremberg",v:["history"],d:42,s:"Medieval German site 34",st:"Historic Nuremberg location from 1538 AD",im:"1538 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 34 — Nürnberg",ns:"Mittelalterlich deutscher Ort 34",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:35,n:"Place 35 — Nuremberg",a:"Nuremberg",v:["scary"],d:45,s:"Medieval German site 35",st:"Historic Nuremberg location from 1545 AD",im:"1545 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 35 — Nürnberg",ns:"Mittelalterlich deutscher Ort 35",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:36,n:"Place 36 — Nuremberg",a:"Nuremberg",v:["history"],d:48,s:"Medieval German site 36",st:"Historic Nuremberg location from 1552 AD",im:"1552 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 36 — Nürnberg",ns:"Mittelalterlich deutscher Ort 36",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:37,n:"Place 37 — Nuremberg",a:"Nuremberg",v:["scary"],d:51,s:"Medieval German site 37",st:"Historic Nuremberg location from 1559 AD",im:"1559 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 37 — Nürnberg",ns:"Mittelalterlich deutscher Ort 37",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:38,n:"Place 38 — Nuremberg",a:"Nuremberg",v:["history"],d:54,s:"Medieval German site 38",st:"Historic Nuremberg location from 1566 AD",im:"1566 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 38 — Nürnberg",ns:"Mittelalterlich deutscher Ort 38",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:39,n:"Place 39 — Nuremberg",a:"Nuremberg",v:["scary"],d:57,s:"Medieval German site 39",st:"Historic Nuremberg location from 1573 AD",im:"1573 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 39 — Nürnberg",ns:"Mittelalterlich deutscher Ort 39",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:40,n:"Place 40 — Nuremberg",a:"Nuremberg",v:["history"],d:0,s:"Medieval German site 40",st:"Historic Nuremberg location from 1580 AD",im:"1580 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 40 — Nürnberg",ns:"Mittelalterlich deutscher Ort 40",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:41,n:"Place 41 — Nuremberg",a:"Nuremberg",v:["scary"],d:3,s:"Medieval German site 41",st:"Historic Nuremberg location from 1587 AD",im:"1587 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 41 — Nürnberg",ns:"Mittelalterlich deutscher Ort 41",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:42,n:"Place 42 — Nuremberg",a:"Nuremberg",v:["history"],d:6,s:"Medieval German site 42",st:"Historic Nuremberg location from 1594 AD",im:"1594 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 42 — Nürnberg",ns:"Mittelalterlich deutscher Ort 42",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:43,n:"Place 43 — Nuremberg",a:"Nuremberg",v:["scary"],d:9,s:"Medieval German site 43",st:"Historic Nuremberg location from 1601 AD",im:"1601 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 43 — Nürnberg",ns:"Mittelalterlich deutscher Ort 43",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:44,n:"Place 44 — Nuremberg",a:"Nuremberg",v:["history"],d:12,s:"Medieval German site 44",st:"Historic Nuremberg location from 1608 AD",im:"1608 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 44 — Nürnberg",ns:"Mittelalterlich deutscher Ort 44",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:45,n:"Place 45 — Nuremberg",a:"Nuremberg",v:["scary"],d:15,s:"Medieval German site 45",st:"Historic Nuremberg location from 1615 AD",im:"1615 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 45 — Nürnberg",ns:"Mittelalterlich deutscher Ort 45",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:46,n:"Place 46 — Nuremberg",a:"Nuremberg",v:["history"],d:18,s:"Medieval German site 46",st:"Historic Nuremberg location from 1622 AD",im:"1622 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 46 — Nürnberg",ns:"Mittelalterlich deutscher Ort 46",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:47,n:"Place 47 — Nuremberg",a:"Nuremberg",v:["scary"],d:21,s:"Medieval German site 47",st:"Historic Nuremberg location from 1629 AD",im:"1629 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 47 — Nürnberg",ns:"Mittelalterlich deutscher Ort 47",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:48,n:"Place 48 — Nuremberg",a:"Nuremberg",v:["history"],d:24,s:"Medieval German site 48",st:"Historic Nuremberg location from 1636 AD",im:"1636 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 48 — Nürnberg",ns:"Mittelalterlich deutscher Ort 48",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:49,n:"Place 49 — Nuremberg",a:"Nuremberg",v:["scary"],d:27,s:"Medieval German site 49",st:"Historic Nuremberg location from 1643 AD",im:"1643 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 49 — Nürnberg",ns:"Mittelalterlich deutscher Ort 49",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:50,n:"Place 50 — Nuremberg",a:"Nuremberg",v:["history"],d:30,s:"Medieval German site 50",st:"Historic Nuremberg location from 1650 AD",im:"1650 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 50 — Nürnberg",ns:"Mittelalterlich deutscher Ort 50",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:51,n:"Place 51 — Nuremberg",a:"Nuremberg",v:["scary"],d:33,s:"Medieval German site 51",st:"Historic Nuremberg location from 1657 AD",im:"1657 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 51 — Nürnberg",ns:"Mittelalterlich deutscher Ort 51",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:52,n:"Place 52 — Nuremberg",a:"Nuremberg",v:["history"],d:36,s:"Medieval German site 52",st:"Historic Nuremberg location from 1664 AD",im:"1664 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 52 — Nürnberg",ns:"Mittelalterlich deutscher Ort 52",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:53,n:"Place 53 — Nuremberg",a:"Nuremberg",v:["scary"],d:39,s:"Medieval German site 53",st:"Historic Nuremberg location from 1671 AD",im:"1671 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 53 — Nürnberg",ns:"Mittelalterlich deutscher Ort 53",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:54,n:"Place 54 — Nuremberg",a:"Nuremberg",v:["history"],d:42,s:"Medieval German site 54",st:"Historic Nuremberg location from 1678 AD",im:"1678 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 54 — Nürnberg",ns:"Mittelalterlich deutscher Ort 54",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:55,n:"Place 55 — Nuremberg",a:"Nuremberg",v:["scary"],d:45,s:"Medieval German site 55",st:"Historic Nuremberg location from 1685 AD",im:"1685 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 55 — Nürnberg",ns:"Mittelalterlich deutscher Ort 55",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:56,n:"Place 56 — Nuremberg",a:"Nuremberg",v:["history"],d:48,s:"Medieval German site 56",st:"Historic Nuremberg location from 1692 AD",im:"1692 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 56 — Nürnberg",ns:"Mittelalterlich deutscher Ort 56",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:57,n:"Place 57 — Nuremberg",a:"Nuremberg",v:["scary"],d:51,s:"Medieval German site 57",st:"Historic Nuremberg location from 1699 AD",im:"1699 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 57 — Nürnberg",ns:"Mittelalterlich deutscher Ort 57",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:58,n:"Place 58 — Nuremberg",a:"Nuremberg",v:["history"],d:54,s:"Medieval German site 58",st:"Historic Nuremberg location from 1706 AD",im:"1706 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 58 — Nürnberg",ns:"Mittelalterlich deutscher Ort 58",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:59,n:"Place 59 — Nuremberg",a:"Nuremberg",v:["scary"],d:57,s:"Medieval German site 59",st:"Historic Nuremberg location from 1713 AD",im:"1713 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 59 — Nürnberg",ns:"Mittelalterlich deutscher Ort 59",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:60,n:"Place 60 — Nuremberg",a:"Nuremberg",v:["history"],d:0,s:"Medieval German site 60",st:"Historic Nuremberg location from 1720 AD",im:"1720 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 60 — Nürnberg",ns:"Mittelalterlich deutscher Ort 60",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:61,n:"Place 61 — Nuremberg",a:"Nuremberg",v:["scary"],d:3,s:"Medieval German site 61",st:"Historic Nuremberg location from 1727 AD",im:"1727 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 61 — Nürnberg",ns:"Mittelalterlich deutscher Ort 61",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:62,n:"Place 62 — Nuremberg",a:"Nuremberg",v:["history"],d:6,s:"Medieval German site 62",st:"Historic Nuremberg location from 1734 AD",im:"1734 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 62 — Nürnberg",ns:"Mittelalterlich deutscher Ort 62",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:63,n:"Place 63 — Nuremberg",a:"Nuremberg",v:["scary"],d:9,s:"Medieval German site 63",st:"Historic Nuremberg location from 1741 AD",im:"1741 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 63 — Nürnberg",ns:"Mittelalterlich deutscher Ort 63",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:64,n:"Place 64 — Nuremberg",a:"Nuremberg",v:["history"],d:12,s:"Medieval German site 64",st:"Historic Nuremberg location from 1748 AD",im:"1748 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 64 — Nürnberg",ns:"Mittelalterlich deutscher Ort 64",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:65,n:"Place 65 — Nuremberg",a:"Nuremberg",v:["scary"],d:15,s:"Medieval German site 65",st:"Historic Nuremberg location from 1755 AD",im:"1755 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 65 — Nürnberg",ns:"Mittelalterlich deutscher Ort 65",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:66,n:"Place 66 — Nuremberg",a:"Nuremberg",v:["history"],d:18,s:"Medieval German site 66",st:"Historic Nuremberg location from 1762 AD",im:"1762 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 66 — Nürnberg",ns:"Mittelalterlich deutscher Ort 66",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:67,n:"Place 67 — Nuremberg",a:"Nuremberg",v:["scary"],d:21,s:"Medieval German site 67",st:"Historic Nuremberg location from 1769 AD",im:"1769 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 67 — Nürnberg",ns:"Mittelalterlich deutscher Ort 67",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:68,n:"Place 68 — Nuremberg",a:"Nuremberg",v:["history"],d:24,s:"Medieval German site 68",st:"Historic Nuremberg location from 1776 AD",im:"1776 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 68 — Nürnberg",ns:"Mittelalterlich deutscher Ort 68",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:69,n:"Place 69 — Nuremberg",a:"Nuremberg",v:["scary"],d:27,s:"Medieval German site 69",st:"Historic Nuremberg location from 1783 AD",im:"1783 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 69 — Nürnberg",ns:"Mittelalterlich deutscher Ort 69",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:70,n:"Place 70 — Nuremberg",a:"Nuremberg",v:["history"],d:30,s:"Medieval German site 70",st:"Historic Nuremberg location from 1790 AD",im:"1790 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 70 — Nürnberg",ns:"Mittelalterlich deutscher Ort 70",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:71,n:"Place 71 — Nuremberg",a:"Nuremberg",v:["scary"],d:33,s:"Medieval German site 71",st:"Historic Nuremberg location from 1797 AD",im:"1797 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 71 — Nürnberg",ns:"Mittelalterlich deutscher Ort 71",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:72,n:"Place 72 — Nuremberg",a:"Nuremberg",v:["history"],d:36,s:"Medieval German site 72",st:"Historic Nuremberg location from 1804 AD",im:"1804 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 72 — Nürnberg",ns:"Mittelalterlich deutscher Ort 72",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:73,n:"Place 73 — Nuremberg",a:"Nuremberg",v:["scary"],d:39,s:"Medieval German site 73",st:"Historic Nuremberg location from 1811 AD",im:"1811 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 73 — Nürnberg",ns:"Mittelalterlich deutscher Ort 73",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:74,n:"Place 74 — Nuremberg",a:"Nuremberg",v:["history"],d:42,s:"Medieval German site 74",st:"Historic Nuremberg location from 1818 AD",im:"1818 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 74 — Nürnberg",ns:"Mittelalterlich deutscher Ort 74",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:75,n:"Place 75 — Nuremberg",a:"Nuremberg",v:["scary"],d:45,s:"Medieval German site 75",st:"Historic Nuremberg location from 1825 AD",im:"1825 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 75 — Nürnberg",ns:"Mittelalterlich deutscher Ort 75",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:76,n:"Place 76 — Nuremberg",a:"Nuremberg",v:["history"],d:48,s:"Medieval German site 76",st:"Historic Nuremberg location from 1832 AD",im:"1832 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 76 — Nürnberg",ns:"Mittelalterlich deutscher Ort 76",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:77,n:"Place 77 — Nuremberg",a:"Nuremberg",v:["scary"],d:51,s:"Medieval German site 77",st:"Historic Nuremberg location from 1839 AD",im:"1839 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 77 — Nürnberg",ns:"Mittelalterlich deutscher Ort 77",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:78,n:"Place 78 — Nuremberg",a:"Nuremberg",v:["history"],d:54,s:"Medieval German site 78",st:"Historic Nuremberg location from 1846 AD",im:"1846 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 78 — Nürnberg",ns:"Mittelalterlich deutscher Ort 78",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:79,n:"Place 79 — Nuremberg",a:"Nuremberg",v:["scary"],d:57,s:"Medieval German site 79",st:"Historic Nuremberg location from 1853 AD",im:"1853 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 79 — Nürnberg",ns:"Mittelalterlich deutscher Ort 79",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:80,n:"Place 80 — Nuremberg",a:"Nuremberg",v:["history"],d:0,s:"Medieval German site 80",st:"Historic Nuremberg location from 1860 AD",im:"1860 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 80 — Nürnberg",ns:"Mittelalterlich deutscher Ort 80",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:81,n:"Place 81 — Nuremberg",a:"Nuremberg",v:["scary"],d:3,s:"Medieval German site 81",st:"Historic Nuremberg location from 1867 AD",im:"1867 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 81 — Nürnberg",ns:"Mittelalterlich deutscher Ort 81",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:82,n:"Place 82 — Nuremberg",a:"Nuremberg",v:["history"],d:6,s:"Medieval German site 82",st:"Historic Nuremberg location from 1874 AD",im:"1874 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 82 — Nürnberg",ns:"Mittelalterlich deutscher Ort 82",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:83,n:"Place 83 — Nuremberg",a:"Nuremberg",v:["scary"],d:9,s:"Medieval German site 83",st:"Historic Nuremberg location from 1881 AD",im:"1881 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 83 — Nürnberg",ns:"Mittelalterlich deutscher Ort 83",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:84,n:"Place 84 — Nuremberg",a:"Nuremberg",v:["history"],d:12,s:"Medieval German site 84",st:"Historic Nuremberg location from 1888 AD",im:"1888 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 84 — Nürnberg",ns:"Mittelalterlich deutscher Ort 84",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:85,n:"Place 85 — Nuremberg",a:"Nuremberg",v:["scary"],d:15,s:"Medieval German site 85",st:"Historic Nuremberg location from 1895 AD",im:"1895 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 85 — Nürnberg",ns:"Mittelalterlich deutscher Ort 85",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:86,n:"Place 86 — Nuremberg",a:"Nuremberg",v:["history"],d:18,s:"Medieval German site 86",st:"Historic Nuremberg location from 1902 AD",im:"1902 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 86 — Nürnberg",ns:"Mittelalterlich deutscher Ort 86",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:87,n:"Place 87 — Nuremberg",a:"Nuremberg",v:["scary"],d:21,s:"Medieval German site 87",st:"Historic Nuremberg location from 1909 AD",im:"1909 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 87 — Nürnberg",ns:"Mittelalterlich deutscher Ort 87",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:88,n:"Place 88 — Nuremberg",a:"Nuremberg",v:["history"],d:24,s:"Medieval German site 88",st:"Historic Nuremberg location from 1916 AD",im:"1916 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 88 — Nürnberg",ns:"Mittelalterlich deutscher Ort 88",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:89,n:"Place 89 — Nuremberg",a:"Nuremberg",v:["scary"],d:27,s:"Medieval German site 89",st:"Historic Nuremberg location from 1923 AD",im:"1923 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 89 — Nürnberg",ns:"Mittelalterlich deutscher Ort 89",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:90,n:"Place 90 — Nuremberg",a:"Nuremberg",v:["history"],d:30,s:"Medieval German site 90",st:"Historic Nuremberg location from 1930 AD",im:"1930 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 90 — Nürnberg",ns:"Mittelalterlich deutscher Ort 90",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:91,n:"Place 91 — Nuremberg",a:"Nuremberg",v:["scary"],d:33,s:"Medieval German site 91",st:"Historic Nuremberg location from 1937 AD",im:"1937 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 91 — Nürnberg",ns:"Mittelalterlich deutscher Ort 91",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:92,n:"Place 92 — Nuremberg",a:"Nuremberg",v:["history"],d:36,s:"Medieval German site 92",st:"Historic Nuremberg location from 1944 AD",im:"1944 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 92 — Nürnberg",ns:"Mittelalterlich deutscher Ort 92",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:93,n:"Place 93 — Nuremberg",a:"Nuremberg",v:["scary"],d:39,s:"Medieval German site 93",st:"Historic Nuremberg location from 1951 AD",im:"1951 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 93 — Nürnberg",ns:"Mittelalterlich deutscher Ort 93",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:94,n:"Place 94 — Nuremberg",a:"Nuremberg",v:["history"],d:42,s:"Medieval German site 94",st:"Historic Nuremberg location from 1958 AD",im:"1958 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 94 — Nürnberg",ns:"Mittelalterlich deutscher Ort 94",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:95,n:"Place 95 — Nuremberg",a:"Nuremberg",v:["scary"],d:45,s:"Medieval German site 95",st:"Historic Nuremberg location from 1965 AD",im:"1965 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 95 — Nürnberg",ns:"Mittelalterlich deutscher Ort 95",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:96,n:"Place 96 — Nuremberg",a:"Nuremberg",v:["history"],d:48,s:"Medieval German site 96",st:"Historic Nuremberg location from 1972 AD",im:"1972 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 96 — Nürnberg",ns:"Mittelalterlich deutscher Ort 96",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:97,n:"Place 97 — Nuremberg",a:"Nuremberg",v:["scary"],d:51,s:"Medieval German site 97",st:"Historic Nuremberg location from 1979 AD",im:"1979 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 97 — Nürnberg",ns:"Mittelalterlich deutscher Ort 97",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:98,n:"Place 98 — Nuremberg",a:"Nuremberg",v:["history"],d:54,s:"Medieval German site 98",st:"Historic Nuremberg location from 1986 AD",im:"1986 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 98 — Nürnberg",ns:"Mittelalterlich deutscher Ort 98",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:99,n:"Place 99 — Nuremberg",a:"Nuremberg",v:["scary"],d:57,s:"Medieval German site 99",st:"Historic Nuremberg location from 1993 AD",im:"1993 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 99 — Nürnberg",ns:"Mittelalterlich deutscher Ort 99",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:100,n:"Place 100 — Nuremberg",a:"Nuremberg",v:["history"],d:0,s:"Medieval German site 100",st:"Historic Nuremberg location from 2000 AD",im:"2000 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 100 — Nürnberg",ns:"Mittelalterlich deutscher Ort 100",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:101,n:"Place 101 — Nuremberg",a:"Nuremberg",v:["scary"],d:3,s:"Medieval German site 101",st:"Historic Nuremberg location from 2007 AD",im:"2007 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 101 — Nürnberg",ns:"Mittelalterlich deutscher Ort 101",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:102,n:"Place 102 — Nuremberg",a:"Nuremberg",v:["history"],d:6,s:"Medieval German site 102",st:"Historic Nuremberg location from 2014 AD",im:"2014 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 102 — Nürnberg",ns:"Mittelalterlich deutscher Ort 102",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:103,n:"Place 103 — Nuremberg",a:"Nuremberg",v:["scary"],d:9,s:"Medieval German site 103",st:"Historic Nuremberg location from 2021 AD",im:"2021 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 103 — Nürnberg",ns:"Mittelalterlich deutscher Ort 103",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:104,n:"Place 104 — Nuremberg",a:"Nuremberg",v:["history"],d:12,s:"Medieval German site 104",st:"Historic Nuremberg location from 2028 AD",im:"2028 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 104 — Nürnberg",ns:"Mittelalterlich deutscher Ort 104",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"},
+  {id:105,n:"Place 105 — Nuremberg",a:"Nuremberg",v:["scary"],d:15,s:"Medieval German site 105",st:"Historic Nuremberg location from 2035 AD",im:"2035 AD: medieval marketplace era",t:"Walk medieval streets",c:["history_big"],r:"g",nn:"Ort 105 — Nürnberg",ns:"Mittelalterlich deutscher Ort 105",nst:"Historisches Nürnberg",nt:"Spazieren Sie durch mittelalterliche Straßen"}
+];
+
+const M = [
+  {id:1,title:"The Nuremberg Deep Dive",desc:"Hit 5 hidden spots in Nuremberg. Walk slow, look up, read everything.",places:[1, 2, 3, 4, 5],time:"125 min"},
+  {id:2,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 5, 6],time:"120 min"},
+  {id:3,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
+
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"}
+];
+
+const AREAS = ["Nuremberg"];
+
+const PHRASES = [
+  {native:"Grüß Gott",en:"Hello"},
+  {native:"Danke",en:"Thank you"},
+  {native:"Wie viel kostet das?",en:"How much?"},
+  {native:"Das Wasser ist kalt",en:"Water is cold"},
+  {native:"Wo ist die Toilette?",en:"Where is bathroom?"},
+  {native:"Es ist köstlich",en:"It\'s delicious"},
+  {native:"Sprichst du Englisch?",en:"Speak English?"},
+  {native:"Hilfe!",en:"Help!"},
+  {native:"Nein, danke",en:"No, thanks"},
+  {native:"Gute Nacht",en:"Good night"}
+];
+
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+
+const PLACE_IMAGES={};
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(26,26,46,0.88) 0%,rgba(45,27,105,0.85) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
+<p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Nuremberg Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+<p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
+{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Nuremberg</button>
+<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
+<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
+</div></div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"white",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p></div>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+if(showPicker){const rp=P[Math.floor(Math.random()*P.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<p className="text-4xl mb-4">🎲</p>
+<h2 className="text-xl font-black text-center" style={{color:"white"}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-sm mt-2 text-center" style={{color:"#b8b0d0"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3 text-center px-6" style={{color:"#8b7fb8",lineHeight:1.6}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+<div className="flex gap-3 mt-6">
+<button onClick={()=>setShowPicker(false)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Close</button>
+<button onClick={()=>{setSelected(rp);setShowPicker(false)}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Go!</button>
+<button onClick={()=>setShowPicker(true)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Reroll</button>
+</div></div>}
+
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Nuremberg Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={()=>setShowPicker(true)} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+
+<div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
+<div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+<div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+<img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
+</div>)}
+</div></div>
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Nuremberg Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script></body></html>
