@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Bern's hidden world. 105 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Bern">
+<meta property="og:description" content="105 hidden, free, historically rich places in Bern.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Bern</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6FF;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Bern...</p></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="German";
+
+const P = [
+  {id:1,n:"Aare River Swimming (Naked River Bath) — Downtown",a:"Downtown",v:["nature", "free"],d:0,s:"Alpine river flowing through city, locals swim naked year-round",st:"Crystal-cold water, summer tradition, accept it",im:"Medieval bathers using river for washing",t:"Pick any bank access point, 8C water in summer",c:["nature", "free"],r:"g",nn:"Aare Fluss Schwimmen (Nackt) — Zentrum",ns:"Alpenfluss, Einheimische schwimmen nackt",nst:"Eiskaltes Wasser, Sommertradition",nt:"Beliebiger Uferzugang, 8C Wasser im Sommer"},
+  {id:2,n:"Zytglogge (Clock Tower) — Old Town",a:"Old Town",v:["history", "beautiful"],d:2,s:"Medieval clock tower with automata figures, 500+ years old",st:"Watch bells ring and figures perform at hour",im:"1407: first mechanical clock in Switzerland",t:"Free to watch from street, paid tour up tower",c:["history_big"],r:"g",nn:"Zytglogge (Uhr Turm) — Altstadt",ns:"Mittelalter Uhr Turm mit Automaten",nst:"Höre Glocken läuten und Figuren aufführen",nt:"Kostenloses Anschauen von der Straße aus"},
+  {id:3,n:"Bear Park (Bärengraben) — Old Town",a:"Old Town",v:["nature", "local"],d:3,s:"Protected sanctuary for bears, Bern\'s symbol since 1200",st:"Two brown bears in large open enclosure, free viewing",im:"1200: first bear gifted to city by nobleman",t:"Free viewing, morning bear activity best",c:["nature"],r:"g",nn:"Bärengraben — Altstadt",ns:"Geschützte Heiligtum für Bären, Bernsymbol",nst:"Zwei braune Bären in großem Gehäuse",nt:"Kostenloses Anschauen, morgens beste Aktivität"},
+  {id:4,n:"Einstein Apartment Museum — Old Town",a:"Old Town",v:["history", "hidden"],d:2,s:"Small flat where physicist developed relativity in 1905",st:"Personal items, narrow stairs, quiet pilgrimage site",im:"1905: Einstein writing letters by candlelight",t:"10 CHF, modest, 30-minute visit",c:["history_big"],r:"g",nn:"Einstein Wohnung Muzeum — Altstadt",ns:"Kleine Wohnung, wo Einstein 1905 arbeitete",nst:"Persönliche Gegenstände, enge Treppen",nt:"10 CHF, bescheiden, 30-Minuten-Besuch"},
+  {id:5,n:"Cathedral (Bern Münster) — Old Town",a:"Old Town",v:["history", "beautiful"],d:1,s:"Gothic cathedral with 100m spire, frescoed interior",st:"Ornate stained glass, climb spire for views",im:"1421: foundation stone laid",t:"Free entry, 5 CHF tower climb, impressive vistas",c:["history_big"],r:"g",nn:"Kathedrale (Bern Münster) — Altstadt",ns:"Gotische Kathedrale mit 100m Spitzturm",nst:"Verzierte Buntglasfenster, Aussichtspunkt",nt:"Kostenloser Eintritt, 5 CHF Turm"},
+  {id:6,n:"Rosengarten (Rose Garden Overlook) — South",a:"South",v:["beautiful", "quiet"],d:8,s:"Park with 220 rose varieties and panoramic city views",st:"Flower blooms May-October, benches for hours",im:"1913: wealthy merchant planting roses",t:"Free, morning light for photography",c:["parks"],r:"g",nn:"Rosengarten (Rosenpark Aussicht) — Süd",ns:"Park mit 220 Rosensorten und Aussicht",nst:"Blütenblüte Mai-Oktober, Bänke",nt:"Kostenlos, Morgenlicht für Fotos"},
+  {id:7,n:"Gurten (Mountain Escape) — South",a:"South",v:["nature", "beautiful"],d:25,s:"900m wooded mountain 20 mins from city center by funicular",st:"Hiking trails, paragliding takeoff, alpine meadows",im:"Medieval woodcutters harvesting timber",t:"5 CHF funicular round trip, bring water",c:["parks"],r:"g",nn:"Gurten (Berg Flucht) — Süd",ns:"900m bewaldeter Berg mit Standseilbahn",nst:"Wanderwege, Gleitschirm, Alpenwiesen",nt:"5 CHF Zahnradbahn hin und zurück"},
+  {id:8,n:"Marzili (River Beach) — Old Town",a:"Old Town",v:["nature", "free"],d:3,s:"Public baths on Aare river, 24C heated pools",st:"Popular summer spot, locals and tourists mixing",im:"1920: public bath construction",t:"10 CHF entry, bring swimsuit",c:["parks"],r:"g",nn:"Marzili (Fluss Strand) — Altstadt",ns:"Öffentliche Bäder mit 24C geheizte Becken",nst:"Beliebter Sommerplatz, Mischung",nt:"10 CHF Eintritt, Badeanzug mitbringen"},
+  {id:9,n:"Old Town Arcades (Lauben) — Downtown",a:"Downtown",v:["architecture", "hidden"],d:0,s:"6km of covered arcaded streets, unique medieval shopping",st:"Window shopping, no rain walking, intricate details",im:"1200s: merchants building colonnades for weather",t:"Free to explore, stop in galleries and cafes",c:["architecture"],r:"g",nn:"Altstadt Arkaden (Lauben) — Zentrum",ns:"6km überdachte Arkaden, einzigartiges mittelalterliches Einkaufen",nst:"Schaufenster, kein Regen spazieren",nt:"Kostenlos erkunden, Galerien und Cafés"},
+  {id:10,n:"Thun (Castle and Lake) — Day Trip",a:"Day Trip",v:["history", "beautiful"],d:30,s:"Medieval castle overlooking lake with 50km of waterfront",st:"Boat cruises, swimming, castle museum",im:"1050: knights building fortress",t:"35-min train from Bern, day trip perfect",c:["history_big"],r:"g",nn:"Thun (Schloss und See) — Tagesfahrt",ns:"Mittelalter Schloss über dem See",nst:"Bootsfahrten, Schwimmen, Schlossmuseum",nt:"35-min Zug von Bern, Tagesfahrt perfekt"},
+  {id:11,n:"Place 11 — Area1",a:"Area1",v:["local"],d:15,s:"Attraction 11 with history and character",st:"Historic site with 1100 years of context",im:"1310 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 11 — Gegend1",ns:"Anziehung 11 mit Geschichte",nst:"Historische Stätte mit 1100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:12,n:"Place 12 — Area2",a:"Area2",v:["history"],d:20,s:"Attraction 12 with history and character",st:"Historic site with 1200 years of context",im:"1320 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 12 — Gegend2",ns:"Anziehung 12 mit Geschichte",nst:"Historische Stätte mit 1200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:13,n:"Place 13 — Area3",a:"Area3",v:["nature"],d:25,s:"Attraction 13 with history and character",st:"Historic site with 1300 years of context",im:"1330 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 13 — Gegend3",ns:"Anziehung 13 mit Geschichte",nst:"Historische Stätte mit 1300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:14,n:"Place 14 — Area4",a:"Area4",v:["local"],d:30,s:"Attraction 14 with history and character",st:"Historic site with 1400 years of context",im:"1340 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 14 — Gegend4",ns:"Anziehung 14 mit Geschichte",nst:"Historische Stätte mit 1400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:15,n:"Place 15 — Area0",a:"Area0",v:["history"],d:35,s:"Attraction 15 with history and character",st:"Historic site with 1500 years of context",im:"1350 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 15 — Gegend0",ns:"Anziehung 15 mit Geschichte",nst:"Historische Stätte mit 1500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:16,n:"Place 16 — Area1",a:"Area1",v:["nature"],d:0,s:"Attraction 16 with history and character",st:"Historic site with 1600 years of context",im:"1360 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 16 — Gegend1",ns:"Anziehung 16 mit Geschichte",nst:"Historische Stätte mit 1600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:17,n:"Place 17 — Area2",a:"Area2",v:["local"],d:5,s:"Attraction 17 with history and character",st:"Historic site with 1700 years of context",im:"1370 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 17 — Gegend2",ns:"Anziehung 17 mit Geschichte",nst:"Historische Stätte mit 1700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:18,n:"Place 18 — Area3",a:"Area3",v:["history"],d:10,s:"Attraction 18 with history and character",st:"Historic site with 1800 years of context",im:"1380 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 18 — Gegend3",ns:"Anziehung 18 mit Geschichte",nst:"Historische Stätte mit 1800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:19,n:"Place 19 — Area4",a:"Area4",v:["nature"],d:15,s:"Attraction 19 with history and character",st:"Historic site with 1900 years of context",im:"1390 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 19 — Gegend4",ns:"Anziehung 19 mit Geschichte",nst:"Historische Stätte mit 1900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:20,n:"Place 20 — Area0",a:"Area0",v:["local"],d:20,s:"Attraction 20 with history and character",st:"Historic site with 2000 years of context",im:"1400 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 20 — Gegend0",ns:"Anziehung 20 mit Geschichte",nst:"Historische Stätte mit 2000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:21,n:"Place 21 — Area1",a:"Area1",v:["history"],d:25,s:"Attraction 21 with history and character",st:"Historic site with 2100 years of context",im:"1410 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 21 — Gegend1",ns:"Anziehung 21 mit Geschichte",nst:"Historische Stätte mit 2100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:22,n:"Place 22 — Area2",a:"Area2",v:["nature"],d:30,s:"Attraction 22 with history and character",st:"Historic site with 2200 years of context",im:"1420 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 22 — Gegend2",ns:"Anziehung 22 mit Geschichte",nst:"Historische Stätte mit 2200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:23,n:"Place 23 — Area3",a:"Area3",v:["local"],d:35,s:"Attraction 23 with history and character",st:"Historic site with 2300 years of context",im:"1430 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 23 — Gegend3",ns:"Anziehung 23 mit Geschichte",nst:"Historische Stätte mit 2300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:24,n:"Place 24 — Area4",a:"Area4",v:["history"],d:0,s:"Attraction 24 with history and character",st:"Historic site with 2400 years of context",im:"1440 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 24 — Gegend4",ns:"Anziehung 24 mit Geschichte",nst:"Historische Stätte mit 2400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:25,n:"Place 25 — Area0",a:"Area0",v:["nature"],d:5,s:"Attraction 25 with history and character",st:"Historic site with 2500 years of context",im:"1450 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 25 — Gegend0",ns:"Anziehung 25 mit Geschichte",nst:"Historische Stätte mit 2500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:26,n:"Place 26 — Area1",a:"Area1",v:["local"],d:10,s:"Attraction 26 with history and character",st:"Historic site with 2600 years of context",im:"1460 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 26 — Gegend1",ns:"Anziehung 26 mit Geschichte",nst:"Historische Stätte mit 2600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:27,n:"Place 27 — Area2",a:"Area2",v:["history"],d:15,s:"Attraction 27 with history and character",st:"Historic site with 2700 years of context",im:"1470 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 27 — Gegend2",ns:"Anziehung 27 mit Geschichte",nst:"Historische Stätte mit 2700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:28,n:"Place 28 — Area3",a:"Area3",v:["nature"],d:20,s:"Attraction 28 with history and character",st:"Historic site with 2800 years of context",im:"1480 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"y",nn:"Ort 28 — Gegend3",ns:"Anziehung 28 mit Geschichte",nst:"Historische Stätte mit 2800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:29,n:"Place 29 — Area4",a:"Area4",v:["local"],d:25,s:"Attraction 29 with history and character",st:"Historic site with 2900 years of context",im:"1490 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 29 — Gegend4",ns:"Anziehung 29 mit Geschichte",nst:"Historische Stätte mit 2900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:30,n:"Place 30 — Area0",a:"Area0",v:["history"],d:30,s:"Attraction 30 with history and character",st:"Historic site with 3000 years of context",im:"1500 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 30 — Gegend0",ns:"Anziehung 30 mit Geschichte",nst:"Historische Stätte mit 3000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:31,n:"Place 31 — Area1",a:"Area1",v:["nature"],d:35,s:"Attraction 31 with history and character",st:"Historic site with 3100 years of context",im:"1510 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 31 — Gegend1",ns:"Anziehung 31 mit Geschichte",nst:"Historische Stätte mit 3100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:32,n:"Place 32 — Area2",a:"Area2",v:["local"],d:0,s:"Attraction 32 with history and character",st:"Historic site with 3200 years of context",im:"1520 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 32 — Gegend2",ns:"Anziehung 32 mit Geschichte",nst:"Historische Stätte mit 3200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:33,n:"Place 33 — Area3",a:"Area3",v:["history"],d:5,s:"Attraction 33 with history and character",st:"Historic site with 3300 years of context",im:"1530 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 33 — Gegend3",ns:"Anziehung 33 mit Geschichte",nst:"Historische Stätte mit 3300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:34,n:"Place 34 — Area4",a:"Area4",v:["nature"],d:10,s:"Attraction 34 with history and character",st:"Historic site with 3400 years of context",im:"1540 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 34 — Gegend4",ns:"Anziehung 34 mit Geschichte",nst:"Historische Stätte mit 3400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:35,n:"Place 35 — Area0",a:"Area0",v:["local"],d:15,s:"Attraction 35 with history and character",st:"Historic site with 3500 years of context",im:"1550 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 35 — Gegend0",ns:"Anziehung 35 mit Geschichte",nst:"Historische Stätte mit 3500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:36,n:"Place 36 — Area1",a:"Area1",v:["history"],d:20,s:"Attraction 36 with history and character",st:"Historic site with 3600 years of context",im:"1560 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 36 — Gegend1",ns:"Anziehung 36 mit Geschichte",nst:"Historische Stätte mit 3600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:37,n:"Place 37 — Area2",a:"Area2",v:["nature"],d:25,s:"Attraction 37 with history and character",st:"Historic site with 3700 years of context",im:"1570 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 37 — Gegend2",ns:"Anziehung 37 mit Geschichte",nst:"Historische Stätte mit 3700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:38,n:"Place 38 — Area3",a:"Area3",v:["local"],d:30,s:"Attraction 38 with history and character",st:"Historic site with 3800 years of context",im:"1580 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 38 — Gegend3",ns:"Anziehung 38 mit Geschichte",nst:"Historische Stätte mit 3800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:39,n:"Place 39 — Area4",a:"Area4",v:["history"],d:35,s:"Attraction 39 with history and character",st:"Historic site with 3900 years of context",im:"1590 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 39 — Gegend4",ns:"Anziehung 39 mit Geschichte",nst:"Historische Stätte mit 3900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:40,n:"Place 40 — Area0",a:"Area0",v:["nature"],d:0,s:"Attraction 40 with history and character",st:"Historic site with 4000 years of context",im:"1600 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 40 — Gegend0",ns:"Anziehung 40 mit Geschichte",nst:"Historische Stätte mit 4000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:41,n:"Place 41 — Area1",a:"Area1",v:["local"],d:5,s:"Attraction 41 with history and character",st:"Historic site with 4100 years of context",im:"1610 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 41 — Gegend1",ns:"Anziehung 41 mit Geschichte",nst:"Historische Stätte mit 4100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:42,n:"Place 42 — Area2",a:"Area2",v:["history"],d:10,s:"Attraction 42 with history and character",st:"Historic site with 4200 years of context",im:"1620 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 42 — Gegend2",ns:"Anziehung 42 mit Geschichte",nst:"Historische Stätte mit 4200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:43,n:"Place 43 — Area3",a:"Area3",v:["nature"],d:15,s:"Attraction 43 with history and character",st:"Historic site with 4300 years of context",im:"1630 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 43 — Gegend3",ns:"Anziehung 43 mit Geschichte",nst:"Historische Stätte mit 4300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:44,n:"Place 44 — Area4",a:"Area4",v:["local"],d:20,s:"Attraction 44 with history and character",st:"Historic site with 4400 years of context",im:"1640 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 44 — Gegend4",ns:"Anziehung 44 mit Geschichte",nst:"Historische Stätte mit 4400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:45,n:"Place 45 — Area0",a:"Area0",v:["history"],d:25,s:"Attraction 45 with history and character",st:"Historic site with 4500 years of context",im:"1650 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 45 — Gegend0",ns:"Anziehung 45 mit Geschichte",nst:"Historische Stätte mit 4500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:46,n:"Place 46 — Area1",a:"Area1",v:["nature"],d:30,s:"Attraction 46 with history and character",st:"Historic site with 4600 years of context",im:"1660 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 46 — Gegend1",ns:"Anziehung 46 mit Geschichte",nst:"Historische Stätte mit 4600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:47,n:"Place 47 — Area2",a:"Area2",v:["local"],d:35,s:"Attraction 47 with history and character",st:"Historic site with 4700 years of context",im:"1670 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 47 — Gegend2",ns:"Anziehung 47 mit Geschichte",nst:"Historische Stätte mit 4700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:48,n:"Place 48 — Area3",a:"Area3",v:["history"],d:0,s:"Attraction 48 with history and character",st:"Historic site with 4800 years of context",im:"1680 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 48 — Gegend3",ns:"Anziehung 48 mit Geschichte",nst:"Historische Stätte mit 4800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:49,n:"Place 49 — Area4",a:"Area4",v:["nature"],d:5,s:"Attraction 49 with history and character",st:"Historic site with 4900 years of context",im:"1690 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 49 — Gegend4",ns:"Anziehung 49 mit Geschichte",nst:"Historische Stätte mit 4900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:50,n:"Place 50 — Area0",a:"Area0",v:["local"],d:10,s:"Attraction 50 with history and character",st:"Historic site with 5000 years of context",im:"1700 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 50 — Gegend0",ns:"Anziehung 50 mit Geschichte",nst:"Historische Stätte mit 5000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:51,n:"Place 51 — Area1",a:"Area1",v:["history"],d:15,s:"Attraction 51 with history and character",st:"Historic site with 5100 years of context",im:"1710 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 51 — Gegend1",ns:"Anziehung 51 mit Geschichte",nst:"Historische Stätte mit 5100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:52,n:"Place 52 — Area2",a:"Area2",v:["nature"],d:20,s:"Attraction 52 with history and character",st:"Historic site with 5200 years of context",im:"1720 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 52 — Gegend2",ns:"Anziehung 52 mit Geschichte",nst:"Historische Stätte mit 5200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:53,n:"Place 53 — Area3",a:"Area3",v:["local"],d:25,s:"Attraction 53 with history and character",st:"Historic site with 5300 years of context",im:"1730 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 53 — Gegend3",ns:"Anziehung 53 mit Geschichte",nst:"Historische Stätte mit 5300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:54,n:"Place 54 — Area4",a:"Area4",v:["history"],d:30,s:"Attraction 54 with history and character",st:"Historic site with 5400 years of context",im:"1740 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 54 — Gegend4",ns:"Anziehung 54 mit Geschichte",nst:"Historische Stätte mit 5400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:55,n:"Place 55 — Area0",a:"Area0",v:["nature"],d:35,s:"Attraction 55 with history and character",st:"Historic site with 5500 years of context",im:"1750 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 55 — Gegend0",ns:"Anziehung 55 mit Geschichte",nst:"Historische Stätte mit 5500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:56,n:"Place 56 — Area1",a:"Area1",v:["local"],d:0,s:"Attraction 56 with history and character",st:"Historic site with 5600 years of context",im:"1760 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"y",nn:"Ort 56 — Gegend1",ns:"Anziehung 56 mit Geschichte",nst:"Historische Stätte mit 5600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:57,n:"Place 57 — Area2",a:"Area2",v:["history"],d:5,s:"Attraction 57 with history and character",st:"Historic site with 5700 years of context",im:"1770 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 57 — Gegend2",ns:"Anziehung 57 mit Geschichte",nst:"Historische Stätte mit 5700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:58,n:"Place 58 — Area3",a:"Area3",v:["nature"],d:10,s:"Attraction 58 with history and character",st:"Historic site with 5800 years of context",im:"1780 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 58 — Gegend3",ns:"Anziehung 58 mit Geschichte",nst:"Historische Stätte mit 5800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:59,n:"Place 59 — Area4",a:"Area4",v:["local"],d:15,s:"Attraction 59 with history and character",st:"Historic site with 5900 years of context",im:"1790 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 59 — Gegend4",ns:"Anziehung 59 mit Geschichte",nst:"Historische Stätte mit 5900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:60,n:"Place 60 — Area0",a:"Area0",v:["history"],d:20,s:"Attraction 60 with history and character",st:"Historic site with 6000 years of context",im:"1800 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 60 — Gegend0",ns:"Anziehung 60 mit Geschichte",nst:"Historische Stätte mit 6000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:61,n:"Place 61 — Area1",a:"Area1",v:["nature"],d:25,s:"Attraction 61 with history and character",st:"Historic site with 6100 years of context",im:"1810 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 61 — Gegend1",ns:"Anziehung 61 mit Geschichte",nst:"Historische Stätte mit 6100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:62,n:"Place 62 — Area2",a:"Area2",v:["local"],d:30,s:"Attraction 62 with history and character",st:"Historic site with 6200 years of context",im:"1820 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 62 — Gegend2",ns:"Anziehung 62 mit Geschichte",nst:"Historische Stätte mit 6200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:63,n:"Place 63 — Area3",a:"Area3",v:["history"],d:35,s:"Attraction 63 with history and character",st:"Historic site with 6300 years of context",im:"1830 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 63 — Gegend3",ns:"Anziehung 63 mit Geschichte",nst:"Historische Stätte mit 6300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:64,n:"Place 64 — Area4",a:"Area4",v:["nature"],d:0,s:"Attraction 64 with history and character",st:"Historic site with 6400 years of context",im:"1840 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 64 — Gegend4",ns:"Anziehung 64 mit Geschichte",nst:"Historische Stätte mit 6400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:65,n:"Place 65 — Area0",a:"Area0",v:["local"],d:5,s:"Attraction 65 with history and character",st:"Historic site with 6500 years of context",im:"1850 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 65 — Gegend0",ns:"Anziehung 65 mit Geschichte",nst:"Historische Stätte mit 6500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:66,n:"Place 66 — Area1",a:"Area1",v:["history"],d:10,s:"Attraction 66 with history and character",st:"Historic site with 6600 years of context",im:"1860 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 66 — Gegend1",ns:"Anziehung 66 mit Geschichte",nst:"Historische Stätte mit 6600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:67,n:"Place 67 — Area2",a:"Area2",v:["nature"],d:15,s:"Attraction 67 with history and character",st:"Historic site with 6700 years of context",im:"1870 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 67 — Gegend2",ns:"Anziehung 67 mit Geschichte",nst:"Historische Stätte mit 6700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:68,n:"Place 68 — Area3",a:"Area3",v:["local"],d:20,s:"Attraction 68 with history and character",st:"Historic site with 6800 years of context",im:"1880 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 68 — Gegend3",ns:"Anziehung 68 mit Geschichte",nst:"Historische Stätte mit 6800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:69,n:"Place 69 — Area4",a:"Area4",v:["history"],d:25,s:"Attraction 69 with history and character",st:"Historic site with 6900 years of context",im:"1890 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 69 — Gegend4",ns:"Anziehung 69 mit Geschichte",nst:"Historische Stätte mit 6900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:70,n:"Place 70 — Area0",a:"Area0",v:["nature"],d:30,s:"Attraction 70 with history and character",st:"Historic site with 7000 years of context",im:"1900 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 70 — Gegend0",ns:"Anziehung 70 mit Geschichte",nst:"Historische Stätte mit 7000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:71,n:"Place 71 — Area1",a:"Area1",v:["local"],d:35,s:"Attraction 71 with history and character",st:"Historic site with 7100 years of context",im:"1910 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 71 — Gegend1",ns:"Anziehung 71 mit Geschichte",nst:"Historische Stätte mit 7100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:72,n:"Place 72 — Area2",a:"Area2",v:["history"],d:0,s:"Attraction 72 with history and character",st:"Historic site with 7200 years of context",im:"1920 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 72 — Gegend2",ns:"Anziehung 72 mit Geschichte",nst:"Historische Stätte mit 7200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:73,n:"Place 73 — Area3",a:"Area3",v:["nature"],d:5,s:"Attraction 73 with history and character",st:"Historic site with 7300 years of context",im:"1930 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 73 — Gegend3",ns:"Anziehung 73 mit Geschichte",nst:"Historische Stätte mit 7300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:74,n:"Place 74 — Area4",a:"Area4",v:["local"],d:10,s:"Attraction 74 with history and character",st:"Historic site with 7400 years of context",im:"1940 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 74 — Gegend4",ns:"Anziehung 74 mit Geschichte",nst:"Historische Stätte mit 7400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:75,n:"Place 75 — Area0",a:"Area0",v:["history"],d:15,s:"Attraction 75 with history and character",st:"Historic site with 7500 years of context",im:"1950 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 75 — Gegend0",ns:"Anziehung 75 mit Geschichte",nst:"Historische Stätte mit 7500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:76,n:"Place 76 — Area1",a:"Area1",v:["nature"],d:20,s:"Attraction 76 with history and character",st:"Historic site with 7600 years of context",im:"1960 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 76 — Gegend1",ns:"Anziehung 76 mit Geschichte",nst:"Historische Stätte mit 7600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:77,n:"Place 77 — Area2",a:"Area2",v:["local"],d:25,s:"Attraction 77 with history and character",st:"Historic site with 7700 years of context",im:"1970 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 77 — Gegend2",ns:"Anziehung 77 mit Geschichte",nst:"Historische Stätte mit 7700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:78,n:"Place 78 — Area3",a:"Area3",v:["history"],d:30,s:"Attraction 78 with history and character",st:"Historic site with 7800 years of context",im:"1980 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 78 — Gegend3",ns:"Anziehung 78 mit Geschichte",nst:"Historische Stätte mit 7800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:79,n:"Place 79 — Area4",a:"Area4",v:["nature"],d:35,s:"Attraction 79 with history and character",st:"Historic site with 7900 years of context",im:"1990 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 79 — Gegend4",ns:"Anziehung 79 mit Geschichte",nst:"Historische Stätte mit 7900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:80,n:"Place 80 — Area0",a:"Area0",v:["local"],d:0,s:"Attraction 80 with history and character",st:"Historic site with 8000 years of context",im:"2000 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 80 — Gegend0",ns:"Anziehung 80 mit Geschichte",nst:"Historische Stätte mit 8000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:81,n:"Place 81 — Area1",a:"Area1",v:["history"],d:5,s:"Attraction 81 with history and character",st:"Historic site with 8100 years of context",im:"2010 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 81 — Gegend1",ns:"Anziehung 81 mit Geschichte",nst:"Historische Stätte mit 8100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:82,n:"Place 82 — Area2",a:"Area2",v:["nature"],d:10,s:"Attraction 82 with history and character",st:"Historic site with 8200 years of context",im:"2020 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 82 — Gegend2",ns:"Anziehung 82 mit Geschichte",nst:"Historische Stätte mit 8200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:83,n:"Place 83 — Area3",a:"Area3",v:["local"],d:15,s:"Attraction 83 with history and character",st:"Historic site with 8300 years of context",im:"2030 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 83 — Gegend3",ns:"Anziehung 83 mit Geschichte",nst:"Historische Stätte mit 8300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:84,n:"Place 84 — Area4",a:"Area4",v:["history"],d:20,s:"Attraction 84 with history and character",st:"Historic site with 8400 years of context",im:"2040 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"y",nn:"Ort 84 — Gegend4",ns:"Anziehung 84 mit Geschichte",nst:"Historische Stätte mit 8400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:85,n:"Place 85 — Area0",a:"Area0",v:["nature"],d:25,s:"Attraction 85 with history and character",st:"Historic site with 8500 years of context",im:"2050 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 85 — Gegend0",ns:"Anziehung 85 mit Geschichte",nst:"Historische Stätte mit 8500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:86,n:"Place 86 — Area1",a:"Area1",v:["local"],d:30,s:"Attraction 86 with history and character",st:"Historic site with 8600 years of context",im:"2060 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 86 — Gegend1",ns:"Anziehung 86 mit Geschichte",nst:"Historische Stätte mit 8600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:87,n:"Place 87 — Area2",a:"Area2",v:["history"],d:35,s:"Attraction 87 with history and character",st:"Historic site with 8700 years of context",im:"2070 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 87 — Gegend2",ns:"Anziehung 87 mit Geschichte",nst:"Historische Stätte mit 8700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:88,n:"Place 88 — Area3",a:"Area3",v:["nature"],d:0,s:"Attraction 88 with history and character",st:"Historic site with 8800 years of context",im:"2080 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 88 — Gegend3",ns:"Anziehung 88 mit Geschichte",nst:"Historische Stätte mit 8800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:89,n:"Place 89 — Area4",a:"Area4",v:["local"],d:5,s:"Attraction 89 with history and character",st:"Historic site with 8900 years of context",im:"2090 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 89 — Gegend4",ns:"Anziehung 89 mit Geschichte",nst:"Historische Stätte mit 8900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:90,n:"Place 90 — Area0",a:"Area0",v:["history"],d:10,s:"Attraction 90 with history and character",st:"Historic site with 9000 years of context",im:"2100 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 90 — Gegend0",ns:"Anziehung 90 mit Geschichte",nst:"Historische Stätte mit 9000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:91,n:"Place 91 — Area1",a:"Area1",v:["nature"],d:15,s:"Attraction 91 with history and character",st:"Historic site with 9100 years of context",im:"2110 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 91 — Gegend1",ns:"Anziehung 91 mit Geschichte",nst:"Historische Stätte mit 9100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:92,n:"Place 92 — Area2",a:"Area2",v:["local"],d:20,s:"Attraction 92 with history and character",st:"Historic site with 9200 years of context",im:"2120 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 92 — Gegend2",ns:"Anziehung 92 mit Geschichte",nst:"Historische Stätte mit 9200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:93,n:"Place 93 — Area3",a:"Area3",v:["history"],d:25,s:"Attraction 93 with history and character",st:"Historic site with 9300 years of context",im:"2130 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 93 — Gegend3",ns:"Anziehung 93 mit Geschichte",nst:"Historische Stätte mit 9300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:94,n:"Place 94 — Area4",a:"Area4",v:["nature"],d:30,s:"Attraction 94 with history and character",st:"Historic site with 9400 years of context",im:"2140 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 94 — Gegend4",ns:"Anziehung 94 mit Geschichte",nst:"Historische Stätte mit 9400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:95,n:"Place 95 — Area0",a:"Area0",v:["local"],d:35,s:"Attraction 95 with history and character",st:"Historic site with 9500 years of context",im:"2150 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 95 — Gegend0",ns:"Anziehung 95 mit Geschichte",nst:"Historische Stätte mit 9500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:96,n:"Place 96 — Area1",a:"Area1",v:["history"],d:0,s:"Attraction 96 with history and character",st:"Historic site with 9600 years of context",im:"2160 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 96 — Gegend1",ns:"Anziehung 96 mit Geschichte",nst:"Historische Stätte mit 9600 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:97,n:"Place 97 — Area2",a:"Area2",v:["nature"],d:5,s:"Attraction 97 with history and character",st:"Historic site with 9700 years of context",im:"2170 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 97 — Gegend2",ns:"Anziehung 97 mit Geschichte",nst:"Historische Stätte mit 9700 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:98,n:"Place 98 — Area3",a:"Area3",v:["local"],d:10,s:"Attraction 98 with history and character",st:"Historic site with 9800 years of context",im:"2180 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 98 — Gegend3",ns:"Anziehung 98 mit Geschichte",nst:"Historische Stätte mit 9800 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:99,n:"Place 99 — Area4",a:"Area4",v:["history"],d:15,s:"Attraction 99 with history and character",st:"Historic site with 9900 years of context",im:"2190 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 99 — Gegend4",ns:"Anziehung 99 mit Geschichte",nst:"Historische Stätte mit 9900 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:100,n:"Place 100 — Area0",a:"Area0",v:["nature"],d:20,s:"Attraction 100 with history and character",st:"Historic site with 10000 years of context",im:"2200 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 100 — Gegend0",ns:"Anziehung 100 mit Geschichte",nst:"Historische Stätte mit 10000 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:101,n:"Place 101 — Area1",a:"Area1",v:["local"],d:25,s:"Attraction 101 with history and character",st:"Historic site with 10100 years of context",im:"2210 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 101 — Gegend1",ns:"Anziehung 101 mit Geschichte",nst:"Historische Stätte mit 10100 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:102,n:"Place 102 — Area2",a:"Area2",v:["history"],d:30,s:"Attraction 102 with history and character",st:"Historic site with 10200 years of context",im:"2220 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 102 — Gegend2",ns:"Anziehung 102 mit Geschichte",nst:"Historische Stätte mit 10200 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:103,n:"Place 103 — Area3",a:"Area3",v:["nature"],d:35,s:"Attraction 103 with history and character",st:"Historic site with 10300 years of context",im:"2230 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"g",nn:"Ort 103 — Gegend3",ns:"Anziehung 103 mit Geschichte",nst:"Historische Stätte mit 10300 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:104,n:"Place 104 — Area4",a:"Area4",v:["local"],d:0,s:"Attraction 104 with history and character",st:"Historic site with 10400 years of context",im:"2240 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["history_big"],r:"g",nn:"Ort 104 — Gegend4",ns:"Anziehung 104 mit Geschichte",nst:"Historische Stätte mit 10400 Jahren",nt:"Besuchen Sie morgens für bestes Licht"},
+  {id:105,n:"Place 105 — Area0",a:"Area0",v:["history"],d:5,s:"Attraction 105 with history and character",st:"Historic site with 10500 years of context",im:"2250 AD: something happened here",t:"Visit mornings for best light and fewer crowds",c:["parks"],r:"y",nn:"Ort 105 — Gegend0",ns:"Anziehung 105 mit Geschichte",nst:"Historische Stätte mit 10500 Jahren",nt:"Besuchen Sie morgens für bestes Licht"}
+];
+
+const M = [
+  {id:1,title:"The Area1 Deep Dive",desc:"Hit 5 hidden spots in Area1. Walk slow, look up, read everything.",places:[11, 16, 21, 26, 31],time:"125 min"},
+  {id:2,title:"The Area2 Deep Dive",desc:"Hit 5 hidden spots in Area2. Walk slow, look up, read everything.",places:[12, 17, 22, 27, 32],time:"125 min"},
+  {id:3,title:"The Area3 Deep Dive",desc:"Hit 5 hidden spots in Area3. Walk slow, look up, read everything.",places:[13, 18, 23, 28, 33],time:"125 min"},
+  {id:4,title:"The Area4 Deep Dive",desc:"Hit 5 hidden spots in Area4. Walk slow, look up, read everything.",places:[14, 19, 24, 29, 34],time:"125 min"},
+  {id:5,title:"The Area0 Deep Dive",desc:"Hit 5 hidden spots in Area0. Walk slow, look up, read everything.",places:[15, 20, 25, 30, 35],time:"125 min"},
+  {id:6,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[2, 3, 4, 5, 8],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 4, 5, 10, 12, 16],time:"120 min"},
+  {id:8,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[6, 7, 8, 11, 13, 14],time:"120 min"},
+  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
+
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+
+const AREAS = ["Area0", "Area1", "Area2", "Area3", "Area4", "Day Trip", "Downtown", "Old Town", "South"];
+
+const PHRASES = [
+  {native:"Grüezi",en:"Hello"},
+  {native:"Dankeschön",en:"Thank you"},
+  {native:"Wie viel kostet es?",en:"How much?"},
+  {native:"Das Wasser ist kalt",en:"Water is cold"},
+  {native:"Wo ist die Toilette?",en:"Where is bathroom?"},
+  {native:"Es ist lecker",en:"It\'s delicious"},
+  {native:"Sprichst du Englisch?",en:"Do you speak English?"},
+  {native:"Hilfe!",en:"Help!"},
+  {native:"Nein, danke",en:"No, thanks"},
+  {native:"Gute Nacht",en:"Good night"}
+];
+
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+
+const PLACE_IMAGES={};
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(26,26,46,0.88) 0%,rgba(45,27,105,0.85) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
+<p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Bern Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+<p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
+{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Bern</button>
+<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
+<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
+</div></div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"white",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p></div>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+if(showPicker){const rp=P[Math.floor(Math.random()*P.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<p className="text-4xl mb-4">🎲</p>
+<h2 className="text-xl font-black text-center" style={{color:"white"}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-sm mt-2 text-center" style={{color:"#b8b0d0"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3 text-center px-6" style={{color:"#8b7fb8",lineHeight:1.6}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+<div className="flex gap-3 mt-6">
+<button onClick={()=>setShowPicker(false)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Close</button>
+<button onClick={()=>{setSelected(rp);setShowPicker(false)}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Go!</button>
+<button onClick={()=>setShowPicker(true)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Reroll</button>
+</div></div>}
+
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Bern Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={()=>setShowPicker(true)} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+
+<div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
+<div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+<div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+<img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
+</div>)}
+</div></div>
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Bern Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script></body></html>
