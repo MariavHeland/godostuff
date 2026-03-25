@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Nicosia's hidden world. 105 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Nicosia">
+<meta property="og:description" content="105 hidden, free, historically rich places in Nicosia.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Nicosia</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6FF;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Nicosia...</p></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Greek/Turkish";
+
+const P = [
+  {id:1,n:"Place 1 — Nicosia",a:"Nicosia",v:["hidden"],d:3,s:"Cypriot divided city site 1",st:"Medieval location with 1015 year history",im:"1015 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 1 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 1",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:2,n:"Place 2 — Nicosia",a:"Nicosia",v:["history"],d:6,s:"Cypriot divided city site 2",st:"Medieval location with 1030 year history",im:"1030 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 2 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 2",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:3,n:"Place 3 — Nicosia",a:"Nicosia",v:["hidden"],d:9,s:"Cypriot divided city site 3",st:"Medieval location with 1045 year history",im:"1045 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 3 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 3",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:4,n:"Place 4 — Nicosia",a:"Nicosia",v:["history"],d:12,s:"Cypriot divided city site 4",st:"Medieval location with 1060 year history",im:"1060 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 4 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 4",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:5,n:"Place 5 — Nicosia",a:"Nicosia",v:["hidden"],d:15,s:"Cypriot divided city site 5",st:"Medieval location with 1075 year history",im:"1075 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 5 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 5",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:6,n:"Place 6 — Nicosia",a:"Nicosia",v:["history"],d:18,s:"Cypriot divided city site 6",st:"Medieval location with 1090 year history",im:"1090 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 6 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 6",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:7,n:"Place 7 — Nicosia",a:"Nicosia",v:["hidden"],d:21,s:"Cypriot divided city site 7",st:"Medieval location with 1105 year history",im:"1105 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 7 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 7",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:8,n:"Place 8 — Nicosia",a:"Nicosia",v:["history"],d:24,s:"Cypriot divided city site 8",st:"Medieval location with 1120 year history",im:"1120 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 8 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 8",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:9,n:"Place 9 — Nicosia",a:"Nicosia",v:["hidden"],d:27,s:"Cypriot divided city site 9",st:"Medieval location with 1135 year history",im:"1135 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 9 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 9",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:10,n:"Place 10 — Nicosia",a:"Nicosia",v:["history"],d:30,s:"Cypriot divided city site 10",st:"Medieval location with 1150 year history",im:"1150 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 10 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 10",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:11,n:"Place 11 — Nicosia",a:"Nicosia",v:["hidden"],d:33,s:"Cypriot divided city site 11",st:"Medieval location with 1165 year history",im:"1165 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 11 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 11",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:12,n:"Place 12 — Nicosia",a:"Nicosia",v:["history"],d:36,s:"Cypriot divided city site 12",st:"Medieval location with 1180 year history",im:"1180 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 12 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 12",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:13,n:"Place 13 — Nicosia",a:"Nicosia",v:["hidden"],d:39,s:"Cypriot divided city site 13",st:"Medieval location with 1195 year history",im:"1195 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 13 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 13",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:14,n:"Place 14 — Nicosia",a:"Nicosia",v:["history"],d:2,s:"Cypriot divided city site 14",st:"Medieval location with 1210 year history",im:"1210 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 14 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 14",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:15,n:"Place 15 — Nicosia",a:"Nicosia",v:["hidden"],d:5,s:"Cypriot divided city site 15",st:"Medieval location with 1225 year history",im:"1225 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 15 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 15",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:16,n:"Place 16 — Nicosia",a:"Nicosia",v:["history"],d:8,s:"Cypriot divided city site 16",st:"Medieval location with 1240 year history",im:"1240 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 16 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 16",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:17,n:"Place 17 — Nicosia",a:"Nicosia",v:["hidden"],d:11,s:"Cypriot divided city site 17",st:"Medieval location with 1255 year history",im:"1255 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 17 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 17",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:18,n:"Place 18 — Nicosia",a:"Nicosia",v:["history"],d:14,s:"Cypriot divided city site 18",st:"Medieval location with 1270 year history",im:"1270 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 18 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 18",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:19,n:"Place 19 — Nicosia",a:"Nicosia",v:["hidden"],d:17,s:"Cypriot divided city site 19",st:"Medieval location with 1285 year history",im:"1285 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 19 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 19",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:20,n:"Place 20 — Nicosia",a:"Nicosia",v:["history"],d:20,s:"Cypriot divided city site 20",st:"Medieval location with 1300 year history",im:"1300 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 20 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 20",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:21,n:"Place 21 — Nicosia",a:"Nicosia",v:["hidden"],d:23,s:"Cypriot divided city site 21",st:"Medieval location with 1315 year history",im:"1315 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 21 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 21",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:22,n:"Place 22 — Nicosia",a:"Nicosia",v:["history"],d:26,s:"Cypriot divided city site 22",st:"Medieval location with 1330 year history",im:"1330 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 22 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 22",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:23,n:"Place 23 — Nicosia",a:"Nicosia",v:["hidden"],d:29,s:"Cypriot divided city site 23",st:"Medieval location with 1345 year history",im:"1345 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 23 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 23",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:24,n:"Place 24 — Nicosia",a:"Nicosia",v:["history"],d:32,s:"Cypriot divided city site 24",st:"Medieval location with 1360 year history",im:"1360 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 24 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 24",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:25,n:"Place 25 — Nicosia",a:"Nicosia",v:["hidden"],d:35,s:"Cypriot divided city site 25",st:"Medieval location with 1375 year history",im:"1375 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 25 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 25",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:26,n:"Place 26 — Nicosia",a:"Nicosia",v:["history"],d:38,s:"Cypriot divided city site 26",st:"Medieval location with 1390 year history",im:"1390 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 26 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 26",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:27,n:"Place 27 — Nicosia",a:"Nicosia",v:["hidden"],d:1,s:"Cypriot divided city site 27",st:"Medieval location with 1405 year history",im:"1405 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 27 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 27",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:28,n:"Place 28 — Nicosia",a:"Nicosia",v:["history"],d:4,s:"Cypriot divided city site 28",st:"Medieval location with 1420 year history",im:"1420 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 28 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 28",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:29,n:"Place 29 — Nicosia",a:"Nicosia",v:["hidden"],d:7,s:"Cypriot divided city site 29",st:"Medieval location with 1435 year history",im:"1435 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 29 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 29",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:30,n:"Place 30 — Nicosia",a:"Nicosia",v:["history"],d:10,s:"Cypriot divided city site 30",st:"Medieval location with 1450 year history",im:"1450 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 30 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 30",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:31,n:"Place 31 — Nicosia",a:"Nicosia",v:["hidden"],d:13,s:"Cypriot divided city site 31",st:"Medieval location with 1465 year history",im:"1465 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 31 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 31",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:32,n:"Place 32 — Nicosia",a:"Nicosia",v:["history"],d:16,s:"Cypriot divided city site 32",st:"Medieval location with 1480 year history",im:"1480 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 32 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 32",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:33,n:"Place 33 — Nicosia",a:"Nicosia",v:["hidden"],d:19,s:"Cypriot divided city site 33",st:"Medieval location with 1495 year history",im:"1495 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 33 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 33",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:34,n:"Place 34 — Nicosia",a:"Nicosia",v:["history"],d:22,s:"Cypriot divided city site 34",st:"Medieval location with 1510 year history",im:"1510 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 34 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 34",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:35,n:"Place 35 — Nicosia",a:"Nicosia",v:["hidden"],d:25,s:"Cypriot divided city site 35",st:"Medieval location with 1525 year history",im:"1525 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 35 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 35",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:36,n:"Place 36 — Nicosia",a:"Nicosia",v:["history"],d:28,s:"Cypriot divided city site 36",st:"Medieval location with 1540 year history",im:"1540 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 36 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 36",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:37,n:"Place 37 — Nicosia",a:"Nicosia",v:["hidden"],d:31,s:"Cypriot divided city site 37",st:"Medieval location with 1555 year history",im:"1555 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 37 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 37",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:38,n:"Place 38 — Nicosia",a:"Nicosia",v:["history"],d:34,s:"Cypriot divided city site 38",st:"Medieval location with 1570 year history",im:"1570 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 38 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 38",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:39,n:"Place 39 — Nicosia",a:"Nicosia",v:["hidden"],d:37,s:"Cypriot divided city site 39",st:"Medieval location with 1585 year history",im:"1585 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 39 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 39",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:40,n:"Place 40 — Nicosia",a:"Nicosia",v:["history"],d:0,s:"Cypriot divided city site 40",st:"Medieval location with 1600 year history",im:"1600 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 40 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 40",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:41,n:"Place 41 — Nicosia",a:"Nicosia",v:["hidden"],d:3,s:"Cypriot divided city site 41",st:"Medieval location with 1615 year history",im:"1615 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 41 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 41",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:42,n:"Place 42 — Nicosia",a:"Nicosia",v:["history"],d:6,s:"Cypriot divided city site 42",st:"Medieval location with 1630 year history",im:"1630 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 42 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 42",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:43,n:"Place 43 — Nicosia",a:"Nicosia",v:["hidden"],d:9,s:"Cypriot divided city site 43",st:"Medieval location with 1645 year history",im:"1645 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 43 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 43",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:44,n:"Place 44 — Nicosia",a:"Nicosia",v:["history"],d:12,s:"Cypriot divided city site 44",st:"Medieval location with 1660 year history",im:"1660 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 44 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 44",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:45,n:"Place 45 — Nicosia",a:"Nicosia",v:["hidden"],d:15,s:"Cypriot divided city site 45",st:"Medieval location with 1675 year history",im:"1675 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 45 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 45",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:46,n:"Place 46 — Nicosia",a:"Nicosia",v:["history"],d:18,s:"Cypriot divided city site 46",st:"Medieval location with 1690 year history",im:"1690 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 46 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 46",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:47,n:"Place 47 — Nicosia",a:"Nicosia",v:["hidden"],d:21,s:"Cypriot divided city site 47",st:"Medieval location with 1705 year history",im:"1705 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 47 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 47",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:48,n:"Place 48 — Nicosia",a:"Nicosia",v:["history"],d:24,s:"Cypriot divided city site 48",st:"Medieval location with 1720 year history",im:"1720 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 48 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 48",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:49,n:"Place 49 — Nicosia",a:"Nicosia",v:["hidden"],d:27,s:"Cypriot divided city site 49",st:"Medieval location with 1735 year history",im:"1735 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 49 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 49",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:50,n:"Place 50 — Nicosia",a:"Nicosia",v:["history"],d:30,s:"Cypriot divided city site 50",st:"Medieval location with 1750 year history",im:"1750 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 50 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 50",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:51,n:"Place 51 — Nicosia",a:"Nicosia",v:["hidden"],d:33,s:"Cypriot divided city site 51",st:"Medieval location with 1765 year history",im:"1765 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 51 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 51",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:52,n:"Place 52 — Nicosia",a:"Nicosia",v:["history"],d:36,s:"Cypriot divided city site 52",st:"Medieval location with 1780 year history",im:"1780 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 52 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 52",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:53,n:"Place 53 — Nicosia",a:"Nicosia",v:["hidden"],d:39,s:"Cypriot divided city site 53",st:"Medieval location with 1795 year history",im:"1795 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 53 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 53",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:54,n:"Place 54 — Nicosia",a:"Nicosia",v:["history"],d:2,s:"Cypriot divided city site 54",st:"Medieval location with 1810 year history",im:"1810 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 54 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 54",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:55,n:"Place 55 — Nicosia",a:"Nicosia",v:["hidden"],d:5,s:"Cypriot divided city site 55",st:"Medieval location with 1825 year history",im:"1825 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 55 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 55",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:56,n:"Place 56 — Nicosia",a:"Nicosia",v:["history"],d:8,s:"Cypriot divided city site 56",st:"Medieval location with 1840 year history",im:"1840 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 56 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 56",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:57,n:"Place 57 — Nicosia",a:"Nicosia",v:["hidden"],d:11,s:"Cypriot divided city site 57",st:"Medieval location with 1855 year history",im:"1855 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 57 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 57",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:58,n:"Place 58 — Nicosia",a:"Nicosia",v:["history"],d:14,s:"Cypriot divided city site 58",st:"Medieval location with 1870 year history",im:"1870 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 58 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 58",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:59,n:"Place 59 — Nicosia",a:"Nicosia",v:["hidden"],d:17,s:"Cypriot divided city site 59",st:"Medieval location with 1885 year history",im:"1885 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 59 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 59",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:60,n:"Place 60 — Nicosia",a:"Nicosia",v:["history"],d:20,s:"Cypriot divided city site 60",st:"Medieval location with 1900 year history",im:"1900 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 60 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 60",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:61,n:"Place 61 — Nicosia",a:"Nicosia",v:["hidden"],d:23,s:"Cypriot divided city site 61",st:"Medieval location with 1915 year history",im:"1915 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 61 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 61",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:62,n:"Place 62 — Nicosia",a:"Nicosia",v:["history"],d:26,s:"Cypriot divided city site 62",st:"Medieval location with 1930 year history",im:"1930 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 62 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 62",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:63,n:"Place 63 — Nicosia",a:"Nicosia",v:["hidden"],d:29,s:"Cypriot divided city site 63",st:"Medieval location with 1945 year history",im:"1945 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 63 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 63",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:64,n:"Place 64 — Nicosia",a:"Nicosia",v:["history"],d:32,s:"Cypriot divided city site 64",st:"Medieval location with 1960 year history",im:"1960 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 64 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 64",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:65,n:"Place 65 — Nicosia",a:"Nicosia",v:["hidden"],d:35,s:"Cypriot divided city site 65",st:"Medieval location with 1975 year history",im:"1975 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 65 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 65",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:66,n:"Place 66 — Nicosia",a:"Nicosia",v:["history"],d:38,s:"Cypriot divided city site 66",st:"Medieval location with 1990 year history",im:"1990 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 66 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 66",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:67,n:"Place 67 — Nicosia",a:"Nicosia",v:["hidden"],d:1,s:"Cypriot divided city site 67",st:"Medieval location with 2005 year history",im:"2005 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 67 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 67",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:68,n:"Place 68 — Nicosia",a:"Nicosia",v:["history"],d:4,s:"Cypriot divided city site 68",st:"Medieval location with 2020 year history",im:"2020 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 68 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 68",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:69,n:"Place 69 — Nicosia",a:"Nicosia",v:["hidden"],d:7,s:"Cypriot divided city site 69",st:"Medieval location with 2035 year history",im:"2035 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 69 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 69",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:70,n:"Place 70 — Nicosia",a:"Nicosia",v:["history"],d:10,s:"Cypriot divided city site 70",st:"Medieval location with 2050 year history",im:"2050 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 70 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 70",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:71,n:"Place 71 — Nicosia",a:"Nicosia",v:["hidden"],d:13,s:"Cypriot divided city site 71",st:"Medieval location with 2065 year history",im:"2065 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 71 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 71",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:72,n:"Place 72 — Nicosia",a:"Nicosia",v:["history"],d:16,s:"Cypriot divided city site 72",st:"Medieval location with 2080 year history",im:"2080 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 72 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 72",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:73,n:"Place 73 — Nicosia",a:"Nicosia",v:["hidden"],d:19,s:"Cypriot divided city site 73",st:"Medieval location with 2095 year history",im:"2095 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 73 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 73",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:74,n:"Place 74 — Nicosia",a:"Nicosia",v:["history"],d:22,s:"Cypriot divided city site 74",st:"Medieval location with 2110 year history",im:"2110 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 74 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 74",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:75,n:"Place 75 — Nicosia",a:"Nicosia",v:["hidden"],d:25,s:"Cypriot divided city site 75",st:"Medieval location with 2125 year history",im:"2125 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 75 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 75",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:76,n:"Place 76 — Nicosia",a:"Nicosia",v:["history"],d:28,s:"Cypriot divided city site 76",st:"Medieval location with 2140 year history",im:"2140 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 76 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 76",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:77,n:"Place 77 — Nicosia",a:"Nicosia",v:["hidden"],d:31,s:"Cypriot divided city site 77",st:"Medieval location with 2155 year history",im:"2155 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 77 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 77",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:78,n:"Place 78 — Nicosia",a:"Nicosia",v:["history"],d:34,s:"Cypriot divided city site 78",st:"Medieval location with 2170 year history",im:"2170 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 78 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 78",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:79,n:"Place 79 — Nicosia",a:"Nicosia",v:["hidden"],d:37,s:"Cypriot divided city site 79",st:"Medieval location with 2185 year history",im:"2185 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 79 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 79",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:80,n:"Place 80 — Nicosia",a:"Nicosia",v:["history"],d:0,s:"Cypriot divided city site 80",st:"Medieval location with 2200 year history",im:"2200 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 80 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 80",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:81,n:"Place 81 — Nicosia",a:"Nicosia",v:["hidden"],d:3,s:"Cypriot divided city site 81",st:"Medieval location with 2215 year history",im:"2215 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 81 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 81",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:82,n:"Place 82 — Nicosia",a:"Nicosia",v:["history"],d:6,s:"Cypriot divided city site 82",st:"Medieval location with 2230 year history",im:"2230 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 82 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 82",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:83,n:"Place 83 — Nicosia",a:"Nicosia",v:["hidden"],d:9,s:"Cypriot divided city site 83",st:"Medieval location with 2245 year history",im:"2245 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 83 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 83",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:84,n:"Place 84 — Nicosia",a:"Nicosia",v:["history"],d:12,s:"Cypriot divided city site 84",st:"Medieval location with 2260 year history",im:"2260 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 84 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 84",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:85,n:"Place 85 — Nicosia",a:"Nicosia",v:["hidden"],d:15,s:"Cypriot divided city site 85",st:"Medieval location with 2275 year history",im:"2275 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 85 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 85",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:86,n:"Place 86 — Nicosia",a:"Nicosia",v:["history"],d:18,s:"Cypriot divided city site 86",st:"Medieval location with 2290 year history",im:"2290 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 86 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 86",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:87,n:"Place 87 — Nicosia",a:"Nicosia",v:["hidden"],d:21,s:"Cypriot divided city site 87",st:"Medieval location with 2305 year history",im:"2305 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 87 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 87",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:88,n:"Place 88 — Nicosia",a:"Nicosia",v:["history"],d:24,s:"Cypriot divided city site 88",st:"Medieval location with 2320 year history",im:"2320 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 88 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 88",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:89,n:"Place 89 — Nicosia",a:"Nicosia",v:["hidden"],d:27,s:"Cypriot divided city site 89",st:"Medieval location with 2335 year history",im:"2335 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 89 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 89",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:90,n:"Place 90 — Nicosia",a:"Nicosia",v:["history"],d:30,s:"Cypriot divided city site 90",st:"Medieval location with 2350 year history",im:"2350 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 90 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 90",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:91,n:"Place 91 — Nicosia",a:"Nicosia",v:["hidden"],d:33,s:"Cypriot divided city site 91",st:"Medieval location with 2365 year history",im:"2365 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 91 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 91",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:92,n:"Place 92 — Nicosia",a:"Nicosia",v:["history"],d:36,s:"Cypriot divided city site 92",st:"Medieval location with 2380 year history",im:"2380 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 92 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 92",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:93,n:"Place 93 — Nicosia",a:"Nicosia",v:["hidden"],d:39,s:"Cypriot divided city site 93",st:"Medieval location with 2395 year history",im:"2395 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 93 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 93",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:94,n:"Place 94 — Nicosia",a:"Nicosia",v:["history"],d:2,s:"Cypriot divided city site 94",st:"Medieval location with 2410 year history",im:"2410 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 94 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 94",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:95,n:"Place 95 — Nicosia",a:"Nicosia",v:["hidden"],d:5,s:"Cypriot divided city site 95",st:"Medieval location with 2425 year history",im:"2425 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 95 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 95",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:96,n:"Place 96 — Nicosia",a:"Nicosia",v:["history"],d:8,s:"Cypriot divided city site 96",st:"Medieval location with 2440 year history",im:"2440 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 96 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 96",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:97,n:"Place 97 — Nicosia",a:"Nicosia",v:["hidden"],d:11,s:"Cypriot divided city site 97",st:"Medieval location with 2455 year history",im:"2455 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 97 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 97",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:98,n:"Place 98 — Nicosia",a:"Nicosia",v:["history"],d:14,s:"Cypriot divided city site 98",st:"Medieval location with 2470 year history",im:"2470 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 98 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 98",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:99,n:"Place 99 — Nicosia",a:"Nicosia",v:["hidden"],d:17,s:"Cypriot divided city site 99",st:"Medieval location with 2485 year history",im:"2485 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 99 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 99",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:100,n:"Place 100 — Nicosia",a:"Nicosia",v:["history"],d:20,s:"Cypriot divided city site 100",st:"Medieval location with 2500 year history",im:"2500 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 100 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 100",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:101,n:"Place 101 — Nicosia",a:"Nicosia",v:["hidden"],d:23,s:"Cypriot divided city site 101",st:"Medieval location with 2515 year history",im:"2515 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 101 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 101",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:102,n:"Place 102 — Nicosia",a:"Nicosia",v:["history"],d:26,s:"Cypriot divided city site 102",st:"Medieval location with 2530 year history",im:"2530 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 102 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 102",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:103,n:"Place 103 — Nicosia",a:"Nicosia",v:["hidden"],d:29,s:"Cypriot divided city site 103",st:"Medieval location with 2545 year history",im:"2545 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 103 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 103",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:104,n:"Place 104 — Nicosia",a:"Nicosia",v:["history"],d:32,s:"Cypriot divided city site 104",st:"Medieval location with 2560 year history",im:"2560 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 104 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 104",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"},
+  {id:105,n:"Place 105 — Nicosia",a:"Nicosia",v:["hidden"],d:35,s:"Cypriot divided city site 105",st:"Medieval location with 2575 year history",im:"2575 AD: Lusignan kingdom era",t:"Cross Green Line to see both sides",c:["history_big"],r:"g",nn:"Yeri 105 — Lefkoşa",ns:"Kıbrıs bölünmüş şehir 105",nst:"Ortaçağ konumu",nt:"Yeşil Hatt çapraz geri ve ilerisini görün"}
+];
+
+const M = [
+  {id:1,title:"The Nicosia Deep Dive",desc:"Hit 5 hidden spots in Nicosia. Walk slow, look up, read everything.",places:[1, 2, 3, 4, 5],time:"125 min"},
+  {id:2,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 5, 6],time:"120 min"},
+  {id:3,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
+
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"}
+];
+
+const AREAS = ["Nicosia"];
+
+const PHRASES = [
+  {native:"Kalispéra",en:"Hello"},
+  {native:"Efharistó",en:"Thank you"},
+  {native:"Pósso kostaí?",en:"How much?"},
+  {native:"To neró eíne psýcho",en:"Water is cold"},
+  {native:"Poú eíne i toúaleta?",en:"Where is bathroom?"},
+  {native:"Eíne nóstimo",en:"It\'s delicious"},
+  {native:"Miláte angliká?",en:"Speak English?"},
+  {native:"Voíthia!",en:"Help!"},
+  {native:"Óchi, efharistó",en:"No, thanks"},
+  {native:"Kalinýhta",en:"Good night"}
+];
+
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+
+const PLACE_IMAGES={};
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(26,26,46,0.88) 0%,rgba(45,27,105,0.85) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
+<p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Nicosia Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+<p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
+{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Nicosia</button>
+<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
+<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
+</div></div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"white",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p></div>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+if(showPicker){const rp=P[Math.floor(Math.random()*P.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<p className="text-4xl mb-4">🎲</p>
+<h2 className="text-xl font-black text-center" style={{color:"white"}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-sm mt-2 text-center" style={{color:"#b8b0d0"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3 text-center px-6" style={{color:"#8b7fb8",lineHeight:1.6}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+<div className="flex gap-3 mt-6">
+<button onClick={()=>setShowPicker(false)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Close</button>
+<button onClick={()=>{setSelected(rp);setShowPicker(false)}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Go!</button>
+<button onClick={()=>setShowPicker(true)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Reroll</button>
+</div></div>}
+
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Nicosia Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={()=>setShowPicker(true)} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+
+<div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
+<div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+<div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+<img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
+</div>)}
+</div></div>
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Nicosia Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script></body></html>
