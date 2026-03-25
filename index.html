@@ -78,6 +78,35 @@ const TRANS = {
   "Public & safe": {"en": "Public & safe", "de": "Öffentlich & sicher"},
   "Natural / moderate risk": {"en": "Natural / moderate risk", "de": "Natürlich / mäßiges Risiko"},
   "Restricted / hazardous": {"en": "Restricted / hazardous", "de": "Eingeschränkt / gefährlich"},
+  "Collections": {"en": "Collections", "de": "Sammlungen"},
+  "Plan": {"en": "Plan", "de": "Planen"},
+  "Missions": {"en": "Missions", "de": "Missionen"},
+  "Phrases": {"en": "Phrases", "de": "Redewendungen"},
+  "Nothing found": {"en": "Nothing found", "de": "Nichts gefunden"},
+  "All collections": {"en": "All collections", "de": "Alle Sammlungen"},
+  "places": {"en": "places", "de": "Orte"},
+  "hidden places": {"en": "hidden places", "de": "versteckte Orte"},
+  "missions": {"en": "missions", "de": "Missionen"},
+  "collections": {"en": "collections", "de": "Sammlungen"},
+  "For the curious. All free.": {"en": "For the curious. All free.", "de": "Für Neugierige. Alles kostenlos."},
+  "Discover More": {"en": "Discover More", "de": "Mehr entdecken"},
+  "About Go Do Stuff": {"en": "About Go Do Stuff", "de": "Über Go Do Stuff"},
+  "Disclaimer": {"en": "Disclaimer", "de": "Haftungsausschluss"},
+  "Terms of Use": {"en": "Terms of Use", "de": "Nutzungsbedingungen"},
+  "Privacy": {"en": "Privacy", "de": "Datenschutz"},
+  "Close your eyes": {"en": "Close your eyes", "de": "Schließe deine Augen"},
+  "Area": {"en": "Area", "de": "Gebiet"},
+  "Duration": {"en": "Duration", "de": "Dauer"},
+  "Walk food-first": {"en": "Walk food-first", "de": "Essen zuerst"},
+  "Build my route": {"en": "Build my route", "de": "Route erstellen"},
+  "Your route": {"en": "Your route", "de": "Deine Route"},
+  "Start over": {"en": "Start over", "de": "Neu starten"},
+  "Spin again": {"en": "Spin again", "de": "Nochmal drehen"},
+  "Open": {"en": "Open", "de": "Öffnen"},
+  "1 hour": {"en": "1 hour", "de": "1 Stunde"},
+  "2 hours": {"en": "2 hours", "de": "2 Stunden"},
+  "Half day": {"en": "Half day", "de": "Halber Tag"},
+  "Full day": {"en": "Full day", "de": "Ganzer Tag"},
 };
 function t(key, lang = "en") { return TRANS[key]?.[lang] || key; }
 
@@ -378,9 +407,9 @@ const COLLECTIONS = [
 
 // ══════════════ FOOD BY AREA ══════════════
 const FOOD = {
-  "Mitte": [{ n:"Curry Baude", w:"Currywurst <€3", l:"Hackescher Markt" },{ n:"Brezel Company", w:"Pretzels €1.50", l:"Friedrichstraße" }],
+  "Mitte": [{ n:"Curry Baude", w:"Currywurst unter €3", l:"Hackescher Markt" },{ n:"Brezel Company", w:"Pretzels €1.50", l:"Friedrichstraße" }],
   "Kreuzberg": [{ n:"Mustafa's Gemüse Kebap", w:"Legendary veg kebab €4-5", l:"Mehringdamm" },{ n:"Maroush", w:"Huge falafel €3.50", l:"Adalbertstraße" },{ n:"Sahara Imbiss", w:"Sudanese falafel plate €4", l:"Graefestraße" },{ n:"Maybachufer stalls", w:"Gözleme, börek €2-4", l:"Tue/Fri" }],
-  "Neukölln": [{ n:"Azzam", w:"Best hummus — giant plate €4-5", l:"Sonnenallee" },{ n:"Konditorei Damaskus", w:"Syrian baklava €2-3", l:"Sonnenallee" },{ n:"Arabic bakeries", w:"Flatbread, zaatar <€2", l:"Sonnenallee" }],
+  "Neukölln": [{ n:"Azzam", w:"Best hummus — giant plate €4-5", l:"Sonnenallee" },{ n:"Konditorei Damaskus", w:"Syrian baklava €2-3", l:"Sonnenallee" },{ n:"Arabic bakeries", w:"Flatbread, zaatar unter €2", l:"Sonnenallee" }],
   "Friedrichshain": [{ n:"Vöner", w:"Vegan döner €4-5", l:"Boxhagener Str" },{ n:"Spätis everywhere", w:"Coffee, snacks €1-3", l:"Every corner" }],
   "Prenzlauer Berg": [{ n:"Konnopke's Imbiss", w:"Berlin's oldest currywurst €3", l:"Under U2 Eberswalder" },{ n:"W - Der Imbiss", w:"Giant Schnitzel sandwich €5", l:"Kastanienallee" }],
   "Wedding": [{ n:"Sahara", w:"Eritrean injera €5-7", l:"Müllerstraße" },{ n:"Arminius food stalls", w:"Turkish, Vietnamese €3-6", l:"Arminiusstraße" }],
@@ -390,7 +419,7 @@ const FOOD = {
   "Moabit": [{ n:"Arminiusmarkthalle", w:"Various €3-7", l:"Arminiusstraße" }],
   "Treptow": [{ n:"Zenner", w:"Beer garden — bring your food", l:"Alt-Treptow" }],
   "Pankow": [{ n:"Florian", w:"Coffee + cake €4", l:"Bölschestraße" }],
-  "Köpenick": [{ n:"Altstadt bakeries", w:"Rolls + coffee <€3", l:"Old Town" },{ n:"Krokodil", w:"Creole & Caribbean food — local favourite by the lake", l:"Gartenstr., Friedrichshagen near Müggelsee" },{ n:"Rübezahl", w:"Beer garden right on Müggelsee shore", l:"South shore" }],
+  "Köpenick": [{ n:"Altstadt bakeries", w:"Rolls + coffee unter €3", l:"Old Town" },{ n:"Krokodil", w:"Creole & Caribbean food — local favourite by the lake", l:"Gartenstr., Friedrichshagen near Müggelsee" },{ n:"Rübezahl", w:"Beer garden right on Müggelsee shore", l:"South shore" }],
   "Zehlendorf": [{ n:"Schlachtensee Kiosk", w:"Coffee, ice cream €2-3", l:"At the lake" },{ n:"Fischerhütte am Schlachtensee", w:"Lakeside beer garden, snacks €3-8", l:"South end of Schlachtensee" }],
   "Wannsee": [{ n:"Loretta am Wannsee", w:"Beer garden with lake views", l:"Near Strandbad" }],
   "Reinickendorf": [{ n:"Tegeler Seeterrassen", w:"Café right on the lake", l:"Greenwich-Promenade" }],
@@ -579,7 +608,7 @@ function EntryGate({onAccept}){
     <div style={{maxWidth:420,width:"100%",textAlign:"center"}}>
       <h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
       <p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Berlin Edition</p>
-      <p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+      <p className="text-sm mt-2" style={{color:"#b8b0d0"}}>{t("For the curious. All free.",lang)}</p>
       <div className="rounded-2xl p-6 mt-8 text-left" style={{background:"rgba(10,10,30,0.93)",border:"1px solid rgba(255,255,255,0.15)"}}>
         <h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
         <p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to places in Berlin.</p>
@@ -628,7 +657,7 @@ function App(){
         <div style={{flex:1}}>
         <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
           <p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Berlin Edition</p>
-          <p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+          <p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} {t("hidden places",lang)}. {M.length} {t("missions",lang)}. {COLLECTIONS.length} {t("collections",lang)}.<br/>{t("For the curious. All free.",lang)}</p></div>
         <button onClick={()=>setShowPicker(true)} className="mt-1 text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
 
         <div style={{marginTop:"8px"}}>
@@ -648,34 +677,35 @@ function App(){
 
       {/* Tabs */}
       <div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
-        {[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:`📚 Collections`},{k:"plan",l:"🧭 Plan"},{k:"missions",l:`⚡ Missions`},{k:"phrases",l:"📝 Phrases"}].map(t=>
-          <button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
-            style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}
+        {[{k:"places",l:`🗺 ${t("All",lang)} (${filtered.length})`},{k:"collections",l:`📚 ${t("Collections",lang)}`},{k:"plan",l:`🧭 ${t("Plan",lang)}`},{k:"missions",l:`⚡ ${t("Missions",lang)}`},{k:"phrases",l:`📝 ${t("Phrases",lang)}`}].map(tb=>
+          <button key={tb.k} onClick={()=>{setTab(tb.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+            style={{background:tab===tb.k?"#1a1a2e":"white",color:tab===tb.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:tb.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{tb.l}</button>)}
       </div>
 
       {/* Search + filters */}
       {(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
-        <input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+        <input type="text" placeholder={tab==="places"?t("Search places, areas, stories...",lang):t("Search missions...",lang)} value={search} onChange={e=>setSearch(e.target.value)}
           className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
         {search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}
       </div>}
       {tab==="places"&&<>
-        <div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+        <div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {t(v.l,lang)}</button>)}</div>
         <div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
-          <button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+          <button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>{t("All areas",lang)}</button>
           {AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}
         </div>
       </>}
+    </div>
     </div>
 
     {/* Content */}
     <div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
       {tab==="places"?(
-        filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+        filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>{t("Nothing found",lang)}</p></div>
         :<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} lang={lang} onOpen={x=>{setSelected(x);setActiveCol(null)}}/>)}</div>
       ):tab==="collections"?(
         activeCol?<div className="mt-3">
-          <button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3 flex items-center gap-1" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+          <button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3 flex items-center gap-1" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← {t("All collections",lang)}</button>
           <CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>{setSelected(x)}} lang={lang}/>
         </div>
         :<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
@@ -689,13 +719,15 @@ function App(){
         </div>
       ):tab==="missions"?(
         <div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i} lang={lang}/>)}</div>
+      ):tab==="phrases"?(
+        <div className="flex flex-col gap-3 mt-3">{PHRASES.map((ph,i)=><PhraseCard key={i} phrase={ph} idx={i}/>)}</div>
       ):(
         <TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>
       )}
 
       {/* Discover More — indie sources */}
       <div className="mt-8 mb-20 rounded-2xl p-5 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",color:"white"}}>
-        <h2 className="text-lg font-black mb-1">🔮 Discover More</h2>
+        <h2 className="text-lg font-black mb-1">🔮 {t("Discover More",lang)}</h2>
         <p className="text-xs mb-2" style={{color:"#b8b0d0"}}>Indie blogs, local creators & underground guides — the real Berlin lives here.</p>
         <p className="text-xs mb-4" style={{color:"#8b7fb8",fontStyle:"italic"}}>External links lead to third-party content. We are not responsible for their content, accuracy, or data practices.</p>
         {[
@@ -725,7 +757,7 @@ function App(){
 
       {/* About */}
       <div className="mt-6 rounded-xl p-4" style={{background:"#f8f7ff",border:"1px solid #e4e4ed"}}>
-        <p className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>About Go Do Stuff</p>
+        <p className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>{t("About Go Do Stuff",lang)}</p>
         <p className="text-xs leading-relaxed" style={{color:"#6366F1",fontWeight:600}}>Berlin Edition</p>
         <p className="text-xs leading-relaxed mt-1" style={{color:"#888"}}>Go Do Stuff is a franchise of city guides for the curious, the broke, and the ones who want to feel alive. This is the Berlin edition — 160 hidden, free places to discover. Every place should be explored responsibly, legally, and with awareness.</p>
         <p className="text-xs mt-2 leading-relaxed" style={{color:"#888"}}>Images used in this app are AI-generated illustrations and do not represent real conditions. They are for mood and atmosphere only.</p>
@@ -733,7 +765,7 @@ function App(){
 
       {/* Disclaimer */}
       <div className="mt-4 rounded-xl p-5" style={{background:"#f5f5f5",border:"1px solid #e0e0e0"}}>
-        <p className="text-xs font-bold mb-2" style={{color:"#777"}}>Disclaimer</p>
+        <p className="text-xs font-bold mb-2" style={{color:"#777"}}>{t("Disclaimer",lang)}</p>
         <p className="text-xs leading-relaxed" style={{color:"#999"}}>This app is intended for inspiration and general information only. All content is provided without guarantee of accuracy. Information such as accessibility, safety conditions, and opening status may change at any time. Users are responsible for verifying all details independently before visiting any location.</p>
         <p className="text-xs leading-relaxed mt-2" style={{color:"#999"}}>Some places described in this app include environments that may involve inherent risks, including but not limited to heights, water, uneven terrain, or urban structures. Users are solely responsible for their actions and decisions.</p>
         <p className="text-xs leading-relaxed mt-2" style={{color:"#999"}}>This app does not encourage trespassing, unsafe behaviour, or entry into restricted areas. Always follow local laws and posted regulations.</p>
@@ -743,13 +775,13 @@ function App(){
 
       {/* Terms of Use */}
       <div className="mt-4 rounded-xl p-5" style={{background:"#f5f5f5",border:"1px solid #e0e0e0"}}>
-        <p className="text-xs font-bold mb-2" style={{color:"#777"}}>Terms of Use</p>
+        <p className="text-xs font-bold mb-2" style={{color:"#777"}}>{t("Terms of Use",lang)}</p>
         <p className="text-xs leading-relaxed" style={{color:"#999"}}>By using this app, you agree that: you use the app at your own risk; you are responsible for your own safety and decisions; you will follow all applicable laws and regulations; you will not enter restricted or dangerous areas. This app provides inspiration only and does not guarantee accuracy or safety.</p>
       </div>
 
       {/* Privacy */}
       <div className="mt-4 mb-20 rounded-xl p-5" style={{background:"#f5f5f5",border:"1px solid #e0e0e0"}}>
-        <p className="text-xs font-bold mb-2" style={{color:"#777"}}>Privacy</p>
+        <p className="text-xs font-bold mb-2" style={{color:"#777"}}>{t("Privacy",lang)}</p>
         <p className="text-xs leading-relaxed" style={{color:"#999"}}>This app does not collect, store, or process personal data. No accounts, tracking, or analytics are used. External links may be subject to the privacy policies of third-party providers.</p>
       </div>
     </div>
@@ -765,11 +797,11 @@ function App(){
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-// Hide loading screen
-setTimeout(() => { const el = document.getElementById('loading'); if(el) el.classList.add('done'); setTimeout(() => el?.remove(), 600); }, 100);
 
 </script>
 <script>
+// Hide loading screen
+setTimeout(function() { var el = document.getElementById('loading'); if(el) el.classList.add('done'); setTimeout(function() { if(el) el.remove(); }, 600); }, 100);
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
