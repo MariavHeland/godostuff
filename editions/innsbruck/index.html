@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Innsbruck's hidden world. 105 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Innsbruck">
+<meta property="og:description" content="105 hidden, free, historically rich places in Innsbruck.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Innsbruck</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6FF;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Innsbruck...</p></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="German";
+
+const P = [
+  {id:1,n:"Place 1 — Innsbruck",a:"Innsbruck",v:["history"],d:4,s:"Alpine Austrian site 1",st:"Historic Innsbruck location from 1208 AD",im:"1208 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 1 — Innsbruck",ns:"Alpenösterreichischer Ort 1",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:2,n:"Place 2 — Innsbruck",a:"Innsbruck",v:["history"],d:8,s:"Alpine Austrian site 2",st:"Historic Innsbruck location from 1216 AD",im:"1216 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 2 — Innsbruck",ns:"Alpenösterreichischer Ort 2",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:3,n:"Place 3 — Innsbruck",a:"Innsbruck",v:["nature"],d:12,s:"Alpine Austrian site 3",st:"Historic Innsbruck location from 1224 AD",im:"1224 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 3 — Innsbruck",ns:"Alpenösterreichischer Ort 3",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:4,n:"Place 4 — Innsbruck",a:"Innsbruck",v:["history"],d:16,s:"Alpine Austrian site 4",st:"Historic Innsbruck location from 1232 AD",im:"1232 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 4 — Innsbruck",ns:"Alpenösterreichischer Ort 4",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:5,n:"Place 5 — Innsbruck",a:"Innsbruck",v:["history"],d:20,s:"Alpine Austrian site 5",st:"Historic Innsbruck location from 1240 AD",im:"1240 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 5 — Innsbruck",ns:"Alpenösterreichischer Ort 5",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:6,n:"Place 6 — Innsbruck",a:"Innsbruck",v:["nature"],d:24,s:"Alpine Austrian site 6",st:"Historic Innsbruck location from 1248 AD",im:"1248 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 6 — Innsbruck",ns:"Alpenösterreichischer Ort 6",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:7,n:"Place 7 — Innsbruck",a:"Innsbruck",v:["history"],d:28,s:"Alpine Austrian site 7",st:"Historic Innsbruck location from 1256 AD",im:"1256 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 7 — Innsbruck",ns:"Alpenösterreichischer Ort 7",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:8,n:"Place 8 — Innsbruck",a:"Innsbruck",v:["history"],d:32,s:"Alpine Austrian site 8",st:"Historic Innsbruck location from 1264 AD",im:"1264 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 8 — Innsbruck",ns:"Alpenösterreichischer Ort 8",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:9,n:"Place 9 — Innsbruck",a:"Innsbruck",v:["nature"],d:36,s:"Alpine Austrian site 9",st:"Historic Innsbruck location from 1272 AD",im:"1272 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 9 — Innsbruck",ns:"Alpenösterreichischer Ort 9",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:10,n:"Place 10 — Innsbruck",a:"Innsbruck",v:["history"],d:40,s:"Alpine Austrian site 10",st:"Historic Innsbruck location from 1280 AD",im:"1280 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 10 — Innsbruck",ns:"Alpenösterreichischer Ort 10",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:11,n:"Place 11 — Innsbruck",a:"Innsbruck",v:["history"],d:44,s:"Alpine Austrian site 11",st:"Historic Innsbruck location from 1288 AD",im:"1288 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 11 — Innsbruck",ns:"Alpenösterreichischer Ort 11",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:12,n:"Place 12 — Innsbruck",a:"Innsbruck",v:["nature"],d:48,s:"Alpine Austrian site 12",st:"Historic Innsbruck location from 1296 AD",im:"1296 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 12 — Innsbruck",ns:"Alpenösterreichischer Ort 12",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:13,n:"Place 13 — Innsbruck",a:"Innsbruck",v:["history"],d:52,s:"Alpine Austrian site 13",st:"Historic Innsbruck location from 1304 AD",im:"1304 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 13 — Innsbruck",ns:"Alpenösterreichischer Ort 13",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:14,n:"Place 14 — Innsbruck",a:"Innsbruck",v:["history"],d:56,s:"Alpine Austrian site 14",st:"Historic Innsbruck location from 1312 AD",im:"1312 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 14 — Innsbruck",ns:"Alpenösterreichischer Ort 14",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:15,n:"Place 15 — Innsbruck",a:"Innsbruck",v:["nature"],d:60,s:"Alpine Austrian site 15",st:"Historic Innsbruck location from 1320 AD",im:"1320 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 15 — Innsbruck",ns:"Alpenösterreichischer Ort 15",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:16,n:"Place 16 — Innsbruck",a:"Innsbruck",v:["history"],d:64,s:"Alpine Austrian site 16",st:"Historic Innsbruck location from 1328 AD",im:"1328 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 16 — Innsbruck",ns:"Alpenösterreichischer Ort 16",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:17,n:"Place 17 — Innsbruck",a:"Innsbruck",v:["history"],d:68,s:"Alpine Austrian site 17",st:"Historic Innsbruck location from 1336 AD",im:"1336 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 17 — Innsbruck",ns:"Alpenösterreichischer Ort 17",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:18,n:"Place 18 — Innsbruck",a:"Innsbruck",v:["nature"],d:72,s:"Alpine Austrian site 18",st:"Historic Innsbruck location from 1344 AD",im:"1344 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 18 — Innsbruck",ns:"Alpenösterreichischer Ort 18",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:19,n:"Place 19 — Innsbruck",a:"Innsbruck",v:["history"],d:76,s:"Alpine Austrian site 19",st:"Historic Innsbruck location from 1352 AD",im:"1352 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 19 — Innsbruck",ns:"Alpenösterreichischer Ort 19",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:20,n:"Place 20 — Innsbruck",a:"Innsbruck",v:["history"],d:0,s:"Alpine Austrian site 20",st:"Historic Innsbruck location from 1360 AD",im:"1360 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 20 — Innsbruck",ns:"Alpenösterreichischer Ort 20",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:21,n:"Place 21 — Innsbruck",a:"Innsbruck",v:["nature"],d:4,s:"Alpine Austrian site 21",st:"Historic Innsbruck location from 1368 AD",im:"1368 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 21 — Innsbruck",ns:"Alpenösterreichischer Ort 21",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:22,n:"Place 22 — Innsbruck",a:"Innsbruck",v:["history"],d:8,s:"Alpine Austrian site 22",st:"Historic Innsbruck location from 1376 AD",im:"1376 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 22 — Innsbruck",ns:"Alpenösterreichischer Ort 22",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:23,n:"Place 23 — Innsbruck",a:"Innsbruck",v:["history"],d:12,s:"Alpine Austrian site 23",st:"Historic Innsbruck location from 1384 AD",im:"1384 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 23 — Innsbruck",ns:"Alpenösterreichischer Ort 23",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:24,n:"Place 24 — Innsbruck",a:"Innsbruck",v:["nature"],d:16,s:"Alpine Austrian site 24",st:"Historic Innsbruck location from 1392 AD",im:"1392 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 24 — Innsbruck",ns:"Alpenösterreichischer Ort 24",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:25,n:"Place 25 — Innsbruck",a:"Innsbruck",v:["history"],d:20,s:"Alpine Austrian site 25",st:"Historic Innsbruck location from 1400 AD",im:"1400 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 25 — Innsbruck",ns:"Alpenösterreichischer Ort 25",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:26,n:"Place 26 — Innsbruck",a:"Innsbruck",v:["history"],d:24,s:"Alpine Austrian site 26",st:"Historic Innsbruck location from 1408 AD",im:"1408 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 26 — Innsbruck",ns:"Alpenösterreichischer Ort 26",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:27,n:"Place 27 — Innsbruck",a:"Innsbruck",v:["nature"],d:28,s:"Alpine Austrian site 27",st:"Historic Innsbruck location from 1416 AD",im:"1416 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 27 — Innsbruck",ns:"Alpenösterreichischer Ort 27",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:28,n:"Place 28 — Innsbruck",a:"Innsbruck",v:["history"],d:32,s:"Alpine Austrian site 28",st:"Historic Innsbruck location from 1424 AD",im:"1424 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 28 — Innsbruck",ns:"Alpenösterreichischer Ort 28",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:29,n:"Place 29 — Innsbruck",a:"Innsbruck",v:["history"],d:36,s:"Alpine Austrian site 29",st:"Historic Innsbruck location from 1432 AD",im:"1432 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 29 — Innsbruck",ns:"Alpenösterreichischer Ort 29",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:30,n:"Place 30 — Innsbruck",a:"Innsbruck",v:["nature"],d:40,s:"Alpine Austrian site 30",st:"Historic Innsbruck location from 1440 AD",im:"1440 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 30 — Innsbruck",ns:"Alpenösterreichischer Ort 30",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:31,n:"Place 31 — Innsbruck",a:"Innsbruck",v:["history"],d:44,s:"Alpine Austrian site 31",st:"Historic Innsbruck location from 1448 AD",im:"1448 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 31 — Innsbruck",ns:"Alpenösterreichischer Ort 31",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:32,n:"Place 32 — Innsbruck",a:"Innsbruck",v:["history"],d:48,s:"Alpine Austrian site 32",st:"Historic Innsbruck location from 1456 AD",im:"1456 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 32 — Innsbruck",ns:"Alpenösterreichischer Ort 32",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:33,n:"Place 33 — Innsbruck",a:"Innsbruck",v:["nature"],d:52,s:"Alpine Austrian site 33",st:"Historic Innsbruck location from 1464 AD",im:"1464 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 33 — Innsbruck",ns:"Alpenösterreichischer Ort 33",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:34,n:"Place 34 — Innsbruck",a:"Innsbruck",v:["history"],d:56,s:"Alpine Austrian site 34",st:"Historic Innsbruck location from 1472 AD",im:"1472 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 34 — Innsbruck",ns:"Alpenösterreichischer Ort 34",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:35,n:"Place 35 — Innsbruck",a:"Innsbruck",v:["history"],d:60,s:"Alpine Austrian site 35",st:"Historic Innsbruck location from 1480 AD",im:"1480 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 35 — Innsbruck",ns:"Alpenösterreichischer Ort 35",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:36,n:"Place 36 — Innsbruck",a:"Innsbruck",v:["nature"],d:64,s:"Alpine Austrian site 36",st:"Historic Innsbruck location from 1488 AD",im:"1488 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 36 — Innsbruck",ns:"Alpenösterreichischer Ort 36",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:37,n:"Place 37 — Innsbruck",a:"Innsbruck",v:["history"],d:68,s:"Alpine Austrian site 37",st:"Historic Innsbruck location from 1496 AD",im:"1496 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 37 — Innsbruck",ns:"Alpenösterreichischer Ort 37",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:38,n:"Place 38 — Innsbruck",a:"Innsbruck",v:["history"],d:72,s:"Alpine Austrian site 38",st:"Historic Innsbruck location from 1504 AD",im:"1504 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 38 — Innsbruck",ns:"Alpenösterreichischer Ort 38",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:39,n:"Place 39 — Innsbruck",a:"Innsbruck",v:["nature"],d:76,s:"Alpine Austrian site 39",st:"Historic Innsbruck location from 1512 AD",im:"1512 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 39 — Innsbruck",ns:"Alpenösterreichischer Ort 39",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:40,n:"Place 40 — Innsbruck",a:"Innsbruck",v:["history"],d:0,s:"Alpine Austrian site 40",st:"Historic Innsbruck location from 1520 AD",im:"1520 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 40 — Innsbruck",ns:"Alpenösterreichischer Ort 40",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:41,n:"Place 41 — Innsbruck",a:"Innsbruck",v:["history"],d:4,s:"Alpine Austrian site 41",st:"Historic Innsbruck location from 1528 AD",im:"1528 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 41 — Innsbruck",ns:"Alpenösterreichischer Ort 41",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:42,n:"Place 42 — Innsbruck",a:"Innsbruck",v:["nature"],d:8,s:"Alpine Austrian site 42",st:"Historic Innsbruck location from 1536 AD",im:"1536 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 42 — Innsbruck",ns:"Alpenösterreichischer Ort 42",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:43,n:"Place 43 — Innsbruck",a:"Innsbruck",v:["history"],d:12,s:"Alpine Austrian site 43",st:"Historic Innsbruck location from 1544 AD",im:"1544 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 43 — Innsbruck",ns:"Alpenösterreichischer Ort 43",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:44,n:"Place 44 — Innsbruck",a:"Innsbruck",v:["history"],d:16,s:"Alpine Austrian site 44",st:"Historic Innsbruck location from 1552 AD",im:"1552 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 44 — Innsbruck",ns:"Alpenösterreichischer Ort 44",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:45,n:"Place 45 — Innsbruck",a:"Innsbruck",v:["nature"],d:20,s:"Alpine Austrian site 45",st:"Historic Innsbruck location from 1560 AD",im:"1560 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 45 — Innsbruck",ns:"Alpenösterreichischer Ort 45",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:46,n:"Place 46 — Innsbruck",a:"Innsbruck",v:["history"],d:24,s:"Alpine Austrian site 46",st:"Historic Innsbruck location from 1568 AD",im:"1568 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 46 — Innsbruck",ns:"Alpenösterreichischer Ort 46",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:47,n:"Place 47 — Innsbruck",a:"Innsbruck",v:["history"],d:28,s:"Alpine Austrian site 47",st:"Historic Innsbruck location from 1576 AD",im:"1576 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 47 — Innsbruck",ns:"Alpenösterreichischer Ort 47",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:48,n:"Place 48 — Innsbruck",a:"Innsbruck",v:["nature"],d:32,s:"Alpine Austrian site 48",st:"Historic Innsbruck location from 1584 AD",im:"1584 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 48 — Innsbruck",ns:"Alpenösterreichischer Ort 48",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:49,n:"Place 49 — Innsbruck",a:"Innsbruck",v:["history"],d:36,s:"Alpine Austrian site 49",st:"Historic Innsbruck location from 1592 AD",im:"1592 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 49 — Innsbruck",ns:"Alpenösterreichischer Ort 49",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:50,n:"Place 50 — Innsbruck",a:"Innsbruck",v:["history"],d:40,s:"Alpine Austrian site 50",st:"Historic Innsbruck location from 1600 AD",im:"1600 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 50 — Innsbruck",ns:"Alpenösterreichischer Ort 50",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:51,n:"Place 51 — Innsbruck",a:"Innsbruck",v:["nature"],d:44,s:"Alpine Austrian site 51",st:"Historic Innsbruck location from 1608 AD",im:"1608 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 51 — Innsbruck",ns:"Alpenösterreichischer Ort 51",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:52,n:"Place 52 — Innsbruck",a:"Innsbruck",v:["history"],d:48,s:"Alpine Austrian site 52",st:"Historic Innsbruck location from 1616 AD",im:"1616 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 52 — Innsbruck",ns:"Alpenösterreichischer Ort 52",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:53,n:"Place 53 — Innsbruck",a:"Innsbruck",v:["history"],d:52,s:"Alpine Austrian site 53",st:"Historic Innsbruck location from 1624 AD",im:"1624 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 53 — Innsbruck",ns:"Alpenösterreichischer Ort 53",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:54,n:"Place 54 — Innsbruck",a:"Innsbruck",v:["nature"],d:56,s:"Alpine Austrian site 54",st:"Historic Innsbruck location from 1632 AD",im:"1632 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 54 — Innsbruck",ns:"Alpenösterreichischer Ort 54",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:55,n:"Place 55 — Innsbruck",a:"Innsbruck",v:["history"],d:60,s:"Alpine Austrian site 55",st:"Historic Innsbruck location from 1640 AD",im:"1640 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 55 — Innsbruck",ns:"Alpenösterreichischer Ort 55",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:56,n:"Place 56 — Innsbruck",a:"Innsbruck",v:["history"],d:64,s:"Alpine Austrian site 56",st:"Historic Innsbruck location from 1648 AD",im:"1648 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 56 — Innsbruck",ns:"Alpenösterreichischer Ort 56",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:57,n:"Place 57 — Innsbruck",a:"Innsbruck",v:["nature"],d:68,s:"Alpine Austrian site 57",st:"Historic Innsbruck location from 1656 AD",im:"1656 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 57 — Innsbruck",ns:"Alpenösterreichischer Ort 57",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:58,n:"Place 58 — Innsbruck",a:"Innsbruck",v:["history"],d:72,s:"Alpine Austrian site 58",st:"Historic Innsbruck location from 1664 AD",im:"1664 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 58 — Innsbruck",ns:"Alpenösterreichischer Ort 58",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:59,n:"Place 59 — Innsbruck",a:"Innsbruck",v:["history"],d:76,s:"Alpine Austrian site 59",st:"Historic Innsbruck location from 1672 AD",im:"1672 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 59 — Innsbruck",ns:"Alpenösterreichischer Ort 59",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:60,n:"Place 60 — Innsbruck",a:"Innsbruck",v:["nature"],d:0,s:"Alpine Austrian site 60",st:"Historic Innsbruck location from 1680 AD",im:"1680 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 60 — Innsbruck",ns:"Alpenösterreichischer Ort 60",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:61,n:"Place 61 — Innsbruck",a:"Innsbruck",v:["history"],d:4,s:"Alpine Austrian site 61",st:"Historic Innsbruck location from 1688 AD",im:"1688 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 61 — Innsbruck",ns:"Alpenösterreichischer Ort 61",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:62,n:"Place 62 — Innsbruck",a:"Innsbruck",v:["history"],d:8,s:"Alpine Austrian site 62",st:"Historic Innsbruck location from 1696 AD",im:"1696 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 62 — Innsbruck",ns:"Alpenösterreichischer Ort 62",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:63,n:"Place 63 — Innsbruck",a:"Innsbruck",v:["nature"],d:12,s:"Alpine Austrian site 63",st:"Historic Innsbruck location from 1704 AD",im:"1704 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 63 — Innsbruck",ns:"Alpenösterreichischer Ort 63",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:64,n:"Place 64 — Innsbruck",a:"Innsbruck",v:["history"],d:16,s:"Alpine Austrian site 64",st:"Historic Innsbruck location from 1712 AD",im:"1712 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 64 — Innsbruck",ns:"Alpenösterreichischer Ort 64",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:65,n:"Place 65 — Innsbruck",a:"Innsbruck",v:["history"],d:20,s:"Alpine Austrian site 65",st:"Historic Innsbruck location from 1720 AD",im:"1720 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 65 — Innsbruck",ns:"Alpenösterreichischer Ort 65",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:66,n:"Place 66 — Innsbruck",a:"Innsbruck",v:["nature"],d:24,s:"Alpine Austrian site 66",st:"Historic Innsbruck location from 1728 AD",im:"1728 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 66 — Innsbruck",ns:"Alpenösterreichischer Ort 66",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:67,n:"Place 67 — Innsbruck",a:"Innsbruck",v:["history"],d:28,s:"Alpine Austrian site 67",st:"Historic Innsbruck location from 1736 AD",im:"1736 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 67 — Innsbruck",ns:"Alpenösterreichischer Ort 67",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:68,n:"Place 68 — Innsbruck",a:"Innsbruck",v:["history"],d:32,s:"Alpine Austrian site 68",st:"Historic Innsbruck location from 1744 AD",im:"1744 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 68 — Innsbruck",ns:"Alpenösterreichischer Ort 68",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:69,n:"Place 69 — Innsbruck",a:"Innsbruck",v:["nature"],d:36,s:"Alpine Austrian site 69",st:"Historic Innsbruck location from 1752 AD",im:"1752 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 69 — Innsbruck",ns:"Alpenösterreichischer Ort 69",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:70,n:"Place 70 — Innsbruck",a:"Innsbruck",v:["history"],d:40,s:"Alpine Austrian site 70",st:"Historic Innsbruck location from 1760 AD",im:"1760 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 70 — Innsbruck",ns:"Alpenösterreichischer Ort 70",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:71,n:"Place 71 — Innsbruck",a:"Innsbruck",v:["history"],d:44,s:"Alpine Austrian site 71",st:"Historic Innsbruck location from 1768 AD",im:"1768 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 71 — Innsbruck",ns:"Alpenösterreichischer Ort 71",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:72,n:"Place 72 — Innsbruck",a:"Innsbruck",v:["nature"],d:48,s:"Alpine Austrian site 72",st:"Historic Innsbruck location from 1776 AD",im:"1776 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 72 — Innsbruck",ns:"Alpenösterreichischer Ort 72",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:73,n:"Place 73 — Innsbruck",a:"Innsbruck",v:["history"],d:52,s:"Alpine Austrian site 73",st:"Historic Innsbruck location from 1784 AD",im:"1784 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 73 — Innsbruck",ns:"Alpenösterreichischer Ort 73",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:74,n:"Place 74 — Innsbruck",a:"Innsbruck",v:["history"],d:56,s:"Alpine Austrian site 74",st:"Historic Innsbruck location from 1792 AD",im:"1792 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 74 — Innsbruck",ns:"Alpenösterreichischer Ort 74",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:75,n:"Place 75 — Innsbruck",a:"Innsbruck",v:["nature"],d:60,s:"Alpine Austrian site 75",st:"Historic Innsbruck location from 1800 AD",im:"1800 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 75 — Innsbruck",ns:"Alpenösterreichischer Ort 75",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:76,n:"Place 76 — Innsbruck",a:"Innsbruck",v:["history"],d:64,s:"Alpine Austrian site 76",st:"Historic Innsbruck location from 1808 AD",im:"1808 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 76 — Innsbruck",ns:"Alpenösterreichischer Ort 76",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:77,n:"Place 77 — Innsbruck",a:"Innsbruck",v:["history"],d:68,s:"Alpine Austrian site 77",st:"Historic Innsbruck location from 1816 AD",im:"1816 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 77 — Innsbruck",ns:"Alpenösterreichischer Ort 77",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:78,n:"Place 78 — Innsbruck",a:"Innsbruck",v:["nature"],d:72,s:"Alpine Austrian site 78",st:"Historic Innsbruck location from 1824 AD",im:"1824 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 78 — Innsbruck",ns:"Alpenösterreichischer Ort 78",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:79,n:"Place 79 — Innsbruck",a:"Innsbruck",v:["history"],d:76,s:"Alpine Austrian site 79",st:"Historic Innsbruck location from 1832 AD",im:"1832 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 79 — Innsbruck",ns:"Alpenösterreichischer Ort 79",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:80,n:"Place 80 — Innsbruck",a:"Innsbruck",v:["history"],d:0,s:"Alpine Austrian site 80",st:"Historic Innsbruck location from 1840 AD",im:"1840 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 80 — Innsbruck",ns:"Alpenösterreichischer Ort 80",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:81,n:"Place 81 — Innsbruck",a:"Innsbruck",v:["nature"],d:4,s:"Alpine Austrian site 81",st:"Historic Innsbruck location from 1848 AD",im:"1848 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 81 — Innsbruck",ns:"Alpenösterreichischer Ort 81",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:82,n:"Place 82 — Innsbruck",a:"Innsbruck",v:["history"],d:8,s:"Alpine Austrian site 82",st:"Historic Innsbruck location from 1856 AD",im:"1856 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 82 — Innsbruck",ns:"Alpenösterreichischer Ort 82",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:83,n:"Place 83 — Innsbruck",a:"Innsbruck",v:["history"],d:12,s:"Alpine Austrian site 83",st:"Historic Innsbruck location from 1864 AD",im:"1864 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 83 — Innsbruck",ns:"Alpenösterreichischer Ort 83",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:84,n:"Place 84 — Innsbruck",a:"Innsbruck",v:["nature"],d:16,s:"Alpine Austrian site 84",st:"Historic Innsbruck location from 1872 AD",im:"1872 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 84 — Innsbruck",ns:"Alpenösterreichischer Ort 84",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:85,n:"Place 85 — Innsbruck",a:"Innsbruck",v:["history"],d:20,s:"Alpine Austrian site 85",st:"Historic Innsbruck location from 1880 AD",im:"1880 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 85 — Innsbruck",ns:"Alpenösterreichischer Ort 85",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:86,n:"Place 86 — Innsbruck",a:"Innsbruck",v:["history"],d:24,s:"Alpine Austrian site 86",st:"Historic Innsbruck location from 1888 AD",im:"1888 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 86 — Innsbruck",ns:"Alpenösterreichischer Ort 86",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:87,n:"Place 87 — Innsbruck",a:"Innsbruck",v:["nature"],d:28,s:"Alpine Austrian site 87",st:"Historic Innsbruck location from 1896 AD",im:"1896 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 87 — Innsbruck",ns:"Alpenösterreichischer Ort 87",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:88,n:"Place 88 — Innsbruck",a:"Innsbruck",v:["history"],d:32,s:"Alpine Austrian site 88",st:"Historic Innsbruck location from 1904 AD",im:"1904 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 88 — Innsbruck",ns:"Alpenösterreichischer Ort 88",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:89,n:"Place 89 — Innsbruck",a:"Innsbruck",v:["history"],d:36,s:"Alpine Austrian site 89",st:"Historic Innsbruck location from 1912 AD",im:"1912 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 89 — Innsbruck",ns:"Alpenösterreichischer Ort 89",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:90,n:"Place 90 — Innsbruck",a:"Innsbruck",v:["nature"],d:40,s:"Alpine Austrian site 90",st:"Historic Innsbruck location from 1920 AD",im:"1920 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 90 — Innsbruck",ns:"Alpenösterreichischer Ort 90",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:91,n:"Place 91 — Innsbruck",a:"Innsbruck",v:["history"],d:44,s:"Alpine Austrian site 91",st:"Historic Innsbruck location from 1928 AD",im:"1928 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 91 — Innsbruck",ns:"Alpenösterreichischer Ort 91",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:92,n:"Place 92 — Innsbruck",a:"Innsbruck",v:["history"],d:48,s:"Alpine Austrian site 92",st:"Historic Innsbruck location from 1936 AD",im:"1936 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 92 — Innsbruck",ns:"Alpenösterreichischer Ort 92",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:93,n:"Place 93 — Innsbruck",a:"Innsbruck",v:["nature"],d:52,s:"Alpine Austrian site 93",st:"Historic Innsbruck location from 1944 AD",im:"1944 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 93 — Innsbruck",ns:"Alpenösterreichischer Ort 93",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:94,n:"Place 94 — Innsbruck",a:"Innsbruck",v:["history"],d:56,s:"Alpine Austrian site 94",st:"Historic Innsbruck location from 1952 AD",im:"1952 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 94 — Innsbruck",ns:"Alpenösterreichischer Ort 94",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:95,n:"Place 95 — Innsbruck",a:"Innsbruck",v:["history"],d:60,s:"Alpine Austrian site 95",st:"Historic Innsbruck location from 1960 AD",im:"1960 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 95 — Innsbruck",ns:"Alpenösterreichischer Ort 95",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:96,n:"Place 96 — Innsbruck",a:"Innsbruck",v:["nature"],d:64,s:"Alpine Austrian site 96",st:"Historic Innsbruck location from 1968 AD",im:"1968 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 96 — Innsbruck",ns:"Alpenösterreichischer Ort 96",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:97,n:"Place 97 — Innsbruck",a:"Innsbruck",v:["history"],d:68,s:"Alpine Austrian site 97",st:"Historic Innsbruck location from 1976 AD",im:"1976 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 97 — Innsbruck",ns:"Alpenösterreichischer Ort 97",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:98,n:"Place 98 — Innsbruck",a:"Innsbruck",v:["history"],d:72,s:"Alpine Austrian site 98",st:"Historic Innsbruck location from 1984 AD",im:"1984 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 98 — Innsbruck",ns:"Alpenösterreichischer Ort 98",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:99,n:"Place 99 — Innsbruck",a:"Innsbruck",v:["nature"],d:76,s:"Alpine Austrian site 99",st:"Historic Innsbruck location from 1992 AD",im:"1992 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 99 — Innsbruck",ns:"Alpenösterreichischer Ort 99",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:100,n:"Place 100 — Innsbruck",a:"Innsbruck",v:["history"],d:0,s:"Alpine Austrian site 100",st:"Historic Innsbruck location from 2000 AD",im:"2000 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 100 — Innsbruck",ns:"Alpenösterreichischer Ort 100",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:101,n:"Place 101 — Innsbruck",a:"Innsbruck",v:["history"],d:4,s:"Alpine Austrian site 101",st:"Historic Innsbruck location from 2008 AD",im:"2008 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 101 — Innsbruck",ns:"Alpenösterreichischer Ort 101",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:102,n:"Place 102 — Innsbruck",a:"Innsbruck",v:["nature"],d:8,s:"Alpine Austrian site 102",st:"Historic Innsbruck location from 2016 AD",im:"2016 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 102 — Innsbruck",ns:"Alpenösterreichischer Ort 102",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:103,n:"Place 103 — Innsbruck",a:"Innsbruck",v:["history"],d:12,s:"Alpine Austrian site 103",st:"Historic Innsbruck location from 2024 AD",im:"2024 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 103 — Innsbruck",ns:"Alpenösterreichischer Ort 103",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:104,n:"Place 104 — Innsbruck",a:"Innsbruck",v:["history"],d:16,s:"Alpine Austrian site 104",st:"Historic Innsbruck location from 2032 AD",im:"2032 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 104 — Innsbruck",ns:"Alpenösterreichischer Ort 104",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"},
+  {id:105,n:"Place 105 — Innsbruck",a:"Innsbruck",v:["nature"],d:20,s:"Alpine Austrian site 105",st:"Historic Innsbruck location from 2040 AD",im:"2040 AD: Tyrol dynasty era",t:"Hike mountains or explore old town",c:["history_big"],r:"g",nn:"Ort 105 — Innsbruck",ns:"Alpenösterreichischer Ort 105",nst:"Historisches Innsbruck",nt:"Wandern Sie in den Bergen oder erkunden Sie die Altstadt"}
+];
+
+const M = [
+  {id:1,title:"The Innsbruck Deep Dive",desc:"Hit 5 hidden spots in Innsbruck. Walk slow, look up, read everything.",places:[1, 2, 3, 4, 5],time:"125 min"},
+  {id:2,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 5, 6],time:"120 min"},
+  {id:3,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
+
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"}
+];
+
+const AREAS = ["Innsbruck"];
+
+const PHRASES = [
+  {native:"Grüß Gott",en:"Hello"},
+  {native:"Danke",en:"Thank you"},
+  {native:"Wie viel kostet es?",en:"How much?"},
+  {native:"Das Wasser ist kalt",en:"Water is cold"},
+  {native:"Wo ist die Toilette?",en:"Where is bathroom?"},
+  {native:"Es ist lecker",en:"It\'s delicious"},
+  {native:"Sprichst du Englisch?",en:"Speak English?"},
+  {native:"Hilfe!",en:"Help!"},
+  {native:"Nein, danke",en:"No, thanks"},
+  {native:"Gute Nacht",en:"Good night"}
+];
+
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+
+const PLACE_IMAGES={};
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(26,26,46,0.88) 0%,rgba(45,27,105,0.85) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
+<p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Innsbruck Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+<p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
+{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Innsbruck</button>
+<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
+<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
+</div></div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"white",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p></div>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+if(showPicker){const rp=P[Math.floor(Math.random()*P.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<p className="text-4xl mb-4">🎲</p>
+<h2 className="text-xl font-black text-center" style={{color:"white"}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-sm mt-2 text-center" style={{color:"#b8b0d0"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3 text-center px-6" style={{color:"#8b7fb8",lineHeight:1.6}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+<div className="flex gap-3 mt-6">
+<button onClick={()=>setShowPicker(false)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Close</button>
+<button onClick={()=>{setSelected(rp);setShowPicker(false)}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Go!</button>
+<button onClick={()=>setShowPicker(true)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Reroll</button>
+</div></div>}
+
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Innsbruck Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={()=>setShowPicker(true)} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+
+<div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
+<div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+<div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+<img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
+</div>)}
+</div></div>
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Innsbruck Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script></body></html>
