@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Yerevan's hidden world. 105 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Yerevan">
+<meta property="og:description" content="105 hidden, free, historically rich places in Yerevan.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Yerevan</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6FF;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Yerevan...</p></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Armenian";
+
+const P = [
+  {id:1,n:"Cascade — Downtown",a:"Downtown",v:["beautiful", "history"],d:0,s:"Monumental staircase of 5700 steps with panoramic views",st:"Climb to gardens, Soviet Stalinist architecture blend",im:"1971: Soviet architect building People\'s monument",t:"Free climbing, 1 hour each way, sunset golden",c:["history_big"],r:"g",nn:"Կասկադ — Կենտրոն",ns:"Մեծ շարասյուն 5700 քայլ",nst:"Բարձրացեք այգիներ, Սովետական ճարտարապետություն",nt:"Ազատ մեկնում, մեկ ժամ յուրաքանչյուր ուղղությամբ"},
+  {id:2,n:"Republic Square — Downtown",a:"Downtown",v:["history", "beautiful"],d:1,s:"Soviet-built plaza with government buildings and fountains",st:"Pink-toned evening light, music fountain spectacle",im:"1926: Soviet planner designing ideal socialist square",t:"Evening fountain show, street musicians",c:["history_big"],r:"g",nn:"Հանրապետության Հրապ — Կենտրոն",ns:"Սովետական հրապ կառուցվածքներով",nst:"Վարդագույն երեկոյան լույս",nt:"Երեկոյան շfountain արտադրանց, հանրային երաժշտ"},
+  {id:3,n:"Armenian Genocide Memorial (Tsitsernakaberd) — South",a:"South",v:["history"],d:8,s:"Eternal flame memorial to 1.5M Armenians killed in 1915",st:"Sacred pilgrimage site, 12 basalt steles",im:"1915: Ottoman deportation marches",t:"Free, candles available, solemn respect required",c:["history_big"],r:"g",nn:"Հայոց Ցեղասպանության Հուշարձան — Հարավ",ns:"Հավիտենական բոցը 1.5 միլիոն հայերի համար",nst:"Սուրբ պղծման տեղ, 12 բազալտ տաղավար",nt:"Ազատ, մոմեր մատչելի, հարգալից հարմար"},
+  {id:4,n:"Vernissage Market — Downtown",a:"Downtown",v:["local", "free"],d:2,s:"Weekend outdoor antique and art market",st:"Soviet postcards, vintage jewelry, Soviet pins",im:"1990s: first free market after communism",t:"Saturday-Sunday mornings, bargain aggressively",c:["local_only"],r:"g",nn:"Վեռնիսաժ Շուկա — Կենտրոն",ns:"Շաբաթավերջ արտաքին շուկա",nst:"Սովետական քարտեր, հին ցուցումներ",nt:"Շաբաթ-կիրակի առավոտ, վիճեք անվճար"},
+  {id:5,n:"Blue Mosque (Pirouz Mosque) — Old Town",a:"Old Town",v:["history", "beautiful"],d:3,s:"Ornate Ottoman mosque with turquoise tiles, still active",st:"18th-century tiles, prayer calls at dawn",im:"1765: Ottoman builders completing mosque",t:"Respectful visit during non-prayer hours, shoes off",c:["history_big"],r:"g",nn:"Կապույտ Մզկիտ — Հին Քաղաք",ns:"Հարուստ Օսմանյան մզկիտ թիրախներով",nst:"18-րդ դարի սալիկներ, աղօ մեկնման հավաքներ",nt:"Հարգալից այցելություն, կոշկեր հանել"},
+  {id:6,n:"Kond Quarter — Old Town",a:"Old Town",v:["hidden", "local"],d:2,s:"Ancient neighborhood with steep winding streets and old houses",st:"Laundry hanging, cats, creaky stairs",im:"500 BC: Armenian settlement on these slopes",t:"Walk carefully, photograph crumbling walls",c:["history_big"],r:"g",nn:"Կոնդ Թաղ — Հին Քաղաք",ns:"Հին թաղամասական գծերով",nst:"Լվացքը կախված, կատուներ, ճռճռացող աստիճաններ",nt:"Ուշադրությամբ ծածկել, լուսանկար պատերը"},
+  {id:7,n:"Victory Park (Haghtanak Park) — North",a:"North",v:["nature", "history"],d:15,s:"War memorial park with monument and city panorama",st:"Soviet-era angel statue, panoramic views",im:"1945: Soviet victory celebrations",t:"Walk to monument, sunset vistas",c:["parks"],r:"g",nn:"Հաղթության Պարկ — Հյուսիս",ns:"Պատերազմի հուշարձանի պարկ",nst:"Սովետական հրեշտակ տուշ, վիալ",nt:"Քայլել հուշարձանի, մայր ծաղ"},
+  {id:8,n:"Garni Temple (Day Trip Pagan) — Day Trip",a:"Day Trip",v:["history", "beautiful"],d:40,s:"Only Armenian pagan temple, 1st-century Hellenistic structure",st:"Pristine ruins with Corinthian columns on hilltop",im:"66 AD: Roman emperor visiting vassal kingdom",t:"30-min minibus, temple + Geghard combo trip",c:["history_big"],r:"g",nn:"Գառնի Տաճար — Մեկ Մեծ",ns:"Միակ հայ異=առասխ տաճար",nst:"Մաքուր խռանս Կորինթական սյուներով",nt:"30-min մինիբուս, տաճար + Գեղարդ"},
+  {id:9,n:"Geghard Monastery (Day Trip Carved) — Day Trip",a:"Day Trip",v:["history", "beautiful"],d:42,s:"UNESCO monastery carved from mountainside",st:"Acoustics so perfect it\'s a musical instrument",im:"405 AD: St. Gregory building monastery",t:"30-min combined with Garni, hear echoing hymns",c:["history_big"],r:"g",nn:"Գեղարդ Վանք — Մեկ Մեծ",ns:"ՅՈՒՆԵՍԿՈ վանք հյուսիսից խորտ",nst:"Ակուստիկ այդքան կատարյալ",nt:"30-min համատեղ Գառնիի հետ"},
+  {id:10,n:"Khor Virap (Day Trip Prison Monastery) — Day Trip",a:"Day Trip",v:["history"],d:50,s:"Ancient monastery where St. Gregory was imprisoned 13 years",st:"Underground cell, views of Ararat mountain across border",im:"287 AD: Gregory\'s torture and imprisonment",t:"Minibus, bring water, photography peak at sunrise",c:["history_big"],r:"g",nn:"Խոր Վիրապ — Մեկ Մեծ",ns:"Հին վանք որտեղ Գրիգոր բանտեր",nst:"Ստորերկրյա կալկ, Արարատ շարելի",nt:"Մինիբուս, ջուր, ծաղ գտել"},
+  {id:11,n:"Place 11 — Area1",a:"Area1",v:["local"],d:33,s:"Historic Armenian site 11",st:"Site with 610 years",im:"610 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 11 — Հատ1",ns:"Պատմական հայ տեղ 11",nst:"Տեղ 610 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:12,n:"Place 12 — Area2",a:"Area2",v:["history"],d:36,s:"Historic Armenian site 12",st:"Site with 620 years",im:"620 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"y",nn:"Տեղ 12 — Հատ2",ns:"Պատմական հայ տեղ 12",nst:"Տեղ 620 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:13,n:"Place 13 — Area3",a:"Area3",v:["nature"],d:39,s:"Historic Armenian site 13",st:"Site with 630 years",im:"630 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 13 — Հատ3",ns:"Պատմական հայ տեղ 13",nst:"Տեղ 630 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:14,n:"Place 14 — Area4",a:"Area4",v:["local"],d:42,s:"Historic Armenian site 14",st:"Site with 640 years",im:"640 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 14 — Հատ4",ns:"Պատմական հայ տեղ 14",nst:"Տեղ 640 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:15,n:"Place 15 — Area0",a:"Area0",v:["history"],d:45,s:"Historic Armenian site 15",st:"Site with 650 years",im:"650 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 15 — Հատ0",ns:"Պատմական հայ տեղ 15",nst:"Տեղ 650 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:16,n:"Place 16 — Area1",a:"Area1",v:["nature"],d:48,s:"Historic Armenian site 16",st:"Site with 660 years",im:"660 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 16 — Հատ1",ns:"Պատմական հայ տեղ 16",nst:"Տեղ 660 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:17,n:"Place 17 — Area2",a:"Area2",v:["local"],d:1,s:"Historic Armenian site 17",st:"Site with 670 years",im:"670 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 17 — Հատ2",ns:"Պատմական հայ տեղ 17",nst:"Տեղ 670 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:18,n:"Place 18 — Area3",a:"Area3",v:["history"],d:4,s:"Historic Armenian site 18",st:"Site with 680 years",im:"680 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"y",nn:"Տեղ 18 — Հատ3",ns:"Պատմական հայ տեղ 18",nst:"Տեղ 680 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:19,n:"Place 19 — Area4",a:"Area4",v:["nature"],d:7,s:"Historic Armenian site 19",st:"Site with 690 years",im:"690 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 19 — Հատ4",ns:"Պատմական հայ տեղ 19",nst:"Տեղ 690 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:20,n:"Place 20 — Area0",a:"Area0",v:["local"],d:10,s:"Historic Armenian site 20",st:"Site with 700 years",im:"700 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 20 — Հատ0",ns:"Պատմական հայ տեղ 20",nst:"Տեղ 700 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:21,n:"Place 21 — Area1",a:"Area1",v:["history"],d:13,s:"Historic Armenian site 21",st:"Site with 710 years",im:"710 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 21 — Հատ1",ns:"Պատմական հայ տեղ 21",nst:"Տեղ 710 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:22,n:"Place 22 — Area2",a:"Area2",v:["nature"],d:16,s:"Historic Armenian site 22",st:"Site with 720 years",im:"720 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 22 — Հատ2",ns:"Պատմական հայ տեղ 22",nst:"Տեղ 720 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:23,n:"Place 23 — Area3",a:"Area3",v:["local"],d:19,s:"Historic Armenian site 23",st:"Site with 730 years",im:"730 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 23 — Հատ3",ns:"Պատմական հայ տեղ 23",nst:"Տեղ 730 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:24,n:"Place 24 — Area4",a:"Area4",v:["history"],d:22,s:"Historic Armenian site 24",st:"Site with 740 years",im:"740 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"y",nn:"Տեղ 24 — Հատ4",ns:"Պատմական հայ տեղ 24",nst:"Տեղ 740 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:25,n:"Place 25 — Area0",a:"Area0",v:["nature"],d:25,s:"Historic Armenian site 25",st:"Site with 750 years",im:"750 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 25 — Հատ0",ns:"Պատմական հայ տեղ 25",nst:"Տեղ 750 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:26,n:"Place 26 — Area1",a:"Area1",v:["local"],d:28,s:"Historic Armenian site 26",st:"Site with 760 years",im:"760 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 26 — Հատ1",ns:"Պատմական հայ տեղ 26",nst:"Տեղ 760 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:27,n:"Place 27 — Area2",a:"Area2",v:["history"],d:31,s:"Historic Armenian site 27",st:"Site with 770 years",im:"770 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 27 — Հատ2",ns:"Պատմական հայ տեղ 27",nst:"Տեղ 770 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:28,n:"Place 28 — Area3",a:"Area3",v:["nature"],d:34,s:"Historic Armenian site 28",st:"Site with 780 years",im:"780 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 28 — Հատ3",ns:"Պատմական հայ տեղ 28",nst:"Տեղ 780 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:29,n:"Place 29 — Area4",a:"Area4",v:["local"],d:37,s:"Historic Armenian site 29",st:"Site with 790 years",im:"790 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 29 — Հատ4",ns:"Պատմական հայ տեղ 29",nst:"Տեղ 790 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:30,n:"Place 30 — Area0",a:"Area0",v:["history"],d:40,s:"Historic Armenian site 30",st:"Site with 800 years",im:"800 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"y",nn:"Տեղ 30 — Հատ0",ns:"Պատմական հայ տեղ 30",nst:"Տեղ 800 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:31,n:"Place 31 — Area1",a:"Area1",v:["nature"],d:43,s:"Historic Armenian site 31",st:"Site with 810 years",im:"810 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 31 — Հատ1",ns:"Պատմական հայ տեղ 31",nst:"Տեղ 810 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:32,n:"Place 32 — Area2",a:"Area2",v:["local"],d:46,s:"Historic Armenian site 32",st:"Site with 820 years",im:"820 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 32 — Հատ2",ns:"Պատմական հայ տեղ 32",nst:"Տեղ 820 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:33,n:"Place 33 — Area3",a:"Area3",v:["history"],d:49,s:"Historic Armenian site 33",st:"Site with 830 years",im:"830 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 33 — Հատ3",ns:"Պատմական հայ տեղ 33",nst:"Տեղ 830 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:34,n:"Place 34 — Area4",a:"Area4",v:["nature"],d:2,s:"Historic Armenian site 34",st:"Site with 840 years",im:"840 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 34 — Հատ4",ns:"Պատմական հայ տեղ 34",nst:"Տեղ 840 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:35,n:"Place 35 — Area0",a:"Area0",v:["local"],d:5,s:"Historic Armenian site 35",st:"Site with 850 years",im:"850 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 35 — Հատ0",ns:"Պատմական հայ տեղ 35",nst:"Տեղ 850 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:36,n:"Place 36 — Area1",a:"Area1",v:["history"],d:8,s:"Historic Armenian site 36",st:"Site with 860 years",im:"860 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"y",nn:"Տեղ 36 — Հատ1",ns:"Պատմական հայ տեղ 36",nst:"Տեղ 860 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:37,n:"Place 37 — Area2",a:"Area2",v:["nature"],d:11,s:"Historic Armenian site 37",st:"Site with 870 years",im:"870 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 37 — Հատ2",ns:"Պատմական հայ տեղ 37",nst:"Տեղ 870 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:38,n:"Place 38 — Area3",a:"Area3",v:["local"],d:14,s:"Historic Armenian site 38",st:"Site with 880 years",im:"880 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 38 — Հատ3",ns:"Պատմական հայ տեղ 38",nst:"Տեղ 880 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:39,n:"Place 39 — Area4",a:"Area4",v:["history"],d:17,s:"Historic Armenian site 39",st:"Site with 890 years",im:"890 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 39 — Հատ4",ns:"Պատմական հայ տեղ 39",nst:"Տեղ 890 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:40,n:"Place 40 — Area0",a:"Area0",v:["nature"],d:20,s:"Historic Armenian site 40",st:"Site with 900 years",im:"900 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 40 — Հատ0",ns:"Պատմական հայ տեղ 40",nst:"Տեղ 900 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:41,n:"Place 41 — Area1",a:"Area1",v:["local"],d:23,s:"Historic Armenian site 41",st:"Site with 910 years",im:"910 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 41 — Հատ1",ns:"Պատմական հայ տեղ 41",nst:"Տեղ 910 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:42,n:"Place 42 — Area2",a:"Area2",v:["history"],d:26,s:"Historic Armenian site 42",st:"Site with 920 years",im:"920 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"y",nn:"Տեղ 42 — Հատ2",ns:"Պատմական հայ տեղ 42",nst:"Տեղ 920 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:43,n:"Place 43 — Area3",a:"Area3",v:["nature"],d:29,s:"Historic Armenian site 43",st:"Site with 930 years",im:"930 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 43 — Հատ3",ns:"Պատմական հայ տեղ 43",nst:"Տեղ 930 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:44,n:"Place 44 — Area4",a:"Area4",v:["local"],d:32,s:"Historic Armenian site 44",st:"Site with 940 years",im:"940 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 44 — Հատ4",ns:"Պատմական հայ տեղ 44",nst:"Տեղ 940 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:45,n:"Place 45 — Area0",a:"Area0",v:["history"],d:35,s:"Historic Armenian site 45",st:"Site with 950 years",im:"950 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 45 — Հատ0",ns:"Պատմական հայ տեղ 45",nst:"Տեղ 950 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:46,n:"Place 46 — Area1",a:"Area1",v:["nature"],d:38,s:"Historic Armenian site 46",st:"Site with 960 years",im:"960 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 46 — Հատ1",ns:"Պատմական հայ տեղ 46",nst:"Տեղ 960 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:47,n:"Place 47 — Area2",a:"Area2",v:["local"],d:41,s:"Historic Armenian site 47",st:"Site with 970 years",im:"970 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 47 — Հատ2",ns:"Պատմական հայ տեղ 47",nst:"Տեղ 970 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:48,n:"Place 48 — Area3",a:"Area3",v:["history"],d:44,s:"Historic Armenian site 48",st:"Site with 980 years",im:"980 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"y",nn:"Տեղ 48 — Հատ3",ns:"Պատմական հայ տեղ 48",nst:"Տեղ 980 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:49,n:"Place 49 — Area4",a:"Area4",v:["nature"],d:47,s:"Historic Armenian site 49",st:"Site with 990 years",im:"990 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 49 — Հատ4",ns:"Պատմական հայ տեղ 49",nst:"Տեղ 990 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:50,n:"Place 50 — Area0",a:"Area0",v:["local"],d:0,s:"Historic Armenian site 50",st:"Site with 1000 years",im:"1000 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 50 — Հատ0",ns:"Պատմական հայ տեղ 50",nst:"Տեղ 1000 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:51,n:"Place 51 — Area1",a:"Area1",v:["history"],d:3,s:"Historic Armenian site 51",st:"Site with 1010 years",im:"1010 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 51 — Հատ1",ns:"Պատմական հայ տեղ 51",nst:"Տեղ 1010 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:52,n:"Place 52 — Area2",a:"Area2",v:["nature"],d:6,s:"Historic Armenian site 52",st:"Site with 1020 years",im:"1020 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 52 — Հատ2",ns:"Պատմական հայ տեղ 52",nst:"Տեղ 1020 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:53,n:"Place 53 — Area3",a:"Area3",v:["local"],d:9,s:"Historic Armenian site 53",st:"Site with 1030 years",im:"1030 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 53 — Հատ3",ns:"Պատմական հայ տեղ 53",nst:"Տեղ 1030 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:54,n:"Place 54 — Area4",a:"Area4",v:["history"],d:12,s:"Historic Armenian site 54",st:"Site with 1040 years",im:"1040 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"y",nn:"Տեղ 54 — Հատ4",ns:"Պատմական հայ տեղ 54",nst:"Տեղ 1040 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:55,n:"Place 55 — Area0",a:"Area0",v:["nature"],d:15,s:"Historic Armenian site 55",st:"Site with 1050 years",im:"1050 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 55 — Հատ0",ns:"Պատմական հայ տեղ 55",nst:"Տեղ 1050 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:56,n:"Place 56 — Area1",a:"Area1",v:["local"],d:18,s:"Historic Armenian site 56",st:"Site with 1060 years",im:"1060 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 56 — Հատ1",ns:"Պատմական հայ տեղ 56",nst:"Տեղ 1060 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:57,n:"Place 57 — Area2",a:"Area2",v:["history"],d:21,s:"Historic Armenian site 57",st:"Site with 1070 years",im:"1070 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 57 — Հատ2",ns:"Պատմական հայ տեղ 57",nst:"Տեղ 1070 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:58,n:"Place 58 — Area3",a:"Area3",v:["nature"],d:24,s:"Historic Armenian site 58",st:"Site with 1080 years",im:"1080 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 58 — Հատ3",ns:"Պատմական հայ տեղ 58",nst:"Տեղ 1080 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:59,n:"Place 59 — Area4",a:"Area4",v:["local"],d:27,s:"Historic Armenian site 59",st:"Site with 1090 years",im:"1090 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 59 — Հատ4",ns:"Պատմական հայ տեղ 59",nst:"Տեղ 1090 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:60,n:"Place 60 — Area0",a:"Area0",v:["history"],d:30,s:"Historic Armenian site 60",st:"Site with 1100 years",im:"1100 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"y",nn:"Տեղ 60 — Հատ0",ns:"Պատմական հայ տեղ 60",nst:"Տեղ 1100 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:61,n:"Place 61 — Area1",a:"Area1",v:["nature"],d:33,s:"Historic Armenian site 61",st:"Site with 1110 years",im:"1110 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 61 — Հատ1",ns:"Պատմական հայ տեղ 61",nst:"Տեղ 1110 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:62,n:"Place 62 — Area2",a:"Area2",v:["local"],d:36,s:"Historic Armenian site 62",st:"Site with 1120 years",im:"1120 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 62 — Հատ2",ns:"Պատմական հայ տեղ 62",nst:"Տեղ 1120 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:63,n:"Place 63 — Area3",a:"Area3",v:["history"],d:39,s:"Historic Armenian site 63",st:"Site with 1130 years",im:"1130 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 63 — Հատ3",ns:"Պատմական հայ տեղ 63",nst:"Տեղ 1130 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:64,n:"Place 64 — Area4",a:"Area4",v:["nature"],d:42,s:"Historic Armenian site 64",st:"Site with 1140 years",im:"1140 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 64 — Հատ4",ns:"Պատմական հայ տեղ 64",nst:"Տեղ 1140 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:65,n:"Place 65 — Area0",a:"Area0",v:["local"],d:45,s:"Historic Armenian site 65",st:"Site with 1150 years",im:"1150 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 65 — Հատ0",ns:"Պատմական հայ տեղ 65",nst:"Տեղ 1150 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:66,n:"Place 66 — Area1",a:"Area1",v:["history"],d:48,s:"Historic Armenian site 66",st:"Site with 1160 years",im:"1160 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"y",nn:"Տեղ 66 — Հատ1",ns:"Պատմական հայ տեղ 66",nst:"Տեղ 1160 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:67,n:"Place 67 — Area2",a:"Area2",v:["nature"],d:1,s:"Historic Armenian site 67",st:"Site with 1170 years",im:"1170 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 67 — Հատ2",ns:"Պատմական հայ տեղ 67",nst:"Տեղ 1170 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:68,n:"Place 68 — Area3",a:"Area3",v:["local"],d:4,s:"Historic Armenian site 68",st:"Site with 1180 years",im:"1180 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 68 — Հատ3",ns:"Պատմական հայ տեղ 68",nst:"Տեղ 1180 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:69,n:"Place 69 — Area4",a:"Area4",v:["history"],d:7,s:"Historic Armenian site 69",st:"Site with 1190 years",im:"1190 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 69 — Հատ4",ns:"Պատմական հայ տեղ 69",nst:"Տեղ 1190 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:70,n:"Place 70 — Area0",a:"Area0",v:["nature"],d:10,s:"Historic Armenian site 70",st:"Site with 1200 years",im:"1200 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 70 — Հատ0",ns:"Պատմական հայ տեղ 70",nst:"Տեղ 1200 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:71,n:"Place 71 — Area1",a:"Area1",v:["local"],d:13,s:"Historic Armenian site 71",st:"Site with 1210 years",im:"1210 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 71 — Հատ1",ns:"Պատմական հայ տեղ 71",nst:"Տեղ 1210 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:72,n:"Place 72 — Area2",a:"Area2",v:["history"],d:16,s:"Historic Armenian site 72",st:"Site with 1220 years",im:"1220 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"y",nn:"Տեղ 72 — Հատ2",ns:"Պատմական հայ տեղ 72",nst:"Տեղ 1220 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:73,n:"Place 73 — Area3",a:"Area3",v:["nature"],d:19,s:"Historic Armenian site 73",st:"Site with 1230 years",im:"1230 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 73 — Հատ3",ns:"Պատմական հայ տեղ 73",nst:"Տեղ 1230 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:74,n:"Place 74 — Area4",a:"Area4",v:["local"],d:22,s:"Historic Armenian site 74",st:"Site with 1240 years",im:"1240 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 74 — Հատ4",ns:"Պատմական հայ տեղ 74",nst:"Տեղ 1240 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:75,n:"Place 75 — Area0",a:"Area0",v:["history"],d:25,s:"Historic Armenian site 75",st:"Site with 1250 years",im:"1250 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 75 — Հատ0",ns:"Պատմական հայ տեղ 75",nst:"Տեղ 1250 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:76,n:"Place 76 — Area1",a:"Area1",v:["nature"],d:28,s:"Historic Armenian site 76",st:"Site with 1260 years",im:"1260 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 76 — Հատ1",ns:"Պատմական հայ տեղ 76",nst:"Տեղ 1260 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:77,n:"Place 77 — Area2",a:"Area2",v:["local"],d:31,s:"Historic Armenian site 77",st:"Site with 1270 years",im:"1270 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 77 — Հատ2",ns:"Պատմական հայ տեղ 77",nst:"Տեղ 1270 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:78,n:"Place 78 — Area3",a:"Area3",v:["history"],d:34,s:"Historic Armenian site 78",st:"Site with 1280 years",im:"1280 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"y",nn:"Տեղ 78 — Հատ3",ns:"Պատմական հայ տեղ 78",nst:"Տեղ 1280 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:79,n:"Place 79 — Area4",a:"Area4",v:["nature"],d:37,s:"Historic Armenian site 79",st:"Site with 1290 years",im:"1290 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 79 — Հատ4",ns:"Պատմական հայ տեղ 79",nst:"Տեղ 1290 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:80,n:"Place 80 — Area0",a:"Area0",v:["local"],d:40,s:"Historic Armenian site 80",st:"Site with 1300 years",im:"1300 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 80 — Հատ0",ns:"Պատմական հայ տեղ 80",nst:"Տեղ 1300 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:81,n:"Place 81 — Area1",a:"Area1",v:["history"],d:43,s:"Historic Armenian site 81",st:"Site with 1310 years",im:"1310 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 81 — Հատ1",ns:"Պատմական հայ տեղ 81",nst:"Տեղ 1310 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:82,n:"Place 82 — Area2",a:"Area2",v:["nature"],d:46,s:"Historic Armenian site 82",st:"Site with 1320 years",im:"1320 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 82 — Հատ2",ns:"Պատմական հայ տեղ 82",nst:"Տեղ 1320 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:83,n:"Place 83 — Area3",a:"Area3",v:["local"],d:49,s:"Historic Armenian site 83",st:"Site with 1330 years",im:"1330 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 83 — Հատ3",ns:"Պատմական հայ տեղ 83",nst:"Տեղ 1330 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:84,n:"Place 84 — Area4",a:"Area4",v:["history"],d:2,s:"Historic Armenian site 84",st:"Site with 1340 years",im:"1340 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"y",nn:"Տեղ 84 — Հատ4",ns:"Պատմական հայ տեղ 84",nst:"Տեղ 1340 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:85,n:"Place 85 — Area0",a:"Area0",v:["nature"],d:5,s:"Historic Armenian site 85",st:"Site with 1350 years",im:"1350 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 85 — Հատ0",ns:"Պատմական հայ տեղ 85",nst:"Տեղ 1350 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:86,n:"Place 86 — Area1",a:"Area1",v:["local"],d:8,s:"Historic Armenian site 86",st:"Site with 1360 years",im:"1360 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 86 — Հատ1",ns:"Պատմական հայ տեղ 86",nst:"Տեղ 1360 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:87,n:"Place 87 — Area2",a:"Area2",v:["history"],d:11,s:"Historic Armenian site 87",st:"Site with 1370 years",im:"1370 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 87 — Հատ2",ns:"Պատմական հայ տեղ 87",nst:"Տեղ 1370 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:88,n:"Place 88 — Area3",a:"Area3",v:["nature"],d:14,s:"Historic Armenian site 88",st:"Site with 1380 years",im:"1380 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 88 — Հատ3",ns:"Պատմական հայ տեղ 88",nst:"Տեղ 1380 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:89,n:"Place 89 — Area4",a:"Area4",v:["local"],d:17,s:"Historic Armenian site 89",st:"Site with 1390 years",im:"1390 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 89 — Հատ4",ns:"Պատմական հայ տեղ 89",nst:"Տեղ 1390 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:90,n:"Place 90 — Area0",a:"Area0",v:["history"],d:20,s:"Historic Armenian site 90",st:"Site with 1400 years",im:"1400 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"y",nn:"Տեղ 90 — Հատ0",ns:"Պատմական հայ տեղ 90",nst:"Տեղ 1400 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:91,n:"Place 91 — Area1",a:"Area1",v:["nature"],d:23,s:"Historic Armenian site 91",st:"Site with 1410 years",im:"1410 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 91 — Հատ1",ns:"Պատմական հայ տեղ 91",nst:"Տեղ 1410 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:92,n:"Place 92 — Area2",a:"Area2",v:["local"],d:26,s:"Historic Armenian site 92",st:"Site with 1420 years",im:"1420 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 92 — Հատ2",ns:"Պատմական հայ տեղ 92",nst:"Տեղ 1420 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:93,n:"Place 93 — Area3",a:"Area3",v:["history"],d:29,s:"Historic Armenian site 93",st:"Site with 1430 years",im:"1430 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 93 — Հատ3",ns:"Պատմական հայ տեղ 93",nst:"Տեղ 1430 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:94,n:"Place 94 — Area4",a:"Area4",v:["nature"],d:32,s:"Historic Armenian site 94",st:"Site with 1440 years",im:"1440 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 94 — Հատ4",ns:"Պատմական հայ տեղ 94",nst:"Տեղ 1440 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:95,n:"Place 95 — Area0",a:"Area0",v:["local"],d:35,s:"Historic Armenian site 95",st:"Site with 1450 years",im:"1450 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 95 — Հատ0",ns:"Պատմական հայ տեղ 95",nst:"Տեղ 1450 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:96,n:"Place 96 — Area1",a:"Area1",v:["history"],d:38,s:"Historic Armenian site 96",st:"Site with 1460 years",im:"1460 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"y",nn:"Տեղ 96 — Հատ1",ns:"Պատմական հայ տեղ 96",nst:"Տեղ 1460 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:97,n:"Place 97 — Area2",a:"Area2",v:["nature"],d:41,s:"Historic Armenian site 97",st:"Site with 1470 years",im:"1470 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 97 — Հատ2",ns:"Պատմական հայ տեղ 97",nst:"Տեղ 1470 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:98,n:"Place 98 — Area3",a:"Area3",v:["local"],d:44,s:"Historic Armenian site 98",st:"Site with 1480 years",im:"1480 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 98 — Հատ3",ns:"Պատմական հայ տեղ 98",nst:"Տեղ 1480 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:99,n:"Place 99 — Area4",a:"Area4",v:["history"],d:47,s:"Historic Armenian site 99",st:"Site with 1490 years",im:"1490 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 99 — Հատ4",ns:"Պատմական հայ տեղ 99",nst:"Տեղ 1490 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:100,n:"Place 100 — Area0",a:"Area0",v:["nature"],d:0,s:"Historic Armenian site 100",st:"Site with 1500 years",im:"1500 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 100 — Հատ0",ns:"Պատմական հայ տեղ 100",nst:"Տեղ 1500 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:101,n:"Place 101 — Area1",a:"Area1",v:["local"],d:3,s:"Historic Armenian site 101",st:"Site with 1510 years",im:"1510 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 101 — Հատ1",ns:"Պատմական հայ տեղ 101",nst:"Տեղ 1510 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:102,n:"Place 102 — Area2",a:"Area2",v:["history"],d:6,s:"Historic Armenian site 102",st:"Site with 1520 years",im:"1520 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"y",nn:"Տեղ 102 — Հատ2",ns:"Պատմական հայ տեղ 102",nst:"Տեղ 1520 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:103,n:"Place 103 — Area3",a:"Area3",v:["nature"],d:9,s:"Historic Armenian site 103",st:"Site with 1530 years",im:"1530 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 103 — Հատ3",ns:"Պատմական հայ տեղ 103",nst:"Տեղ 1530 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:104,n:"Place 104 — Area4",a:"Area4",v:["local"],d:12,s:"Historic Armenian site 104",st:"Site with 1540 years",im:"1540 AD: Armenian history",t:"Visit with respect for sacred sites",c:["history_big"],r:"g",nn:"Տեղ 104 — Հատ4",ns:"Պատմական հայ տեղ 104",nst:"Տեղ 1540 տարիներ",nt:"Այցելեք հարգալից"},
+  {id:105,n:"Place 105 — Area0",a:"Area0",v:["history"],d:15,s:"Historic Armenian site 105",st:"Site with 1550 years",im:"1550 AD: Armenian history",t:"Visit with respect for sacred sites",c:["parks"],r:"g",nn:"Տեղ 105 — Հատ0",ns:"Պատմական հայ տեղ 105",nst:"Տեղ 1550 տարիներ",nt:"Այցելեք հարգալից"}
+];
+
+const M = [
+  {id:1,title:"The Area1 Deep Dive",desc:"Hit 5 hidden spots in Area1. Walk slow, look up, read everything.",places:[11, 16, 21, 26, 31],time:"125 min"},
+  {id:2,title:"The Area2 Deep Dive",desc:"Hit 5 hidden spots in Area2. Walk slow, look up, read everything.",places:[12, 17, 22, 27, 32],time:"125 min"},
+  {id:3,title:"The Area3 Deep Dive",desc:"Hit 5 hidden spots in Area3. Walk slow, look up, read everything.",places:[13, 18, 23, 28, 33],time:"125 min"},
+  {id:4,title:"The Area4 Deep Dive",desc:"Hit 5 hidden spots in Area4. Walk slow, look up, read everything.",places:[14, 19, 24, 29, 34],time:"125 min"},
+  {id:5,title:"The Area0 Deep Dive",desc:"Hit 5 hidden spots in Area0. Walk slow, look up, read everything.",places:[15, 20, 25, 30, 35],time:"125 min"},
+  {id:6,title:"The Downtown Deep Dive",desc:"Hit 3 hidden spots in Downtown. Walk slow, look up, read everything.",places:[1, 2, 4],time:"75 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 5, 6, 8],time:"120 min"},
+  {id:8,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[7, 11, 13, 14, 15, 17],time:"120 min"},
+  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
+
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"}
+];
+
+const AREAS = ["Area0", "Area1", "Area2", "Area3", "Area4", "Day Trip", "Downtown", "North", "Old Town", "South"];
+
+const PHRASES = [
+  {native:"Բարեւ",en:"Hello"},
+  {native:"Շնորհակալ",en:"Thank you"},
+  {native:"Քանի արժե?",en:"How much?"},
+  {native:"Ջուրը ցուրտ է",en:"Water is cold"},
+  {native:"Որտե՞ր է սեղանը?",en:"Where is table?"},
+  {native:"Համեղ է",en:"It\'s delicious"},
+  {native:"Խոսո՞ւմ ես անգլերեն?",en:"Speak English?"},
+  {native:"Օգնություն!",en:"Help!"},
+  {native:"Ոչ, շնորհակալ",en:"No, thanks"},
+  {native:"Բարի գիշեր",en:"Good night"}
+];
+
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+
+const PLACE_IMAGES={};
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(26,26,46,0.88) 0%,rgba(45,27,105,0.85) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
+<p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Yerevan Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+<p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
+{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Yerevan</button>
+<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
+<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
+</div></div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"white",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p></div>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+if(showPicker){const rp=P[Math.floor(Math.random()*P.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<p className="text-4xl mb-4">🎲</p>
+<h2 className="text-xl font-black text-center" style={{color:"white"}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-sm mt-2 text-center" style={{color:"#b8b0d0"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3 text-center px-6" style={{color:"#8b7fb8",lineHeight:1.6}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+<div className="flex gap-3 mt-6">
+<button onClick={()=>setShowPicker(false)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Close</button>
+<button onClick={()=>{setSelected(rp);setShowPicker(false)}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Go!</button>
+<button onClick={()=>setShowPicker(true)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Reroll</button>
+</div></div>}
+
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Yerevan Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={()=>setShowPicker(true)} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+
+<div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
+<div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+<div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+<img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
+</div>)}
+</div></div>
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Yerevan Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script></body></html>
