@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Toulouse's hidden world. 105 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Toulouse">
+<meta property="og:description" content="105 hidden, free, historically rich places in Toulouse.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Toulouse</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6FF;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Toulouse...</p></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="French";
+
+const P = [
+  {id:1,n:"Capitole — City Center",a:"City Center",v:["history", "beautiful"],d:3,s:"Pink palace where Toulouse rules itself",st:"Renaissance seat of power. Now cultural center. Façade glows like sunset.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Capitole — City Center",ns:"Pink palace where Toulouse rules itself",nst:"Renaissance seat of power. Now cultural center. Façade glows like sunset.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:2,n:"Saint-Sernin Basilica — Altstadt",a:"Altstadt",v:["history", "beautiful", "weird"],d:10,s:"Romanesque church where pilgrims stopped before Spain",st:"1050-1120. On the Way of St. James. Pilgrims still pass through.",im:"Toulouse Altstadt, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Basilique Saint-Sernin — Altstadt",ns:"Romanesque church where pilgrims stopped before Spain",nst:"1050-1120. On the Way of St. James. Pilgrims still pass through.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:3,n:"Canal du Midi — City",a:"City",v:["beautiful", "local"],d:13,s:"Tree-lined canal where locals bike, picnic, fall in love",st:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["local_only"],r:"g",nn:"Canal du Midi — City",ns:"Tree-lined canal where locals bike, picnic, fall in love",nst:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:4,n:"Cité de l\'Espace — East",a:"East",v:["history", "hidden"],d:37,s:"Space museum—actual rockets stand outside",st:"Real Ariane rocket. Simulators. Science for all.",im:"Toulouse East, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Cité de l\'Espace — East",ns:"Space museum—actual rockets stand outside",nst:"Real Ariane rocket. Simulators. Science for all.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:5,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art", "night"],d:44,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:6,n:"Garonne Riverbank — City",a:"City",v:["nature", "local"],d:5,s:"Sandy banks where students lie in sun",st:"Summer: beach culture. Water always flows.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Rives de la Garonne — City",ns:"Sandy banks where students lie in sun",nst:"Summer: beach culture. Water always flows.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:7,n:"Allées Jean Jaurès — City Center",a:"City Center",v:["local", "beautiful"],d:10,s:"Tree-canopied promenade where Toulouse strolls",st:"1800s avenue. Plane trees shade benches.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Allées Jean Jaurès — City Center",ns:"Tree-canopied promenade where Toulouse strolls",nst:"1800s avenue. Plane trees shade benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:8,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful"],d:40,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"g",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:9,n:"Jardin des Plantes — South",a:"South",v:["nature", "quiet", "history"],d:30,s:"18th-century botanical garden with rare plants",st:"Free. Designed for learning. Sacred benches.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Jardin des Plantes — South",ns:"18th-century botanical garden with rare plants",nst:"Free. Designed for learning. Sacred benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:10,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful", "quiet"],d:9,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:11,n:"Carcassonne — South",a:"South",v:["history", "beautiful"],d:33,s:"Walled fortress city—ramparts everywhere",st:"1 hour south. Medieval perfection.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Carcassonne — South",ns:"Walled fortress city—ramparts everywhere",nst:"1 hour south. Medieval perfection.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:12,n:"Albi — South",a:"South",v:["history", "beautiful"],d:21,s:"Red-brick cathedral and Toulouse-Lautrec museum",st:"45 min. Cathedral bigger than Notre-Dame.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["romantic_water"],r:"y",nn:"Albi — South",ns:"Red-brick cathedral and Toulouse-Lautrec museum",nst:"45 min. Cathedral bigger than Notre-Dame.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:13,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful", "free"],d:6,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["free_museum"],r:"g",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:14,n:"Airbus Factory — North",a:"North",v:["hidden", "history", "weird"],d:31,s:"Watch jets being assembled at scale",st:"Toulouse builds planes. Perspectives shift.",im:"Toulouse North, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Visite Airbus — North",ns:"Watch jets being assembled at scale",nst:"Toulouse builds planes. Perspectives shift.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:15,n:"Latin Quarter — City Center",a:"City Center",v:["local", "night", "hidden"],d:2,s:"Student quarter with bookshops, jazz, small restaurants",st:"Posters. Debates. Late nights.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"y",nn:"Quartier Latin — City Center",ns:"Student quarter with bookshops, jazz, small restaurants",nst:"Posters. Debates. Late nights.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:16,n:"Garonne Riverbank — City",a:"City",v:["nature", "local", "night"],d:15,s:"Sandy banks where students lie in sun",st:"Summer: beach culture. Water always flows.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["romantic_water"],r:"g",nn:"Rives de la Garonne — City",ns:"Sandy banks where students lie in sun",nst:"Summer: beach culture. Water always flows.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:17,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful", "night"],d:49,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:18,n:"Latin Quarter — City Center",a:"City Center",v:["local", "night", "quiet"],d:2,s:"Student quarter with bookshops, jazz, small restaurants",st:"Posters. Debates. Late nights.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"g",nn:"Quartier Latin — City Center",ns:"Student quarter with bookshops, jazz, small restaurants",nst:"Posters. Debates. Late nights.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:19,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful", "night"],d:46,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"g",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:20,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful", "free"],d:38,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"g",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:21,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful"],d:27,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:22,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art", "history"],d:49,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:23,n:"Capitole — City Center",a:"City Center",v:["history", "beautiful"],d:1,s:"Pink palace where Toulouse rules itself",st:"Renaissance seat of power. Now cultural center. Façade glows like sunset.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"y",nn:"Capitole — City Center",ns:"Pink palace where Toulouse rules itself",nst:"Renaissance seat of power. Now cultural center. Façade glows like sunset.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:24,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art"],d:15,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:25,n:"Latin Quarter — City Center",a:"City Center",v:["local", "night"],d:15,s:"Student quarter with bookshops, jazz, small restaurants",st:"Posters. Debates. Late nights.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Quartier Latin — City Center",ns:"Student quarter with bookshops, jazz, small restaurants",nst:"Posters. Debates. Late nights.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:26,n:"Latin Quarter — City Center",a:"City Center",v:["local", "night"],d:5,s:"Student quarter with bookshops, jazz, small restaurants",st:"Posters. Debates. Late nights.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"g",nn:"Quartier Latin — City Center",ns:"Student quarter with bookshops, jazz, small restaurants",nst:"Posters. Debates. Late nights.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:27,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful", "nature"],d:13,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["romantic_water"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:28,n:"Cité de l\'Espace — East",a:"East",v:["history", "hidden", "free"],d:39,s:"Space museum—actual rockets stand outside",st:"Real Ariane rocket. Simulators. Science for all.",im:"Toulouse East, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["local_only"],r:"g",nn:"Cité de l\'Espace — East",ns:"Space museum—actual rockets stand outside",nst:"Real Ariane rocket. Simulators. Science for all.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:29,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful", "weird"],d:15,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["local_only"],r:"y",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:30,n:"Saint-Sernin Basilica — Altstadt",a:"Altstadt",v:["history", "beautiful", "weird"],d:14,s:"Romanesque church where pilgrims stopped before Spain",st:"1050-1120. On the Way of St. James. Pilgrims still pass through.",im:"Toulouse Altstadt, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Basilique Saint-Sernin — Altstadt",ns:"Romanesque church where pilgrims stopped before Spain",nst:"1050-1120. On the Way of St. James. Pilgrims still pass through.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:31,n:"Jardin des Plantes — South",a:"South",v:["nature", "quiet"],d:9,s:"18th-century botanical garden with rare plants",st:"Free. Designed for learning. Sacred benches.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Jardin des Plantes — South",ns:"18th-century botanical garden with rare plants",nst:"Free. Designed for learning. Sacred benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:32,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful"],d:10,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:33,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful", "hidden"],d:46,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"g",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:34,n:"Albi — South",a:"South",v:["history", "beautiful", "nature"],d:27,s:"Red-brick cathedral and Toulouse-Lautrec museum",st:"45 min. Cathedral bigger than Notre-Dame.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"y",nn:"Albi — South",ns:"Red-brick cathedral and Toulouse-Lautrec museum",nst:"45 min. Cathedral bigger than Notre-Dame.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:35,n:"Garonne Riverbank — City",a:"City",v:["nature", "local"],d:0,s:"Sandy banks where students lie in sun",st:"Summer: beach culture. Water always flows.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["parks"],r:"g",nn:"Rives de la Garonne — City",ns:"Sandy banks where students lie in sun",nst:"Summer: beach culture. Water always flows.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:36,n:"Saint-Sernin Basilica — Altstadt",a:"Altstadt",v:["history", "beautiful"],d:4,s:"Romanesque church where pilgrims stopped before Spain",st:"1050-1120. On the Way of St. James. Pilgrims still pass through.",im:"Toulouse Altstadt, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["local_only"],r:"g",nn:"Basilique Saint-Sernin — Altstadt",ns:"Romanesque church where pilgrims stopped before Spain",nst:"1050-1120. On the Way of St. James. Pilgrims still pass through.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:37,n:"Latin Quarter — City Center",a:"City Center",v:["local", "night"],d:7,s:"Student quarter with bookshops, jazz, small restaurants",st:"Posters. Debates. Late nights.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Quartier Latin — City Center",ns:"Student quarter with bookshops, jazz, small restaurants",nst:"Posters. Debates. Late nights.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:38,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful", "free"],d:9,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:39,n:"Albi — South",a:"South",v:["history", "beautiful", "hidden"],d:9,s:"Red-brick cathedral and Toulouse-Lautrec museum",st:"45 min. Cathedral bigger than Notre-Dame.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Albi — South",ns:"Red-brick cathedral and Toulouse-Lautrec museum",nst:"45 min. Cathedral bigger than Notre-Dame.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:40,n:"Latin Quarter — City Center",a:"City Center",v:["local", "night"],d:14,s:"Student quarter with bookshops, jazz, small restaurants",st:"Posters. Debates. Late nights.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["parks"],r:"g",nn:"Quartier Latin — City Center",ns:"Student quarter with bookshops, jazz, small restaurants",nst:"Posters. Debates. Late nights.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:41,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful", "local"],d:47,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["local_only"],r:"g",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:42,n:"Allées Jean Jaurès — City Center",a:"City Center",v:["local", "beautiful"],d:5,s:"Tree-canopied promenade where Toulouse strolls",st:"1800s avenue. Plane trees shade benches.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Allées Jean Jaurès — City Center",ns:"Tree-canopied promenade where Toulouse strolls",nst:"1800s avenue. Plane trees shade benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:43,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful"],d:14,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["parks"],r:"y",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:44,n:"Garonne Riverbank — City",a:"City",v:["nature", "local", "weird"],d:1,s:"Sandy banks where students lie in sun",st:"Summer: beach culture. Water always flows.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Rives de la Garonne — City",ns:"Sandy banks where students lie in sun",nst:"Summer: beach culture. Water always flows.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:45,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful"],d:40,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:46,n:"Airbus Factory — North",a:"North",v:["hidden", "history"],d:25,s:"Watch jets being assembled at scale",st:"Toulouse builds planes. Perspectives shift.",im:"Toulouse North, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Visite Airbus — North",ns:"Watch jets being assembled at scale",nst:"Toulouse builds planes. Perspectives shift.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:47,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art", "free"],d:33,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:48,n:"Airbus Factory — North",a:"North",v:["hidden", "history", "night"],d:9,s:"Watch jets being assembled at scale",st:"Toulouse builds planes. Perspectives shift.",im:"Toulouse North, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["courtyards"],r:"g",nn:"Visite Airbus — North",ns:"Watch jets being assembled at scale",nst:"Toulouse builds planes. Perspectives shift.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:49,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful", "local"],d:20,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:50,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful"],d:27,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:51,n:"Cité de l\'Espace — East",a:"East",v:["history", "hidden"],d:34,s:"Space museum—actual rockets stand outside",st:"Real Ariane rocket. Simulators. Science for all.",im:"Toulouse East, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Cité de l\'Espace — East",ns:"Space museum—actual rockets stand outside",nst:"Real Ariane rocket. Simulators. Science for all.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:52,n:"Albi — South",a:"South",v:["history", "beautiful", "weird"],d:35,s:"Red-brick cathedral and Toulouse-Lautrec museum",st:"45 min. Cathedral bigger than Notre-Dame.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Albi — South",ns:"Red-brick cathedral and Toulouse-Lautrec museum",nst:"45 min. Cathedral bigger than Notre-Dame.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:53,n:"Canal du Midi — City",a:"City",v:["beautiful", "local"],d:1,s:"Tree-lined canal where locals bike, picnic, fall in love",st:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"g",nn:"Canal du Midi — City",ns:"Tree-lined canal where locals bike, picnic, fall in love",nst:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:54,n:"Albi — South",a:"South",v:["history", "beautiful", "local"],d:12,s:"Red-brick cathedral and Toulouse-Lautrec museum",st:"45 min. Cathedral bigger than Notre-Dame.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["local_only"],r:"g",nn:"Albi — South",ns:"Red-brick cathedral and Toulouse-Lautrec museum",nst:"45 min. Cathedral bigger than Notre-Dame.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:55,n:"Airbus Factory — North",a:"North",v:["hidden", "history"],d:6,s:"Watch jets being assembled at scale",st:"Toulouse builds planes. Perspectives shift.",im:"Toulouse North, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["courtyards"],r:"g",nn:"Visite Airbus — North",ns:"Watch jets being assembled at scale",nst:"Toulouse builds planes. Perspectives shift.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:56,n:"Carcassonne — South",a:"South",v:["history", "beautiful", "local"],d:7,s:"Walled fortress city—ramparts everywhere",st:"1 hour south. Medieval perfection.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Carcassonne — South",ns:"Walled fortress city—ramparts everywhere",nst:"1 hour south. Medieval perfection.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:57,n:"Latin Quarter — City Center",a:"City Center",v:["local", "night"],d:15,s:"Student quarter with bookshops, jazz, small restaurants",st:"Posters. Debates. Late nights.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Quartier Latin — City Center",ns:"Student quarter with bookshops, jazz, small restaurants",nst:"Posters. Debates. Late nights.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:58,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art", "free"],d:9,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:59,n:"Albi — South",a:"South",v:["history", "beautiful", "night"],d:21,s:"Red-brick cathedral and Toulouse-Lautrec museum",st:"45 min. Cathedral bigger than Notre-Dame.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["local_only"],r:"y",nn:"Albi — South",ns:"Red-brick cathedral and Toulouse-Lautrec museum",nst:"45 min. Cathedral bigger than Notre-Dame.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:60,n:"Carcassonne — South",a:"South",v:["history", "beautiful"],d:16,s:"Walled fortress city—ramparts everywhere",st:"1 hour south. Medieval perfection.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Carcassonne — South",ns:"Walled fortress city—ramparts everywhere",nst:"1 hour south. Medieval perfection.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:61,n:"Allées Jean Jaurès — City Center",a:"City Center",v:["local", "beautiful"],d:15,s:"Tree-canopied promenade where Toulouse strolls",st:"1800s avenue. Plane trees shade benches.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"g",nn:"Allées Jean Jaurès — City Center",ns:"Tree-canopied promenade where Toulouse strolls",nst:"1800s avenue. Plane trees shade benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:62,n:"Airbus Factory — North",a:"North",v:["hidden", "history", "nature"],d:36,s:"Watch jets being assembled at scale",st:"Toulouse builds planes. Perspectives shift.",im:"Toulouse North, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"g",nn:"Visite Airbus — North",ns:"Watch jets being assembled at scale",nst:"Toulouse builds planes. Perspectives shift.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:63,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful", "nature"],d:11,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:64,n:"Saint-Sernin Basilica — Altstadt",a:"Altstadt",v:["history", "beautiful", "nature"],d:2,s:"Romanesque church where pilgrims stopped before Spain",st:"1050-1120. On the Way of St. James. Pilgrims still pass through.",im:"Toulouse Altstadt, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"y",nn:"Basilique Saint-Sernin — Altstadt",ns:"Romanesque church where pilgrims stopped before Spain",nst:"1050-1120. On the Way of St. James. Pilgrims still pass through.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:65,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful"],d:37,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["romantic_water"],r:"g",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:66,n:"Albi — South",a:"South",v:["history", "beautiful", "night"],d:30,s:"Red-brick cathedral and Toulouse-Lautrec museum",st:"45 min. Cathedral bigger than Notre-Dame.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Albi — South",ns:"Red-brick cathedral and Toulouse-Lautrec museum",nst:"45 min. Cathedral bigger than Notre-Dame.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:67,n:"Cité de l\'Espace — East",a:"East",v:["history", "hidden"],d:32,s:"Space museum—actual rockets stand outside",st:"Real Ariane rocket. Simulators. Science for all.",im:"Toulouse East, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["local_only"],r:"g",nn:"Cité de l\'Espace — East",ns:"Space museum—actual rockets stand outside",nst:"Real Ariane rocket. Simulators. Science for all.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:68,n:"Carcassonne — South",a:"South",v:["history", "beautiful"],d:12,s:"Walled fortress city—ramparts everywhere",st:"1 hour south. Medieval perfection.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"g",nn:"Carcassonne — South",ns:"Walled fortress city—ramparts everywhere",nst:"1 hour south. Medieval perfection.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:69,n:"Cité de l\'Espace — East",a:"East",v:["history", "hidden"],d:37,s:"Space museum—actual rockets stand outside",st:"Real Ariane rocket. Simulators. Science for all.",im:"Toulouse East, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Cité de l\'Espace — East",ns:"Space museum—actual rockets stand outside",nst:"Real Ariane rocket. Simulators. Science for all.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:70,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art"],d:30,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:71,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art"],d:36,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["parks"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:72,n:"Saint-Sernin Basilica — Altstadt",a:"Altstadt",v:["history", "beautiful", "local"],d:6,s:"Romanesque church where pilgrims stopped before Spain",st:"1050-1120. On the Way of St. James. Pilgrims still pass through.",im:"Toulouse Altstadt, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Basilique Saint-Sernin — Altstadt",ns:"Romanesque church where pilgrims stopped before Spain",nst:"1050-1120. On the Way of St. James. Pilgrims still pass through.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:73,n:"Airbus Factory — North",a:"North",v:["hidden", "history"],d:19,s:"Watch jets being assembled at scale",st:"Toulouse builds planes. Perspectives shift.",im:"Toulouse North, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"g",nn:"Visite Airbus — North",ns:"Watch jets being assembled at scale",nst:"Toulouse builds planes. Perspectives shift.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:74,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art", "night"],d:40,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:75,n:"Jardin des Plantes — South",a:"South",v:["nature", "quiet", "local"],d:42,s:"18th-century botanical garden with rare plants",st:"Free. Designed for learning. Sacred benches.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"y",nn:"Jardin des Plantes — South",ns:"18th-century botanical garden with rare plants",nst:"Free. Designed for learning. Sacred benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:76,n:"Jardin des Plantes — South",a:"South",v:["nature", "quiet"],d:30,s:"18th-century botanical garden with rare plants",st:"Free. Designed for learning. Sacred benches.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["courtyards"],r:"g",nn:"Jardin des Plantes — South",ns:"18th-century botanical garden with rare plants",nst:"Free. Designed for learning. Sacred benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:77,n:"Canal du Midi — City",a:"City",v:["beautiful", "local", "nature"],d:2,s:"Tree-lined canal where locals bike, picnic, fall in love",st:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Canal du Midi — City",ns:"Tree-lined canal where locals bike, picnic, fall in love",nst:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:78,n:"Cité de l\'Espace — East",a:"East",v:["history", "hidden", "night"],d:21,s:"Space museum—actual rockets stand outside",st:"Real Ariane rocket. Simulators. Science for all.",im:"Toulouse East, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["courtyards"],r:"g",nn:"Cité de l\'Espace — East",ns:"Space museum—actual rockets stand outside",nst:"Real Ariane rocket. Simulators. Science for all.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:79,n:"Jardin des Plantes — South",a:"South",v:["nature", "quiet"],d:42,s:"18th-century botanical garden with rare plants",st:"Free. Designed for learning. Sacred benches.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"g",nn:"Jardin des Plantes — South",ns:"18th-century botanical garden with rare plants",nst:"Free. Designed for learning. Sacred benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:80,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful", "night"],d:6,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["parks"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:81,n:"Airbus Factory — North",a:"North",v:["hidden", "history", "night"],d:24,s:"Watch jets being assembled at scale",st:"Toulouse builds planes. Perspectives shift.",im:"Toulouse North, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["courtyards"],r:"y",nn:"Visite Airbus — North",ns:"Watch jets being assembled at scale",nst:"Toulouse builds planes. Perspectives shift.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:82,n:"Saint-Sernin Basilica — Altstadt",a:"Altstadt",v:["history", "beautiful", "local"],d:0,s:"Romanesque church where pilgrims stopped before Spain",st:"1050-1120. On the Way of St. James. Pilgrims still pass through.",im:"Toulouse Altstadt, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"g",nn:"Basilique Saint-Sernin — Altstadt",ns:"Romanesque church where pilgrims stopped before Spain",nst:"1050-1120. On the Way of St. James. Pilgrims still pass through.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:83,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful"],d:3,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["courtyards"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:84,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful"],d:6,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["romantic_water"],r:"y",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:85,n:"Saint-Sernin Basilica — Altstadt",a:"Altstadt",v:["history", "beautiful", "local"],d:15,s:"Romanesque church where pilgrims stopped before Spain",st:"1050-1120. On the Way of St. James. Pilgrims still pass through.",im:"Toulouse Altstadt, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Basilique Saint-Sernin — Altstadt",ns:"Romanesque church where pilgrims stopped before Spain",nst:"1050-1120. On the Way of St. James. Pilgrims still pass through.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:86,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful"],d:34,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"y",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:87,n:"Saint-Sernin Basilica — Altstadt",a:"Altstadt",v:["history", "beautiful"],d:14,s:"Romanesque church where pilgrims stopped before Spain",st:"1050-1120. On the Way of St. James. Pilgrims still pass through.",im:"Toulouse Altstadt, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"g",nn:"Basilique Saint-Sernin — Altstadt",ns:"Romanesque church where pilgrims stopped before Spain",nst:"1050-1120. On the Way of St. James. Pilgrims still pass through.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:88,n:"Jardin des Plantes — South",a:"South",v:["nature", "quiet"],d:40,s:"18th-century botanical garden with rare plants",st:"Free. Designed for learning. Sacred benches.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Jardin des Plantes — South",ns:"18th-century botanical garden with rare plants",nst:"Free. Designed for learning. Sacred benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:89,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful"],d:6,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:90,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful", "weird"],d:38,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["free_museum"],r:"g",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:91,n:"Jardin des Plantes — South",a:"South",v:["nature", "quiet"],d:24,s:"18th-century botanical garden with rare plants",st:"Free. Designed for learning. Sacred benches.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Jardin des Plantes — South",ns:"18th-century botanical garden with rare plants",nst:"Free. Designed for learning. Sacred benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:92,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful", "local"],d:15,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:93,n:"Albi — South",a:"South",v:["history", "beautiful", "night"],d:27,s:"Red-brick cathedral and Toulouse-Lautrec museum",st:"45 min. Cathedral bigger than Notre-Dame.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"g",nn:"Albi — South",ns:"Red-brick cathedral and Toulouse-Lautrec museum",nst:"45 min. Cathedral bigger than Notre-Dame.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:94,n:"Allées Jean Jaurès — City Center",a:"City Center",v:["local", "beautiful", "free"],d:5,s:"Tree-canopied promenade where Toulouse strolls",st:"1800s avenue. Plane trees shade benches.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["romantic_water"],r:"g",nn:"Allées Jean Jaurès — City Center",ns:"Tree-canopied promenade where Toulouse strolls",nst:"1800s avenue. Plane trees shade benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:95,n:"Basilica Saint-Michel — South",a:"South",v:["history", "beautiful"],d:12,s:"Flamboyant Gothic spire above Garonne",st:"Built 1247-1506. Perfection wasn\'t rushed.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"y",nn:"Basilique Saint-Michel — South",ns:"Flamboyant Gothic spire above Garonne",nst:"Built 1247-1506. Perfection wasn\'t rushed.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:96,n:"Jardin des Plantes — South",a:"South",v:["nature", "quiet"],d:32,s:"18th-century botanical garden with rare plants",st:"Free. Designed for learning. Sacred benches.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Jardin des Plantes — South",ns:"18th-century botanical garden with rare plants",nst:"Free. Designed for learning. Sacred benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:97,n:"Les Abattoirs — West",a:"West",v:["hidden", "street_art"],d:6,s:"Former slaughterhouse now art venue with murals",st:"Raw brick. Street art. Where Toulouse experiments.",im:"Toulouse West, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Les Abattoirs — West",ns:"Former slaughterhouse now art venue with murals",nst:"Raw brick. Street art. Where Toulouse experiments.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:98,n:"Capitole — City Center",a:"City Center",v:["history", "beautiful", "hidden"],d:3,s:"Pink palace where Toulouse rules itself",st:"Renaissance seat of power. Now cultural center. Façade glows like sunset.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["courtyards"],r:"g",nn:"Capitole — City Center",ns:"Pink palace where Toulouse rules itself",nst:"Renaissance seat of power. Now cultural center. Façade glows like sunset.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:99,n:"Pic du Midi — South",a:"South",v:["nature", "beautiful", "quiet"],d:38,s:"Mountain observatory at 2,865m with Pyrenees views",st:"Cable car to peak. Scientists and hikers collide.",im:"Toulouse South, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["free_museum"],r:"y",nn:"Pic du Midi de Bigorre — South",ns:"Mountain observatory at 2,865m with Pyrenees views",nst:"Cable car to peak. Scientists and hikers collide.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:100,n:"Allées Jean Jaurès — City Center",a:"City Center",v:["local", "beautiful"],d:4,s:"Tree-canopied promenade where Toulouse strolls",st:"1800s avenue. Plane trees shade benches.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["architecture"],r:"g",nn:"Allées Jean Jaurès — City Center",ns:"Tree-canopied promenade where Toulouse strolls",nst:"1800s avenue. Plane trees shade benches.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:101,n:"Canal du Midi — City",a:"City",v:["beautiful", "local", "history"],d:3,s:"Tree-lined canal where locals bike, picnic, fall in love",st:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Canal du Midi — City",ns:"Tree-lined canal where locals bike, picnic, fall in love",nst:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:102,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful"],d:7,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:103,n:"Canal du Midi — City",a:"City",v:["beautiful", "local", "night"],d:13,s:"Tree-lined canal where locals bike, picnic, fall in love",st:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",im:"Toulouse City, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["free_museum"],r:"g",nn:"Canal du Midi — City",ns:"Tree-lined canal where locals bike, picnic, fall in love",nst:"1681. UNESCO. In Toulouse: willows droop, water reflects sky.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:104,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful"],d:4,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
+  {id:105,n:"Musée des Augustins — City Center",a:"City Center",v:["history", "beautiful", "quiet"],d:11,s:"Medieval monastery converted to art museum",st:"1200s cloisters. Renaissance art. Meditation.",im:"Toulouse City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["scary"],r:"y",nn:"Musée des Augustins — City Center",ns:"Medieval monastery converted to art museum",nst:"1200s cloisters. Renaissance art. Meditation.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."}
+];
+
+const M = [
+  {id:1,title:"The South Deep Dive",desc:"Hit 5 hidden spots in South. Walk slow, look up, read everything.",places:[8, 9, 11, 12, 13],time:"125 min"},
+  {id:2,title:"The City Center Deep Dive",desc:"Hit 5 hidden spots in City Center. Walk slow, look up, read everything.",places:[1, 7, 10, 15, 18],time:"125 min"},
+  {id:3,title:"The City Deep Dive",desc:"Hit 5 hidden spots in City. Walk slow, look up, read everything.",places:[3, 6, 16, 35, 44],time:"125 min"},
+  {id:4,title:"The West Deep Dive",desc:"Hit 5 hidden spots in West. Walk slow, look up, read everything.",places:[5, 22, 24, 47, 58],time:"125 min"},
+  {id:5,title:"The Altstadt Deep Dive",desc:"Hit 5 hidden spots in Altstadt. Walk slow, look up, read everything.",places:[2, 30, 36, 64, 72],time:"125 min"},
+  {id:6,title:"The North Deep Dive",desc:"Hit 5 hidden spots in North. Walk slow, look up, read everything.",places:[14, 46, 48, 55, 62],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 11, 14, 24, 34, 37],time:"120 min"},
+  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[1, 9, 17, 21, 25, 38],time:"120 min"},
+  {id:9,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[31, 44, 45, 64, 72, 74],time:"120 min"},
+  {id:10,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[35, 40, 43, 71, 80],time:"100 min"},
+  {id:11,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
+
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"courtyards",name:"Secret Courtyards",desc:"Walk through the doorways",emoji:"🚪",color:"#8b5cf6"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"abandoned",name:"Abandoned & Forgotten",desc:"Places time left behind",emoji:"🏚️",color:"#78716c"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+
+const AREAS = ["Altstadt", "City", "City Center", "East", "North", "South", "West"];
+
+const PHRASES = [
+  {native:"Bonjour",en:"Hello"},
+  {native:"Comment allez-vous?",en:"How are you?"},
+  {native:"Merci",en:"Thank you"},
+  {native:"Oui / Non",en:"Yes / No"},
+  {native:"Où est les toilettes?",en:"Where are the toilets?"},
+  {native:"C\'est trop cher",en:"It\'s too expensive"},
+  {native:"Je ne comprends pas",en:"I don\'t understand"},
+  {native:"Une bière, s\'il vous plaît",en:"A beer, please"},
+  {native:"C\'est magnifique",en:"It\'s magnificent"},
+  {native:"Au revoir",en:"Goodbye"}
+];
+
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+
+const PLACE_IMAGES={};
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(26,26,46,0.88) 0%,rgba(45,27,105,0.85) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
+<p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Toulouse Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+<p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
+{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Toulouse</button>
+<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
+<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
+</div></div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"white",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p></div>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+if(showPicker){const rp=P[Math.floor(Math.random()*P.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<p className="text-4xl mb-4">🎲</p>
+<h2 className="text-xl font-black text-center" style={{color:"white"}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-sm mt-2 text-center" style={{color:"#b8b0d0"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3 text-center px-6" style={{color:"#8b7fb8",lineHeight:1.6}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+<div className="flex gap-3 mt-6">
+<button onClick={()=>setShowPicker(false)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Close</button>
+<button onClick={()=>{setSelected(rp);setShowPicker(false)}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Go!</button>
+<button onClick={()=>setShowPicker(true)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Reroll</button>
+</div></div>}
+
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Toulouse Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={()=>setShowPicker(true)} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+
+<div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
+<div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+<div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+<img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
+</div>)}
+</div></div>
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Toulouse Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script></body></html>
