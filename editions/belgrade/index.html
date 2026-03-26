@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Belgrade...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Serbian";
-
+<script>
 const P = [
   {id:1,n:"Kalemegdan Fortress Layers",a:"Stari Grad",v:["history", "beautiful"],d:1,s:"2000 years of walls watching the Danube.",st:"Roman fort. Ottoman fortress. Austrian stronghold. Now it\'s park. Walk the layers. Each stone is history. Vistula and Danube meet at its feet. Views unmatched. Power was here. Memory remains.",im:"It\'s 1200. Ottoman builders expand. By 1800, Austrians hold. By 2024, Belgradians remember all of them.",t:"Roman fort. Ottoman fortress. Austrian stronghold. Now it\'s park. Walk the layers. Each stone is history. Vistula and Danube meet at its feet. Views unmatched. Power was here. Memory remains.\",im:\"It\'s 1200. Ottoman builders expand. By 1800, Austrians hold. By 2024, Belgradians remember all of them.\",t:\"Kalemegdan Fortress. Open 8am-10pm. Free entry. Museum inside €3. Walk all levels. Allow 2 hours. Sunset essential.",c:["history_big", "beautiful"],r:"g",nn:"Београд",ns:"Где река Дунав утупа своју моћ у поетско срце.",nst:"Београд је град контраста, где су турци и хабсбуршани оставили своје печате. Дунав протиче крај Земуна са његовим чарантним кулама. Нови Београд је озбиљан и модеран док Старо граѓе животариште и душе. Суќани су жарки, директни и страствени.",nt:"Прођите кроз Теразије за приказ. Дунав даје слободе за прошетавање. Каф је живот—вода и разговор су неделивни. Ноћ долази са рок музиком и пивом. Србијанци говоре с почастима у срцу. Четири хилјаде наступа годишње оживе место."},
   {id:2,n:"Savamala Creative Quarter Galleries",a:"Savamala",v:["street_art", "local", "beautiful"],d:2,s:"Industrial zone became artist rebellion.",st:"Abandoned warehouses claimed by artists. Street art. Galleries. Cafés. Music venues. It\'s gentrifying. It\'s resistant. It\'s real. Walk warehouses. Spray-painted prophecies. This is where Belgrade creates.",im:"It\'s 2005. Artists arrive. Rent is free. By 2024, developers circle. Artists resist.",t:"Abandoned warehouses claimed by artists. Street art. Galleries. Cafés. Music venues. It\'s gentrifying. It\'s resistant. It\'s real. Walk warehouses. Spray-painted prophecies. This is where Belgrade creates.\",im:\"It\'s 2005. Artists arrive. Rent is free. By 2024, developers circle. Artists resist.\",t:\"Savamala district. Start at Beton Hall. Walk Danube bank. Multiple galleries open weekends. Free. Allow 2-3 hours. Night energy best.",c:["street_art", "local_only"],r:"g",nn:"Београд",ns:"Где река Дунав утупа своју моћ у поетско срце.",nst:"Београд је град контраста, где су турци и хабсбуршани оставили своје печате. Дунав протиче крај Земуна са његовим чарантним кулама. Нови Београд је озбиљан и модеран док Старо граѓе животариште и душе. Суќани су жарки, директни и страствени.",nt:"Прођите кроз Теразије за приказ. Дунав даје слободе за прошетавање. Каф је живот—вода и разговор су неделивни. Ноћ долази са рок музиком и пивом. Србијанци говоре с почастима у срцу. Четири хилјаде наступа годишње оживе место."},
@@ -166,32 +163,6 @@ const P = [
   {id:109,n:"Danube Islands (Ada Ciganlija)",a:"New Belgrade",v:["nature","sport","free"],d:25,s:"Natural island park in the middle of the Danube — swimming, beaches, and wild camping culture",st:"Ada Ciganlija is a lush island in the Danube where locals swim, sunbathe, and camp. The atmosphere is free-spirited; bring a tent or hammock and join the bohemian river scene. Sunsets over the water are epic.",im:"Time-travel: Ada became a nature reserve and beach destination in the 1980s.",t:"Free. Bus or bike across the bridge. Camping spots are semi-legal but tolerated.",c:["parks","local_only"],r:"g",nn:"Ada Ciganlija",ns:"Prirodni ostrov u Dunavu — kupanje, plaže i šatorski kampovanje",nst:"Plovite na ostrvu Ada sa lokalnim kampujućima i plaćama.",nt:"Besplatno. Autobus ili bicikl preko mosta. Kampovanje je polu-legalno."},
   {id:110,n:"Nikola Tesla Museum Courtyard",a:"Voždovac",v:["history","weird","local"],d:10,s:"Hidden museum honoring the mad scientist in his former home — strange and intimate",st:"The Tesla Museum is housed in his actual residence. Even without paying entry, the courtyard and facade evoke the eccentric genius. Locals know this as a pilgrimage site for electrical obsessives.",im:"Time-travel: Tesla lived here in the 1880s-1890s while perfecting wireless transmission.",t:"Paid entry for interior. Courtyard viewable from street. Mihaila Milovića st.",c:["history_big","architecture"],r:"g",nn:"Muzej Nikole Tesle",ns:"Muzej čudnog naučnika u njegovoj bivšoj kući",nst:"Posjetite muzej Nikolom Tesle i njegove misterije.",nt:"Ulaznica obavezna za enterijer. Devor vidljiv sa ulice."}
 ];
-
-const M = [
-  {id:1,title:"The Voždovac Deep Dive",desc:"Hit 5 hidden spots in Voždovac. Walk slow, look up, read everything.",places:[13, 17, 21, 23, 25],time:"125 min"},
-  {id:2,title:"The Stari Grad Deep Dive",desc:"Hit 5 hidden spots in Stari Grad. Walk slow, look up, read everything.",places:[1, 8, 10, 12, 16],time:"125 min"},
-  {id:3,title:"The Dorćol Deep Dive",desc:"Hit 5 hidden spots in Dorćol. Walk slow, look up, read everything.",places:[3, 22, 24, 26, 33],time:"125 min"},
-  {id:4,title:"The Savamala Deep Dive",desc:"Hit 5 hidden spots in Savamala. Walk slow, look up, read everything.",places:[2, 18, 38, 41, 49],time:"125 min"},
-  {id:5,title:"The Kalemegdan Deep Dive",desc:"Hit 5 hidden spots in Kalemegdan. Walk slow, look up, read everything.",places:[15, 28, 48, 51, 55],time:"125 min"},
-  {id:6,title:"The Dedinje Deep Dive",desc:"Hit 4 hidden spots in Dedinje. Walk slow, look up, read everything.",places:[4, 7, 11, 43],time:"100 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 4, 5, 7, 8, 9],time:"120 min"},
-  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 18, 38, 41, 91],time:"100 min"},
-  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[3, 17, 25, 27, 29, 37],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 108. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Ada", "Ada Ciganlija", "Avala", "Beton Hala", "Danube", "Danube Island", "Dedinje", "Dor\u0107ol", "Dor\u0107ol/Vo\u017edovac", "Grobnjan", "Grocka", "Kalemegdan", "Knez Mihailova", "Kumodra\u017e", "Multiple", "New Belgrade", "Palidromilje", "Saborna Crkva", "Savamala", "Savski Venac", "Skadarlija", "Stari Grad", "Top\u010dider", "Various", "Vo\u017edovac", "Vracar", "Vra\u010dar", "Zemun"];
-
 const PHRASES = [
   {native:"Здраво!",en:"Hello!"},
   {native:"Хвала!",en:"Thank you!"},
@@ -204,10 +175,34 @@ const PHRASES = [
   {native:"Помоћ!",en:"Help!"},
   {native:"Лепо је",en:"Beautiful/Nice"}
 ];
-
+const AREAS = ["Ada", "Ada Ciganlija", "Avala", "Beton Hala", "Danube", "Danube Island", "Dedinje", "Dor\u0107ol", "Dor\u0107ol/Vo\u017edovac", "Grobnjan", "Grocka", "Kalemegdan", "Knez Mihailova", "Kumodra\u017e", "Multiple", "New Belgrade", "Palidromilje", "Saborna Crkva", "Savamala", "Savski Venac", "Skadarlija", "Stari Grad", "Top\u010dider", "Various", "Vo\u017edovac", "Vracar", "Vra\u010dar", "Zemun"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Voždovac Deep Dive",desc:"Hit 5 hidden spots in Voždovac. Walk slow, look up, read everything.",places:[13, 17, 21, 23, 25],time:"125 min"},
+  {id:2,title:"The Stari Grad Deep Dive",desc:"Hit 5 hidden spots in Stari Grad. Walk slow, look up, read everything.",places:[1, 8, 10, 12, 16],time:"125 min"},
+  {id:3,title:"The Dorćol Deep Dive",desc:"Hit 5 hidden spots in Dorćol. Walk slow, look up, read everything.",places:[3, 22, 24, 26, 33],time:"125 min"},
+  {id:4,title:"The Savamala Deep Dive",desc:"Hit 5 hidden spots in Savamala. Walk slow, look up, read everything.",places:[2, 18, 38, 41, 49],time:"125 min"},
+  {id:5,title:"The Kalemegdan Deep Dive",desc:"Hit 5 hidden spots in Kalemegdan. Walk slow, look up, read everything.",places:[15, 28, 48, 51, 55],time:"125 min"},
+  {id:6,title:"The Dedinje Deep Dive",desc:"Hit 4 hidden spots in Dedinje. Walk slow, look up, read everything.",places:[4, 7, 11, 43],time:"100 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 4, 5, 7, 8, 9],time:"120 min"},
+  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 18, 38, 41, 91],time:"100 min"},
+  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[3, 17, 25, 27, 29, 37],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 108. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Serbian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
