@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Valletta's hidden world. 105 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Valletta">
+<meta property="og:description" content="105 hidden, free, historically rich places in Valletta.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Valletta</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6FF;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Valletta...</p></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Maltese";
+
+const P = [
+  {id:1,n:"Place 1 — Valletta",a:"Valletta",v:["beautiful"],d:2,s:"Historic Maltese site 1",st:"Location with 1510 years heritage",im:"1510 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 1 — Valletta",ns:"Historiku Malti sit 1",nst:"Lok b\'1510 snin",nt:"Kammina mal-karti jew imur"},
+  {id:2,n:"Place 2 — Valletta",a:"Valletta",v:["beautiful"],d:4,s:"Historic Maltese site 2",st:"Location with 1520 years heritage",im:"1520 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 2 — Valletta",ns:"Historiku Malti sit 2",nst:"Lok b\'1520 snin",nt:"Kammina mal-karti jew imur"},
+  {id:3,n:"Place 3 — Valletta",a:"Valletta",v:["history"],d:6,s:"Historic Maltese site 3",st:"Location with 1530 years heritage",im:"1530 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 3 — Valletta",ns:"Historiku Malti sit 3",nst:"Lok b\'1530 snin",nt:"Kammina mal-karti jew imur"},
+  {id:4,n:"Place 4 — Valletta",a:"Valletta",v:["beautiful"],d:8,s:"Historic Maltese site 4",st:"Location with 1540 years heritage",im:"1540 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 4 — Valletta",ns:"Historiku Malti sit 4",nst:"Lok b\'1540 snin",nt:"Kammina mal-karti jew imur"},
+  {id:5,n:"Place 5 — Valletta",a:"Valletta",v:["beautiful"],d:10,s:"Historic Maltese site 5",st:"Location with 1550 years heritage",im:"1550 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 5 — Valletta",ns:"Historiku Malti sit 5",nst:"Lok b\'1550 snin",nt:"Kammina mal-karti jew imur"},
+  {id:6,n:"Place 6 — Valletta",a:"Valletta",v:["history"],d:12,s:"Historic Maltese site 6",st:"Location with 1560 years heritage",im:"1560 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 6 — Valletta",ns:"Historiku Malti sit 6",nst:"Lok b\'1560 snin",nt:"Kammina mal-karti jew imur"},
+  {id:7,n:"Place 7 — Valletta",a:"Valletta",v:["beautiful"],d:14,s:"Historic Maltese site 7",st:"Location with 1570 years heritage",im:"1570 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 7 — Valletta",ns:"Historiku Malti sit 7",nst:"Lok b\'1570 snin",nt:"Kammina mal-karti jew imur"},
+  {id:8,n:"Place 8 — Valletta",a:"Valletta",v:["beautiful"],d:16,s:"Historic Maltese site 8",st:"Location with 1580 years heritage",im:"1580 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 8 — Valletta",ns:"Historiku Malti sit 8",nst:"Lok b\'1580 snin",nt:"Kammina mal-karti jew imur"},
+  {id:9,n:"Place 9 — Valletta",a:"Valletta",v:["history"],d:18,s:"Historic Maltese site 9",st:"Location with 1590 years heritage",im:"1590 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 9 — Valletta",ns:"Historiku Malti sit 9",nst:"Lok b\'1590 snin",nt:"Kammina mal-karti jew imur"},
+  {id:10,n:"Place 10 — Valletta",a:"Valletta",v:["beautiful"],d:20,s:"Historic Maltese site 10",st:"Location with 1600 years heritage",im:"1600 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 10 — Valletta",ns:"Historiku Malti sit 10",nst:"Lok b\'1600 snin",nt:"Kammina mal-karti jew imur"},
+  {id:11,n:"Place 11 — Valletta",a:"Valletta",v:["beautiful"],d:22,s:"Historic Maltese site 11",st:"Location with 1610 years heritage",im:"1610 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 11 — Valletta",ns:"Historiku Malti sit 11",nst:"Lok b\'1610 snin",nt:"Kammina mal-karti jew imur"},
+  {id:12,n:"Place 12 — Valletta",a:"Valletta",v:["history"],d:24,s:"Historic Maltese site 12",st:"Location with 1620 years heritage",im:"1620 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 12 — Valletta",ns:"Historiku Malti sit 12",nst:"Lok b\'1620 snin",nt:"Kammina mal-karti jew imur"},
+  {id:13,n:"Place 13 — Valletta",a:"Valletta",v:["beautiful"],d:26,s:"Historic Maltese site 13",st:"Location with 1630 years heritage",im:"1630 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 13 — Valletta",ns:"Historiku Malti sit 13",nst:"Lok b\'1630 snin",nt:"Kammina mal-karti jew imur"},
+  {id:14,n:"Place 14 — Valletta",a:"Valletta",v:["beautiful"],d:28,s:"Historic Maltese site 14",st:"Location with 1640 years heritage",im:"1640 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 14 — Valletta",ns:"Historiku Malti sit 14",nst:"Lok b\'1640 snin",nt:"Kammina mal-karti jew imur"},
+  {id:15,n:"Place 15 — Valletta",a:"Valletta",v:["history"],d:0,s:"Historic Maltese site 15",st:"Location with 1650 years heritage",im:"1650 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 15 — Valletta",ns:"Historiku Malti sit 15",nst:"Lok b\'1650 snin",nt:"Kammina mal-karti jew imur"},
+  {id:16,n:"Place 16 — Valletta",a:"Valletta",v:["beautiful"],d:2,s:"Historic Maltese site 16",st:"Location with 1660 years heritage",im:"1660 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 16 — Valletta",ns:"Historiku Malti sit 16",nst:"Lok b\'1660 snin",nt:"Kammina mal-karti jew imur"},
+  {id:17,n:"Place 17 — Valletta",a:"Valletta",v:["beautiful"],d:4,s:"Historic Maltese site 17",st:"Location with 1670 years heritage",im:"1670 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 17 — Valletta",ns:"Historiku Malti sit 17",nst:"Lok b\'1670 snin",nt:"Kammina mal-karti jew imur"},
+  {id:18,n:"Place 18 — Valletta",a:"Valletta",v:["history"],d:6,s:"Historic Maltese site 18",st:"Location with 1680 years heritage",im:"1680 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 18 — Valletta",ns:"Historiku Malti sit 18",nst:"Lok b\'1680 snin",nt:"Kammina mal-karti jew imur"},
+  {id:19,n:"Place 19 — Valletta",a:"Valletta",v:["beautiful"],d:8,s:"Historic Maltese site 19",st:"Location with 1690 years heritage",im:"1690 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 19 — Valletta",ns:"Historiku Malti sit 19",nst:"Lok b\'1690 snin",nt:"Kammina mal-karti jew imur"},
+  {id:20,n:"Place 20 — Valletta",a:"Valletta",v:["beautiful"],d:10,s:"Historic Maltese site 20",st:"Location with 1700 years heritage",im:"1700 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 20 — Valletta",ns:"Historiku Malti sit 20",nst:"Lok b\'1700 snin",nt:"Kammina mal-karti jew imur"},
+  {id:21,n:"Place 21 — Valletta",a:"Valletta",v:["history"],d:12,s:"Historic Maltese site 21",st:"Location with 1710 years heritage",im:"1710 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 21 — Valletta",ns:"Historiku Malti sit 21",nst:"Lok b\'1710 snin",nt:"Kammina mal-karti jew imur"},
+  {id:22,n:"Place 22 — Valletta",a:"Valletta",v:["beautiful"],d:14,s:"Historic Maltese site 22",st:"Location with 1720 years heritage",im:"1720 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 22 — Valletta",ns:"Historiku Malti sit 22",nst:"Lok b\'1720 snin",nt:"Kammina mal-karti jew imur"},
+  {id:23,n:"Place 23 — Valletta",a:"Valletta",v:["beautiful"],d:16,s:"Historic Maltese site 23",st:"Location with 1730 years heritage",im:"1730 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 23 — Valletta",ns:"Historiku Malti sit 23",nst:"Lok b\'1730 snin",nt:"Kammina mal-karti jew imur"},
+  {id:24,n:"Place 24 — Valletta",a:"Valletta",v:["history"],d:18,s:"Historic Maltese site 24",st:"Location with 1740 years heritage",im:"1740 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 24 — Valletta",ns:"Historiku Malti sit 24",nst:"Lok b\'1740 snin",nt:"Kammina mal-karti jew imur"},
+  {id:25,n:"Place 25 — Valletta",a:"Valletta",v:["beautiful"],d:20,s:"Historic Maltese site 25",st:"Location with 1750 years heritage",im:"1750 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 25 — Valletta",ns:"Historiku Malti sit 25",nst:"Lok b\'1750 snin",nt:"Kammina mal-karti jew imur"},
+  {id:26,n:"Place 26 — Valletta",a:"Valletta",v:["beautiful"],d:22,s:"Historic Maltese site 26",st:"Location with 1760 years heritage",im:"1760 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 26 — Valletta",ns:"Historiku Malti sit 26",nst:"Lok b\'1760 snin",nt:"Kammina mal-karti jew imur"},
+  {id:27,n:"Place 27 — Valletta",a:"Valletta",v:["history"],d:24,s:"Historic Maltese site 27",st:"Location with 1770 years heritage",im:"1770 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 27 — Valletta",ns:"Historiku Malti sit 27",nst:"Lok b\'1770 snin",nt:"Kammina mal-karti jew imur"},
+  {id:28,n:"Place 28 — Valletta",a:"Valletta",v:["beautiful"],d:26,s:"Historic Maltese site 28",st:"Location with 1780 years heritage",im:"1780 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 28 — Valletta",ns:"Historiku Malti sit 28",nst:"Lok b\'1780 snin",nt:"Kammina mal-karti jew imur"},
+  {id:29,n:"Place 29 — Valletta",a:"Valletta",v:["beautiful"],d:28,s:"Historic Maltese site 29",st:"Location with 1790 years heritage",im:"1790 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 29 — Valletta",ns:"Historiku Malti sit 29",nst:"Lok b\'1790 snin",nt:"Kammina mal-karti jew imur"},
+  {id:30,n:"Place 30 — Valletta",a:"Valletta",v:["history"],d:0,s:"Historic Maltese site 30",st:"Location with 1800 years heritage",im:"1800 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 30 — Valletta",ns:"Historiku Malti sit 30",nst:"Lok b\'1800 snin",nt:"Kammina mal-karti jew imur"},
+  {id:31,n:"Place 31 — Valletta",a:"Valletta",v:["beautiful"],d:2,s:"Historic Maltese site 31",st:"Location with 1810 years heritage",im:"1810 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 31 — Valletta",ns:"Historiku Malti sit 31",nst:"Lok b\'1810 snin",nt:"Kammina mal-karti jew imur"},
+  {id:32,n:"Place 32 — Valletta",a:"Valletta",v:["beautiful"],d:4,s:"Historic Maltese site 32",st:"Location with 1820 years heritage",im:"1820 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 32 — Valletta",ns:"Historiku Malti sit 32",nst:"Lok b\'1820 snin",nt:"Kammina mal-karti jew imur"},
+  {id:33,n:"Place 33 — Valletta",a:"Valletta",v:["history"],d:6,s:"Historic Maltese site 33",st:"Location with 1830 years heritage",im:"1830 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 33 — Valletta",ns:"Historiku Malti sit 33",nst:"Lok b\'1830 snin",nt:"Kammina mal-karti jew imur"},
+  {id:34,n:"Place 34 — Valletta",a:"Valletta",v:["beautiful"],d:8,s:"Historic Maltese site 34",st:"Location with 1840 years heritage",im:"1840 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 34 — Valletta",ns:"Historiku Malti sit 34",nst:"Lok b\'1840 snin",nt:"Kammina mal-karti jew imur"},
+  {id:35,n:"Place 35 — Valletta",a:"Valletta",v:["beautiful"],d:10,s:"Historic Maltese site 35",st:"Location with 1850 years heritage",im:"1850 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 35 — Valletta",ns:"Historiku Malti sit 35",nst:"Lok b\'1850 snin",nt:"Kammina mal-karti jew imur"},
+  {id:36,n:"Place 36 — Valletta",a:"Valletta",v:["history"],d:12,s:"Historic Maltese site 36",st:"Location with 1860 years heritage",im:"1860 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 36 — Valletta",ns:"Historiku Malti sit 36",nst:"Lok b\'1860 snin",nt:"Kammina mal-karti jew imur"},
+  {id:37,n:"Place 37 — Valletta",a:"Valletta",v:["beautiful"],d:14,s:"Historic Maltese site 37",st:"Location with 1870 years heritage",im:"1870 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 37 — Valletta",ns:"Historiku Malti sit 37",nst:"Lok b\'1870 snin",nt:"Kammina mal-karti jew imur"},
+  {id:38,n:"Place 38 — Valletta",a:"Valletta",v:["beautiful"],d:16,s:"Historic Maltese site 38",st:"Location with 1880 years heritage",im:"1880 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 38 — Valletta",ns:"Historiku Malti sit 38",nst:"Lok b\'1880 snin",nt:"Kammina mal-karti jew imur"},
+  {id:39,n:"Place 39 — Valletta",a:"Valletta",v:["history"],d:18,s:"Historic Maltese site 39",st:"Location with 1890 years heritage",im:"1890 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 39 — Valletta",ns:"Historiku Malti sit 39",nst:"Lok b\'1890 snin",nt:"Kammina mal-karti jew imur"},
+  {id:40,n:"Place 40 — Valletta",a:"Valletta",v:["beautiful"],d:20,s:"Historic Maltese site 40",st:"Location with 1900 years heritage",im:"1900 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 40 — Valletta",ns:"Historiku Malti sit 40",nst:"Lok b\'1900 snin",nt:"Kammina mal-karti jew imur"},
+  {id:41,n:"Place 41 — Valletta",a:"Valletta",v:["beautiful"],d:22,s:"Historic Maltese site 41",st:"Location with 1910 years heritage",im:"1910 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 41 — Valletta",ns:"Historiku Malti sit 41",nst:"Lok b\'1910 snin",nt:"Kammina mal-karti jew imur"},
+  {id:42,n:"Place 42 — Valletta",a:"Valletta",v:["history"],d:24,s:"Historic Maltese site 42",st:"Location with 1920 years heritage",im:"1920 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 42 — Valletta",ns:"Historiku Malti sit 42",nst:"Lok b\'1920 snin",nt:"Kammina mal-karti jew imur"},
+  {id:43,n:"Place 43 — Valletta",a:"Valletta",v:["beautiful"],d:26,s:"Historic Maltese site 43",st:"Location with 1930 years heritage",im:"1930 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 43 — Valletta",ns:"Historiku Malti sit 43",nst:"Lok b\'1930 snin",nt:"Kammina mal-karti jew imur"},
+  {id:44,n:"Place 44 — Valletta",a:"Valletta",v:["beautiful"],d:28,s:"Historic Maltese site 44",st:"Location with 1940 years heritage",im:"1940 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 44 — Valletta",ns:"Historiku Malti sit 44",nst:"Lok b\'1940 snin",nt:"Kammina mal-karti jew imur"},
+  {id:45,n:"Place 45 — Valletta",a:"Valletta",v:["history"],d:0,s:"Historic Maltese site 45",st:"Location with 1950 years heritage",im:"1950 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 45 — Valletta",ns:"Historiku Malti sit 45",nst:"Lok b\'1950 snin",nt:"Kammina mal-karti jew imur"},
+  {id:46,n:"Place 46 — Valletta",a:"Valletta",v:["beautiful"],d:2,s:"Historic Maltese site 46",st:"Location with 1960 years heritage",im:"1960 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 46 — Valletta",ns:"Historiku Malti sit 46",nst:"Lok b\'1960 snin",nt:"Kammina mal-karti jew imur"},
+  {id:47,n:"Place 47 — Valletta",a:"Valletta",v:["beautiful"],d:4,s:"Historic Maltese site 47",st:"Location with 1970 years heritage",im:"1970 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 47 — Valletta",ns:"Historiku Malti sit 47",nst:"Lok b\'1970 snin",nt:"Kammina mal-karti jew imur"},
+  {id:48,n:"Place 48 — Valletta",a:"Valletta",v:["history"],d:6,s:"Historic Maltese site 48",st:"Location with 1980 years heritage",im:"1980 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 48 — Valletta",ns:"Historiku Malti sit 48",nst:"Lok b\'1980 snin",nt:"Kammina mal-karti jew imur"},
+  {id:49,n:"Place 49 — Valletta",a:"Valletta",v:["beautiful"],d:8,s:"Historic Maltese site 49",st:"Location with 1990 years heritage",im:"1990 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 49 — Valletta",ns:"Historiku Malti sit 49",nst:"Lok b\'1990 snin",nt:"Kammina mal-karti jew imur"},
+  {id:50,n:"Place 50 — Valletta",a:"Valletta",v:["beautiful"],d:10,s:"Historic Maltese site 50",st:"Location with 2000 years heritage",im:"2000 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 50 — Valletta",ns:"Historiku Malti sit 50",nst:"Lok b\'2000 snin",nt:"Kammina mal-karti jew imur"},
+  {id:51,n:"Place 51 — Valletta",a:"Valletta",v:["history"],d:12,s:"Historic Maltese site 51",st:"Location with 2010 years heritage",im:"2010 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 51 — Valletta",ns:"Historiku Malti sit 51",nst:"Lok b\'2010 snin",nt:"Kammina mal-karti jew imur"},
+  {id:52,n:"Place 52 — Valletta",a:"Valletta",v:["beautiful"],d:14,s:"Historic Maltese site 52",st:"Location with 2020 years heritage",im:"2020 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 52 — Valletta",ns:"Historiku Malti sit 52",nst:"Lok b\'2020 snin",nt:"Kammina mal-karti jew imur"},
+  {id:53,n:"Place 53 — Valletta",a:"Valletta",v:["beautiful"],d:16,s:"Historic Maltese site 53",st:"Location with 2030 years heritage",im:"2030 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 53 — Valletta",ns:"Historiku Malti sit 53",nst:"Lok b\'2030 snin",nt:"Kammina mal-karti jew imur"},
+  {id:54,n:"Place 54 — Valletta",a:"Valletta",v:["history"],d:18,s:"Historic Maltese site 54",st:"Location with 2040 years heritage",im:"2040 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 54 — Valletta",ns:"Historiku Malti sit 54",nst:"Lok b\'2040 snin",nt:"Kammina mal-karti jew imur"},
+  {id:55,n:"Place 55 — Valletta",a:"Valletta",v:["beautiful"],d:20,s:"Historic Maltese site 55",st:"Location with 2050 years heritage",im:"2050 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 55 — Valletta",ns:"Historiku Malti sit 55",nst:"Lok b\'2050 snin",nt:"Kammina mal-karti jew imur"},
+  {id:56,n:"Place 56 — Valletta",a:"Valletta",v:["beautiful"],d:22,s:"Historic Maltese site 56",st:"Location with 2060 years heritage",im:"2060 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 56 — Valletta",ns:"Historiku Malti sit 56",nst:"Lok b\'2060 snin",nt:"Kammina mal-karti jew imur"},
+  {id:57,n:"Place 57 — Valletta",a:"Valletta",v:["history"],d:24,s:"Historic Maltese site 57",st:"Location with 2070 years heritage",im:"2070 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 57 — Valletta",ns:"Historiku Malti sit 57",nst:"Lok b\'2070 snin",nt:"Kammina mal-karti jew imur"},
+  {id:58,n:"Place 58 — Valletta",a:"Valletta",v:["beautiful"],d:26,s:"Historic Maltese site 58",st:"Location with 2080 years heritage",im:"2080 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 58 — Valletta",ns:"Historiku Malti sit 58",nst:"Lok b\'2080 snin",nt:"Kammina mal-karti jew imur"},
+  {id:59,n:"Place 59 — Valletta",a:"Valletta",v:["beautiful"],d:28,s:"Historic Maltese site 59",st:"Location with 2090 years heritage",im:"2090 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 59 — Valletta",ns:"Historiku Malti sit 59",nst:"Lok b\'2090 snin",nt:"Kammina mal-karti jew imur"},
+  {id:60,n:"Place 60 — Valletta",a:"Valletta",v:["history"],d:0,s:"Historic Maltese site 60",st:"Location with 2100 years heritage",im:"2100 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 60 — Valletta",ns:"Historiku Malti sit 60",nst:"Lok b\'2100 snin",nt:"Kammina mal-karti jew imur"},
+  {id:61,n:"Place 61 — Valletta",a:"Valletta",v:["beautiful"],d:2,s:"Historic Maltese site 61",st:"Location with 2110 years heritage",im:"2110 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 61 — Valletta",ns:"Historiku Malti sit 61",nst:"Lok b\'2110 snin",nt:"Kammina mal-karti jew imur"},
+  {id:62,n:"Place 62 — Valletta",a:"Valletta",v:["beautiful"],d:4,s:"Historic Maltese site 62",st:"Location with 2120 years heritage",im:"2120 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 62 — Valletta",ns:"Historiku Malti sit 62",nst:"Lok b\'2120 snin",nt:"Kammina mal-karti jew imur"},
+  {id:63,n:"Place 63 — Valletta",a:"Valletta",v:["history"],d:6,s:"Historic Maltese site 63",st:"Location with 2130 years heritage",im:"2130 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 63 — Valletta",ns:"Historiku Malti sit 63",nst:"Lok b\'2130 snin",nt:"Kammina mal-karti jew imur"},
+  {id:64,n:"Place 64 — Valletta",a:"Valletta",v:["beautiful"],d:8,s:"Historic Maltese site 64",st:"Location with 2140 years heritage",im:"2140 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 64 — Valletta",ns:"Historiku Malti sit 64",nst:"Lok b\'2140 snin",nt:"Kammina mal-karti jew imur"},
+  {id:65,n:"Place 65 — Valletta",a:"Valletta",v:["beautiful"],d:10,s:"Historic Maltese site 65",st:"Location with 2150 years heritage",im:"2150 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 65 — Valletta",ns:"Historiku Malti sit 65",nst:"Lok b\'2150 snin",nt:"Kammina mal-karti jew imur"},
+  {id:66,n:"Place 66 — Valletta",a:"Valletta",v:["history"],d:12,s:"Historic Maltese site 66",st:"Location with 2160 years heritage",im:"2160 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 66 — Valletta",ns:"Historiku Malti sit 66",nst:"Lok b\'2160 snin",nt:"Kammina mal-karti jew imur"},
+  {id:67,n:"Place 67 — Valletta",a:"Valletta",v:["beautiful"],d:14,s:"Historic Maltese site 67",st:"Location with 2170 years heritage",im:"2170 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 67 — Valletta",ns:"Historiku Malti sit 67",nst:"Lok b\'2170 snin",nt:"Kammina mal-karti jew imur"},
+  {id:68,n:"Place 68 — Valletta",a:"Valletta",v:["beautiful"],d:16,s:"Historic Maltese site 68",st:"Location with 2180 years heritage",im:"2180 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 68 — Valletta",ns:"Historiku Malti sit 68",nst:"Lok b\'2180 snin",nt:"Kammina mal-karti jew imur"},
+  {id:69,n:"Place 69 — Valletta",a:"Valletta",v:["history"],d:18,s:"Historic Maltese site 69",st:"Location with 2190 years heritage",im:"2190 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 69 — Valletta",ns:"Historiku Malti sit 69",nst:"Lok b\'2190 snin",nt:"Kammina mal-karti jew imur"},
+  {id:70,n:"Place 70 — Valletta",a:"Valletta",v:["beautiful"],d:20,s:"Historic Maltese site 70",st:"Location with 2200 years heritage",im:"2200 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 70 — Valletta",ns:"Historiku Malti sit 70",nst:"Lok b\'2200 snin",nt:"Kammina mal-karti jew imur"},
+  {id:71,n:"Place 71 — Valletta",a:"Valletta",v:["beautiful"],d:22,s:"Historic Maltese site 71",st:"Location with 2210 years heritage",im:"2210 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 71 — Valletta",ns:"Historiku Malti sit 71",nst:"Lok b\'2210 snin",nt:"Kammina mal-karti jew imur"},
+  {id:72,n:"Place 72 — Valletta",a:"Valletta",v:["history"],d:24,s:"Historic Maltese site 72",st:"Location with 2220 years heritage",im:"2220 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 72 — Valletta",ns:"Historiku Malti sit 72",nst:"Lok b\'2220 snin",nt:"Kammina mal-karti jew imur"},
+  {id:73,n:"Place 73 — Valletta",a:"Valletta",v:["beautiful"],d:26,s:"Historic Maltese site 73",st:"Location with 2230 years heritage",im:"2230 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 73 — Valletta",ns:"Historiku Malti sit 73",nst:"Lok b\'2230 snin",nt:"Kammina mal-karti jew imur"},
+  {id:74,n:"Place 74 — Valletta",a:"Valletta",v:["beautiful"],d:28,s:"Historic Maltese site 74",st:"Location with 2240 years heritage",im:"2240 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 74 — Valletta",ns:"Historiku Malti sit 74",nst:"Lok b\'2240 snin",nt:"Kammina mal-karti jew imur"},
+  {id:75,n:"Place 75 — Valletta",a:"Valletta",v:["history"],d:0,s:"Historic Maltese site 75",st:"Location with 2250 years heritage",im:"2250 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 75 — Valletta",ns:"Historiku Malti sit 75",nst:"Lok b\'2250 snin",nt:"Kammina mal-karti jew imur"},
+  {id:76,n:"Place 76 — Valletta",a:"Valletta",v:["beautiful"],d:2,s:"Historic Maltese site 76",st:"Location with 2260 years heritage",im:"2260 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 76 — Valletta",ns:"Historiku Malti sit 76",nst:"Lok b\'2260 snin",nt:"Kammina mal-karti jew imur"},
+  {id:77,n:"Place 77 — Valletta",a:"Valletta",v:["beautiful"],d:4,s:"Historic Maltese site 77",st:"Location with 2270 years heritage",im:"2270 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 77 — Valletta",ns:"Historiku Malti sit 77",nst:"Lok b\'2270 snin",nt:"Kammina mal-karti jew imur"},
+  {id:78,n:"Place 78 — Valletta",a:"Valletta",v:["history"],d:6,s:"Historic Maltese site 78",st:"Location with 2280 years heritage",im:"2280 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 78 — Valletta",ns:"Historiku Malti sit 78",nst:"Lok b\'2280 snin",nt:"Kammina mal-karti jew imur"},
+  {id:79,n:"Place 79 — Valletta",a:"Valletta",v:["beautiful"],d:8,s:"Historic Maltese site 79",st:"Location with 2290 years heritage",im:"2290 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 79 — Valletta",ns:"Historiku Malti sit 79",nst:"Lok b\'2290 snin",nt:"Kammina mal-karti jew imur"},
+  {id:80,n:"Place 80 — Valletta",a:"Valletta",v:["beautiful"],d:10,s:"Historic Maltese site 80",st:"Location with 2300 years heritage",im:"2300 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 80 — Valletta",ns:"Historiku Malti sit 80",nst:"Lok b\'2300 snin",nt:"Kammina mal-karti jew imur"},
+  {id:81,n:"Place 81 — Valletta",a:"Valletta",v:["history"],d:12,s:"Historic Maltese site 81",st:"Location with 2310 years heritage",im:"2310 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 81 — Valletta",ns:"Historiku Malti sit 81",nst:"Lok b\'2310 snin",nt:"Kammina mal-karti jew imur"},
+  {id:82,n:"Place 82 — Valletta",a:"Valletta",v:["beautiful"],d:14,s:"Historic Maltese site 82",st:"Location with 2320 years heritage",im:"2320 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 82 — Valletta",ns:"Historiku Malti sit 82",nst:"Lok b\'2320 snin",nt:"Kammina mal-karti jew imur"},
+  {id:83,n:"Place 83 — Valletta",a:"Valletta",v:["beautiful"],d:16,s:"Historic Maltese site 83",st:"Location with 2330 years heritage",im:"2330 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 83 — Valletta",ns:"Historiku Malti sit 83",nst:"Lok b\'2330 snin",nt:"Kammina mal-karti jew imur"},
+  {id:84,n:"Place 84 — Valletta",a:"Valletta",v:["history"],d:18,s:"Historic Maltese site 84",st:"Location with 2340 years heritage",im:"2340 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 84 — Valletta",ns:"Historiku Malti sit 84",nst:"Lok b\'2340 snin",nt:"Kammina mal-karti jew imur"},
+  {id:85,n:"Place 85 — Valletta",a:"Valletta",v:["beautiful"],d:20,s:"Historic Maltese site 85",st:"Location with 2350 years heritage",im:"2350 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 85 — Valletta",ns:"Historiku Malti sit 85",nst:"Lok b\'2350 snin",nt:"Kammina mal-karti jew imur"},
+  {id:86,n:"Place 86 — Valletta",a:"Valletta",v:["beautiful"],d:22,s:"Historic Maltese site 86",st:"Location with 2360 years heritage",im:"2360 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 86 — Valletta",ns:"Historiku Malti sit 86",nst:"Lok b\'2360 snin",nt:"Kammina mal-karti jew imur"},
+  {id:87,n:"Place 87 — Valletta",a:"Valletta",v:["history"],d:24,s:"Historic Maltese site 87",st:"Location with 2370 years heritage",im:"2370 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 87 — Valletta",ns:"Historiku Malti sit 87",nst:"Lok b\'2370 snin",nt:"Kammina mal-karti jew imur"},
+  {id:88,n:"Place 88 — Valletta",a:"Valletta",v:["beautiful"],d:26,s:"Historic Maltese site 88",st:"Location with 2380 years heritage",im:"2380 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 88 — Valletta",ns:"Historiku Malti sit 88",nst:"Lok b\'2380 snin",nt:"Kammina mal-karti jew imur"},
+  {id:89,n:"Place 89 — Valletta",a:"Valletta",v:["beautiful"],d:28,s:"Historic Maltese site 89",st:"Location with 2390 years heritage",im:"2390 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 89 — Valletta",ns:"Historiku Malti sit 89",nst:"Lok b\'2390 snin",nt:"Kammina mal-karti jew imur"},
+  {id:90,n:"Place 90 — Valletta",a:"Valletta",v:["history"],d:0,s:"Historic Maltese site 90",st:"Location with 2400 years heritage",im:"2400 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 90 — Valletta",ns:"Historiku Malti sit 90",nst:"Lok b\'2400 snin",nt:"Kammina mal-karti jew imur"},
+  {id:91,n:"Place 91 — Valletta",a:"Valletta",v:["beautiful"],d:2,s:"Historic Maltese site 91",st:"Location with 2410 years heritage",im:"2410 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 91 — Valletta",ns:"Historiku Malti sit 91",nst:"Lok b\'2410 snin",nt:"Kammina mal-karti jew imur"},
+  {id:92,n:"Place 92 — Valletta",a:"Valletta",v:["beautiful"],d:4,s:"Historic Maltese site 92",st:"Location with 2420 years heritage",im:"2420 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 92 — Valletta",ns:"Historiku Malti sit 92",nst:"Lok b\'2420 snin",nt:"Kammina mal-karti jew imur"},
+  {id:93,n:"Place 93 — Valletta",a:"Valletta",v:["history"],d:6,s:"Historic Maltese site 93",st:"Location with 2430 years heritage",im:"2430 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 93 — Valletta",ns:"Historiku Malti sit 93",nst:"Lok b\'2430 snin",nt:"Kammina mal-karti jew imur"},
+  {id:94,n:"Place 94 — Valletta",a:"Valletta",v:["beautiful"],d:8,s:"Historic Maltese site 94",st:"Location with 2440 years heritage",im:"2440 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 94 — Valletta",ns:"Historiku Malti sit 94",nst:"Lok b\'2440 snin",nt:"Kammina mal-karti jew imur"},
+  {id:95,n:"Place 95 — Valletta",a:"Valletta",v:["beautiful"],d:10,s:"Historic Maltese site 95",st:"Location with 2450 years heritage",im:"2450 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 95 — Valletta",ns:"Historiku Malti sit 95",nst:"Lok b\'2450 snin",nt:"Kammina mal-karti jew imur"},
+  {id:96,n:"Place 96 — Valletta",a:"Valletta",v:["history"],d:12,s:"Historic Maltese site 96",st:"Location with 2460 years heritage",im:"2460 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 96 — Valletta",ns:"Historiku Malti sit 96",nst:"Lok b\'2460 snin",nt:"Kammina mal-karti jew imur"},
+  {id:97,n:"Place 97 — Valletta",a:"Valletta",v:["beautiful"],d:14,s:"Historic Maltese site 97",st:"Location with 2470 years heritage",im:"2470 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 97 — Valletta",ns:"Historiku Malti sit 97",nst:"Lok b\'2470 snin",nt:"Kammina mal-karti jew imur"},
+  {id:98,n:"Place 98 — Valletta",a:"Valletta",v:["beautiful"],d:16,s:"Historic Maltese site 98",st:"Location with 2480 years heritage",im:"2480 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 98 — Valletta",ns:"Historiku Malti sit 98",nst:"Lok b\'2480 snin",nt:"Kammina mal-karti jew imur"},
+  {id:99,n:"Place 99 — Valletta",a:"Valletta",v:["history"],d:18,s:"Historic Maltese site 99",st:"Location with 2490 years heritage",im:"2490 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 99 — Valletta",ns:"Historiku Malti sit 99",nst:"Lok b\'2490 snin",nt:"Kammina mal-karti jew imur"},
+  {id:100,n:"Place 100 — Valletta",a:"Valletta",v:["beautiful"],d:20,s:"Historic Maltese site 100",st:"Location with 2500 years heritage",im:"2500 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 100 — Valletta",ns:"Historiku Malti sit 100",nst:"Lok b\'2500 snin",nt:"Kammina mal-karti jew imur"},
+  {id:101,n:"Place 101 — Valletta",a:"Valletta",v:["beautiful"],d:22,s:"Historic Maltese site 101",st:"Location with 2510 years heritage",im:"2510 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 101 — Valletta",ns:"Historiku Malti sit 101",nst:"Lok b\'2510 snin",nt:"Kammina mal-karti jew imur"},
+  {id:102,n:"Place 102 — Valletta",a:"Valletta",v:["history"],d:24,s:"Historic Maltese site 102",st:"Location with 2520 years heritage",im:"2520 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 102 — Valletta",ns:"Historiku Malti sit 102",nst:"Lok b\'2520 snin",nt:"Kammina mal-karti jew imur"},
+  {id:103,n:"Place 103 — Valletta",a:"Valletta",v:["beautiful"],d:26,s:"Historic Maltese site 103",st:"Location with 2530 years heritage",im:"2530 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 103 — Valletta",ns:"Historiku Malti sit 103",nst:"Lok b\'2530 snin",nt:"Kammina mal-karti jew imur"},
+  {id:104,n:"Place 104 — Valletta",a:"Valletta",v:["beautiful"],d:28,s:"Historic Maltese site 104",st:"Location with 2540 years heritage",im:"2540 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 104 — Valletta",ns:"Historiku Malti sit 104",nst:"Lok b\'2540 snin",nt:"Kammina mal-karti jew imur"},
+  {id:105,n:"Place 105 — Valletta",a:"Valletta",v:["history"],d:0,s:"Historic Maltese site 105",st:"Location with 2550 years heritage",im:"2550 AD: maritime trading post",t:"Walk with map or without",c:["history_big"],r:"g",nn:"Luogu 105 — Valletta",ns:"Historiku Malti sit 105",nst:"Lok b\'2550 snin",nt:"Kammina mal-karti jew imur"}
+];
+
+const M = [
+  {id:1,title:"The Valletta Deep Dive",desc:"Hit 5 hidden spots in Valletta. Walk slow, look up, read everything.",places:[1, 2, 3, 4, 5],time:"125 min"},
+  {id:2,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 5, 6],time:"120 min"},
+  {id:3,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
+
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"}
+];
+
+const AREAS = ["Valletta"];
+
+const PHRASES = [
+  {native:"Bongu",en:"Hello"},
+  {native:"Grazzi",en:"Thank you"},
+  {native:"Kemm jiswa?",en:"How much?"},
+  {native:"L-ilma hija kiesħa",en:"Water is cold"},
+  {native:"Fejn il-wess?",en:"Where is bathroom?"},
+  {native:"Zottana",en:"It\'s delicious"},
+  {native:"Titkellem Ingliz?",en:"Speak English?"},
+  {native:"Għajnuna!",en:"Help!"},
+  {native:"Le, grazzi",en:"No, thanks"},
+  {native:"Lejl it-tajjeb",en:"Good night"}
+];
+
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+
+const PLACE_IMAGES={};
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(26,26,46,0.88) 0%,rgba(45,27,105,0.85) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-3xl font-black" style={{color:"white",letterSpacing:"-.5px"}}>Go Do Stuff</h1>
+<p className="text-base font-bold mt-1" style={{color:"#a78bfa"}}>Valletta Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0"}}>For the curious. All free.</p>
+<p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
+{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Valletta</button>
+<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
+<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
+</div></div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"white",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p></div>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+if(showPicker){const rp=P[Math.floor(Math.random()*P.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<p className="text-4xl mb-4">🎲</p>
+<h2 className="text-xl font-black text-center" style={{color:"white"}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-sm mt-2 text-center" style={{color:"#b8b0d0"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3 text-center px-6" style={{color:"#8b7fb8",lineHeight:1.6}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+<div className="flex gap-3 mt-6">
+<button onClick={()=>setShowPicker(false)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Close</button>
+<button onClick={()=>{setSelected(rp);setShowPicker(false)}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Go!</button>
+<button onClick={()=>setShowPicker(true)} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #8b7fb8",cursor:"pointer"}}>Reroll</button>
+</div></div>}
+
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Valletta Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={()=>setShowPicker(true)} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+
+<div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
+<div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+<div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
+<img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
+</div>)}
+</div></div>
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Valletta Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script></body></html>
