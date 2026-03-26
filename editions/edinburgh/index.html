@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Edinburgh...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="English";
-
+<script>
 const P = [
   {id:1,n:"Old Town Closes (Hidden Medieval Alleyways) — Old Town",a:"Old Town",v:["history", "hidden", "beautiful"],d:1,s:"Narrow passageways connecting main streets—entire neighborhoods exist in closes most tourists miss.",st:"Stone walls press close. Stairs climb steeply. Doorways open to hidden courtyards. Light angles oddly. You\'re walking history—medieval life, plague, rebellion, ordinary days compressed into human-scaled streets.",im:"It\'s 1650. A family enters their close for the night. The street outside is muddy and dangerous.",t:"Stone walls press close. Stairs climb steeply. Doorways open to hidden courtyards. Light angles oddly. You\'re walking history—medieval life, plague, rebellion, ordinary days compressed into human-scaled streets.\",im:\"It\'s 1650. A family enters their close for the night. The street outside is muddy and dangerous.\",t:\"Start at Lawnmarket and explore at random. Free. Early morning before tour groups. Go slow. Get lost.",c:["history_big", "hidden"],r:"g",nn:"",ns:"",nst:"",nt:""},
   {id:2,n:"Arthur\'s Seat (Volcanic Hike) — Holyrood",a:"Holyrood",v:["nature", "high_spots", "beautiful"],d:2,s:"Ancient volcano right in the city—climb 251 meters and Edinburgh spreads below like a medieval map.",st:"Walk up is steep. Your legs burn. At the top, 360-degree view. The Firth of Forth stretches to the North Sea. You see exactly how Edinburgh grew. Wind is constant. You\'re standing on ancient violent moment.",im:"It\'s 320 million years ago. A volcano erupts. Nothing is permanent.",t:"Walk up is steep. Your legs burn. At the top, 360-degree view. The Firth of Forth stretches to the North Sea. You see exactly how Edinburgh grew. Wind is constant. You\'re standing on ancient violent moment.\",im:\"It\'s 320 million years ago. A volcano erupts. Nothing is permanent.\",t:\"Free. Multiple paths from Holyrood Park. 30-45 minutes depending on route. Go good weather. Bring water. Dress for wind.",c:["high_spots", "nature"],r:"y",nn:"",ns:"",nst:"",nt:""},
@@ -163,33 +160,6 @@ const P = [
   {id:106,n:"Royal Mile Street Performers",a:"Centrum",v:["local","free","night"],d:8,s:"Watch world-class buskers on the famous sloped street — free theater",st:"The Royal Mile hosts incredible street musicians and performers. The acoustic properties are amazing; a solo violinist can sound like a full orchestra echoing off the stone. It\'s pure spectacle, donation-based.",im:"Time-travel: The Royal Mile has been Edinburgh\'s main street for 500+ years.",t:"Free to watch. Donations encouraged. Any time, but evening is best.",c:["history_big","local_only"],r:"g",nn:"Sràid Ìle Rìoghail",ns:"Cleasaichean sràide air an t-sràid ainmeil",nst:"Amhairc air cleasaidhean saor air an Rìoghail Sràid.",nt:"Saor-amharc. Tiodhlacain iarrthaichte. Feasachd is fearr."},
   {id:107,n:"Water of Leith Walkway",a:"West End",v:["nature","free","quiet"],d:20,s:"Riverside trail through the city — a secret green escape",st:"The Water of Leith is a river running through Edinburgh. The pathway is largely unknown to tourists; locals walk it for tranquility. Surrounded by trees and old mills, it feels like countryside minutes from the city center.",im:"Time-travel: The river powered flour mills dating back to medieval times.",t:"Free. Entrances at various points; start from the Dean Village area.",c:["parks","local_only"],r:"g",nn:"Slighe Uisge Leith",ns:"Leithig-riverpath i bhfód chathair",nst:"Coisigh ar an slighe dhúil i ngartha an bhailé.",nt:"Saor-shiubhail. Iontrálacha éagsúla. Dean Village is tosach."}
 ];
-
-const M = [
-  {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[1, 15, 21, 23, 35],time:"125 min"},
-  {id:2,title:"The Various Deep Dive",desc:"Hit 5 hidden spots in Various. Walk slow, look up, read everything.",places:[7, 28, 43, 50, 68],time:"125 min"},
-  {id:3,title:"The Holyrood Deep Dive",desc:"Hit 5 hidden spots in Holyrood. Walk slow, look up, read everything.",places:[2, 13, 25, 33, 55],time:"125 min"},
-  {id:4,title:"The Leith Deep Dive",desc:"Hit 5 hidden spots in Leith. Walk slow, look up, read everything.",places:[17, 24, 37, 58, 65],time:"125 min"},
-  {id:5,title:"The Calton Deep Dive",desc:"Hit 5 hidden spots in Calton. Walk slow, look up, read everything.",places:[3, 41, 48, 63, 80],time:"125 min"},
-  {id:6,title:"The Grassmarket Deep Dive",desc:"Hit 5 hidden spots in Grassmarket. Walk slow, look up, read everything.",places:[4, 19, 26, 39, 70],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 4, 5, 15, 16, 19],time:"120 min"},
-  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[2, 3, 20, 40, 41, 60],time:"120 min"},
-  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[10, 13, 18, 30, 38, 52],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
-  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Blackford", "Calton", "Castle", "City Center", "Cramond", "Grassmarket", "Hill", "Holyrood", "Inverleith", "Leith", "New Town", "Old Town", "Portobello", "South", "South Bridge", "Stockbridge", "The Mound", "Various"];
-
 const PHRASES = [
   {native:"Ach, ye\'re awright",en:"You\'re alright/How are you?"},
   {native:"Dinnae fash yersel",en:"Don\'t worry"},
@@ -202,10 +172,35 @@ const PHRASES = [
   {native:"Ken",en:"Know"},
   {native:"Ceilidh",en:"Scottish dance/gathering"}
 ];
-
+const AREAS = ["Blackford", "Calton", "Castle", "City Center", "Cramond", "Grassmarket", "Hill", "Holyrood", "Inverleith", "Leith", "New Town", "Old Town", "Portobello", "South", "South Bridge", "Stockbridge", "The Mound", "Various"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[1, 15, 21, 23, 35],time:"125 min"},
+  {id:2,title:"The Various Deep Dive",desc:"Hit 5 hidden spots in Various. Walk slow, look up, read everything.",places:[7, 28, 43, 50, 68],time:"125 min"},
+  {id:3,title:"The Holyrood Deep Dive",desc:"Hit 5 hidden spots in Holyrood. Walk slow, look up, read everything.",places:[2, 13, 25, 33, 55],time:"125 min"},
+  {id:4,title:"The Leith Deep Dive",desc:"Hit 5 hidden spots in Leith. Walk slow, look up, read everything.",places:[17, 24, 37, 58, 65],time:"125 min"},
+  {id:5,title:"The Calton Deep Dive",desc:"Hit 5 hidden spots in Calton. Walk slow, look up, read everything.",places:[3, 41, 48, 63, 80],time:"125 min"},
+  {id:6,title:"The Grassmarket Deep Dive",desc:"Hit 5 hidden spots in Grassmarket. Walk slow, look up, read everything.",places:[4, 19, 26, 39, 70],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 4, 5, 15, 16, 19],time:"120 min"},
+  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[2, 3, 20, 40, 41, 60],time:"120 min"},
+  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[10, 13, 18, 30, 38, 52],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="English";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
