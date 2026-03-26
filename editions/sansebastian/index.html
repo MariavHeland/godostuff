@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading San Sebastián...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Euskara (Basque)";
-
+<script>
 const P = [
   {id:1,n:"La Concha Beach — La Concha",a:"La Concha",v:["beautiful", "local"],d:0,s:"Crescent beach where all San Sebastián hangs out",st:"Perfect crescent of golden sand and turquoise water. Surrounded by green mountains. Bakeries deliver warm pastries to swimmers. Every weekend, the beach throbs with energy.",im:"1850s: Tourists discover. 2024: Locals still claim it at 6am.",t:"Go early 7am before crowds. Water cold but healing. Bring breakfast.",c:["parks", "local_only"],r:"g",nn:"Hondartza La Concha — La Concha",ns:"Hondartza kruzentua non dena San Sebastiandarra",nst:"Kruzentua perfektua barne-hondartzako harri berde. Dago. Bakeriak bidaltzen dituzte beroak nola dagoen.",nt:"Goizean 7an. Ura hotza baina sendatzailea. Ontzia eramana."},
   {id:2,n:"Monte Urgull Fortress — Old Town",a:"Old Town",v:["history", "high_spots"],d:2,s:"Medieval fortress towering over old town",st:"Walls, cannons, cemetery, views down to beaches. 45-minute climb through pine woods. Locals run here at dawn. Castle museum shows Basque resistance.",im:"1500s: Basques fortify against Spain. 2024: You climb same stones.",t:"Start 8am, finish before heat. Views make it worth. Cemetery poignant.",c:["high_spots", "history_big"],r:"g",nn:"Kalean Urgull — Txoko Zaharra",ns:"Gaztelua medievala zahar-kalean",nst:"Hormak, kanoia, osamendia, ikuspegiak hondartzara. 45 minutuko igoera pinu batera.",nt:"Hasi 8ean. Osamendia gogotsu. Ikuspegiak sendatu dituzte."},
@@ -160,31 +157,6 @@ const P = [
   {id:104,n:"Monte Igueldo Amusement Park  (#94) — Heights",a:"Heights",v:["weird", "beautiful"],d:3,s:"Vintage amusement park dangling 300m above the city",st:"Cable car up. Wooden roller coaster from 1912. Funhouse mirrors, bumper cars. Views of three provinces from top. Retro chaos. €2 per ride.",im:"1912: Built for nobility. 2024: Still wooden, still thrilling.",t:"Go at dusk. Cable car scenic. Rides cheap and creaky. Worth every euro.",c:["weird", "high_spots"],r:"g",nn:"Eguraldia Monte Igueldo  (#94) — Heights",ns:"Zahar parkea 300m behealde",nst:"Telefabrika gora. Zolagarroa 1912tik. Ispilua, autoak. Hiru probintziaren ikuspegiak. Zaharrako kaosa. €2 geldia.",nt:"Goitzean. Telefabrika ikusgarria. Gelidak merkea. Txokolatea gora."},
   {id:105,n:"Zurriola Surf Beach  (#95) — East Beach",a:"East Beach",v:["nature", "beautiful"],d:2,s:"Waves for surfers, rocks for jumpers",st:"Wilder, rougher than La Concha. Surfers actual skills. Rock pools to jump in. University students congregation. Water cold. Vibe authentic.",im:"1980s: Surfers discover Basque coast. 2024: They never left.",t:"Watch surfers before 11am. Rocks slippery—wear shoes. Bring snorkel.",c:["nature", "local_only"],r:"g",nn:"Hondartzean Zurriola  (#95) — East Beach",ns:"Olatuak nahiak, harrizko saltoajeak",nst:"Bihurrena La Conchak baino. Surfilleak egizko. Harrizko pilaketa. Unibertsitaria. Ura hotza. Sentzuak osoa.",nt:"Surfillakak begiratu 11 baino. Harriak slidatua—oparial eramana. Buceo."}
 ];
-
-const M = [
-  {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[2, 3, 12, 13, 22],time:"125 min"},
-  {id:2,title:"The La Concha Deep Dive",desc:"Hit 5 hidden spots in La Concha. Walk slow, look up, read everything.",places:[1, 11, 21, 31, 41],time:"125 min"},
-  {id:3,title:"The Heights Deep Dive",desc:"Hit 5 hidden spots in Heights. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
-  {id:4,title:"The East Beach Deep Dive",desc:"Hit 5 hidden spots in East Beach. Walk slow, look up, read everything.",places:[5, 15, 25, 35, 45],time:"125 min"},
-  {id:5,title:"The Waterfront Deep Dive",desc:"Hit 5 hidden spots in Waterfront. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
-  {id:6,title:"The Coast Deep Dive",desc:"Hit 5 hidden spots in Coast. Walk slow, look up, read everything.",places:[7, 17, 27, 37, 47],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 8, 9, 10, 12, 18],time:"120 min"},
-  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[2, 4, 12, 14, 22, 24],time:"120 min"},
-  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[1, 7, 11, 17, 21, 27],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Biarritz", "Coast", "East Beach", "Getaria", "Heights", "Hondarribia", "La Concha", "Old Town", "Waterfront"];
-
 const PHRASES = [
   {native:"Kaixo",en:"Hello"},
   {native:"Non dago...?",en:"Where is...?"},
@@ -197,10 +169,33 @@ const PHRASES = [
   {native:"Hondartza",en:"Beach"},
   {native:"Pintxoa",en:"Tapas"}
 ];
-
+const AREAS = ["Biarritz", "Coast", "East Beach", "Getaria", "Heights", "Hondarribia", "La Concha", "Old Town", "Waterfront"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[2, 3, 12, 13, 22],time:"125 min"},
+  {id:2,title:"The La Concha Deep Dive",desc:"Hit 5 hidden spots in La Concha. Walk slow, look up, read everything.",places:[1, 11, 21, 31, 41],time:"125 min"},
+  {id:3,title:"The Heights Deep Dive",desc:"Hit 5 hidden spots in Heights. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
+  {id:4,title:"The East Beach Deep Dive",desc:"Hit 5 hidden spots in East Beach. Walk slow, look up, read everything.",places:[5, 15, 25, 35, 45],time:"125 min"},
+  {id:5,title:"The Waterfront Deep Dive",desc:"Hit 5 hidden spots in Waterfront. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
+  {id:6,title:"The Coast Deep Dive",desc:"Hit 5 hidden spots in Coast. Walk slow, look up, read everything.",places:[7, 17, 27, 37, 47],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 8, 9, 10, 12, 18],time:"120 min"},
+  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[2, 4, 12, 14, 22, 24],time:"120 min"},
+  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[1, 7, 11, 17, 21, 27],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Euskara (Basque)";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
