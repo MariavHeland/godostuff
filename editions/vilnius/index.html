@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Vilnius...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Lithuanian";
-
+<script>
 const P = [
   {id:1,n:"Užupis Republic — Artist Quarter",a:"Užupis",v:["hidden", "weird"],d:1,s:"An artist-claimed \'independent republic\' with its own constitution posted on the street—bohemian independence",st:"Užupis is a neighborhood that declared itself an independent republic. The constitution is posted publicly. Artists and creatives make it home. It\'s quirky and genuine.",im:"It\'s 1997. Artists proclaim Užupis an independent republic. Tourists miss it. Locals embrace it. The constitution becomes street legend.",t:"Užupis is a neighborhood that declared itself an independent republic. The constitution is posted publicly. Artists and creatives make it home. It\'s quirky and genuine.\",im:\"It\'s 1997. Artists proclaim Užupis an independent republic. Tourists miss it. Locals embrace it. The constitution becomes street legend.\",t:\"Free to explore. Located east of Old Town (across Vilnelė River). Open studio visits available. Best weekday mornings. Talk with residents.",c:["hidden", "weird"],r:"g",nn:"Vilnius",ns:"Kur barokas gražis ir gyva kunigaikščių dvasioje.",nst:"Vilnius yra nuostabi miestuose, kur barokiniai fasadai ir romėniškos bažnyčios kalbina Daugavą. Senamiestyje kiekvienas kampelis pasakoja istoriją apie didybes ir patyrimus. Šiuolaikinė Vilnius gyvena nuo tos senosios šlovės ir inovacijų.",nt:"Vilniaus senajame mieste lakstyti galiausiai pripaž linksmybės. Bažnyčios kupinas gydytojų bei žmonių. Barai pilni gyvo juoko. Vasarą Vilniuje yra festivalis bet kuriame kampe. Lietuviai mėgsta dainą ir bailes—kultūrą pilną."},
   {id:2,n:"Gediminas Tower\'s View — Gediminas",a:"Gediminas",v:["history", "beautiful"],d:2,s:"A reconstructed 14th-century tower at the highest point in Vilnius—complete panoramic views of the city",st:"Gediminas Tower crowns the highest hill. The climb rewards with 360-degree views. The tower is a reconstruction of a 1300s fortification. You see Vilnius spread completely below.",im:"It\'s 1390. A tower is built atop the hill to defend Vilnius. For 600+ years, the tower marks the city\'s highest point.",t:"Gediminas Tower crowns the highest hill. The climb rewards with 360-degree views. The tower is a reconstruction of a 1300s fortification. You see Vilnius spread completely below.\",im:\"It\'s 1390. A tower is built atop the hill to defend Vilnius. For 600+ years, the tower marks the city\'s highest point.\",t:\"Entry ~3-5 EUR. Located uphill from Old Town (short walk or funicular). Open 10am-5pm. Photography stunning. Go early morning.",c:["history_big", "beautiful"],r:"g",nn:"Vilnius",ns:"Kur barokas gražis ir gyva kunigaikščių dvasioje.",nst:"Vilnius yra nuostabi miestuose, kur barokiniai fasadai ir romėniškos bažnyčios kalbina Daugavą. Senamiestyje kiekvienas kampelis pasakoja istoriją apie didybes ir patyrimus. Šiuolaikinė Vilnius gyvena nuo tos senosios šlovės ir inovacijų.",nt:"Vilniaus senajame mieste lakstyti galiausiai pripaž linksmybės. Bažnyčios kupinas gydytojų bei žmonių. Barai pilni gyvo juoko. Vasarą Vilniuje yra festivalis bet kuriame kampe. Lietuviai mėgsta dainą ir bailes—kultūrą pilną."},
@@ -167,22 +164,6 @@ const P = [
   {id:110,n:"Soviet-remnant fix: Green Bridge sculptures (over ",a:"Centro",v:["free","local","hidden"],d:15,s:"Soviet-remnant fix: Green Bridge sculptures (over Neris) for a surreal USSR-aftertaste photo — free local gem",st:"Soviet-remnant fix: Green Bridge sculptures (over Neris) for a surreal USSR-aftertaste photo walk. (Mini guide to quirky, alternative Vilnius)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Vilnius",ns:"Joya oculta local — Soviet-remnant fix: Green Bridge sculptures",nst:"Soviet-remnant fix: Green Bridge sculptures (over Neris) for a surreal USSR-aftertaste photo walk. (Mini guide to quirky, alternative Vilnius)",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Cemetery goth-romance walk: Rasos Cemetery (hillsi",a:"Centro",v:["free","local","hidden"],d:15,s:"Cemetery goth-romance walk: Rasos Cemetery (hillside old graves) + Bernardine Cemetery (backstreets — free local gem",st:"Cemetery goth-romance walk: Rasos Cemetery (hillside old graves) + Bernardine Cemetery (backstreets of Užupis; serene, historic). (Mini guide to quirky, alternative Vilnius)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Vilnius",ns:"Joya oculta local — Cemetery goth-romance walk: Rasos Cemetery",nst:"Cemetery goth-romance walk: Rasos Cemetery (hillside old graves) + Bernardine Cemetery (backstreets of Užupis; serene, historic). (Mini guide to quirk",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[4, 5, 9, 10, 14],time:"125 min"},
-  {id:2,title:"The Užupis Deep Dive",desc:"Hit 5 hidden spots in Užupis. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
-  {id:3,title:"The Gediminas Deep Dive",desc:"Hit 5 hidden spots in Gediminas. Walk slow, look up, read everything.",places:[2, 7, 12, 17, 22],time:"125 min"},
-  {id:4,title:"The Three Crosses Deep Dive",desc:"Hit 5 hidden spots in Three Crosses. Walk slow, look up, read everything.",places:[3, 8, 13, 18, 23],time:"125 min"},
-  {id:5,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 4, 7, 8, 9],time:"120 min"},
-  {id:6,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"}
-];
-
-const AREAS = ["Gediminas", "Old Town", "Three Crosses", "U\u017eupis"];
-
 const PHRASES = [
   {native:"Sveikas!",en:"Hello!"},
   {native:"Dėkui!",en:"Thank you!"},
@@ -195,10 +176,24 @@ const PHRASES = [
   {native:"Pagalba!",en:"Help!"},
   {native:"Viso gero",en:"Goodbye"}
 ];
-
+const AREAS = ["Gediminas", "Old Town", "Three Crosses", "U\u017eupis"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"}
+];
+const M = [
+  {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[4, 5, 9, 10, 14],time:"125 min"},
+  {id:2,title:"The Užupis Deep Dive",desc:"Hit 5 hidden spots in Užupis. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
+  {id:3,title:"The Gediminas Deep Dive",desc:"Hit 5 hidden spots in Gediminas. Walk slow, look up, read everything.",places:[2, 7, 12, 17, 22],time:"125 min"},
+  {id:4,title:"The Three Crosses Deep Dive",desc:"Hit 5 hidden spots in Three Crosses. Walk slow, look up, read everything.",places:[3, 8, 13, 18, 23],time:"125 min"},
+  {id:5,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 4, 7, 8, 9],time:"120 min"},
+  {id:6,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Lithuanian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
