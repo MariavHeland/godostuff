@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Amsterdam...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Dutch";
-
+<script>
 const P = [
   {id:1,n:"Begijnhof Courtyard",a:"Centrum",v:["hidden", "history", "quiet"],d:1,s:"Medieval almshouse courtyard hiding behind a busy shopping street",st:"Step through the archway and enter 1300. A ring of tiny houses surrounds a chapel where beguines—religious women living communal life—worked and prayed. It\'s still a neighborhood today, just frozen in time.",im:"It\'s 1600. Women in white linen tend gardens between stone cottages. Church bells echo off old brick. No men allowed.",t:"Step through the archway and enter 1300. A ring of tiny houses surrounds a chapel where beguines—religious women living communal life—worked and prayed. It\'s still a neighborhood today, just frozen in time.\",im:\"It\'s 1600. Women in white linen tend gardens between stone cottages. Church bells echo off old brick. No men allowed.\",t:\"Free entry. Begijnhof 34, Centrum. Respect residents—it\'s a real community. Quiet afternoons best. Don\'t photograph people.",c:["history_big", "courtyards", "local_only"],r:"g",nn:"Begijnhof Courtyard",ns:"Een authentieke plek waar locals werkelijk thuiskomen.",nst:"Dit is waar authenticiteit volhoudt. Waar locals werkelijk komen. Waar geschiedenis nog steeds lucht geeft. Waar tradities zich mengen met moderniteit. Dit is waar het leven echt gebeurt.",nt:"Neem de tijd om rond te wandelen. Let op details. Spreek met locals als ze open staan. Respecteer de ruimten. Bezoek zonder je telefoon. De ochtend is beter dan de middag. Weekends veranderen de sfeer. Kom met water en goede schoenen."},
   {id:2,n:"Amsterdam Museum Hidden Wing",a:"Centrum",v:["hidden", "history"],d:2,s:"The floor nobody sees—street art and counterculture in the museum basement",st:"Slip downstairs past tourists staring at paintings. The basement galleries pulse with punk posters, squat manifestos, and Provo movement ephemera. This is Amsterdam\'s radical heart in cardboard boxes and neon.",im:"It\'s 1965. Student protestors glue posters to canal walls at midnight. The air smells like spray paint and defiance.",t:"Slip downstairs past tourists staring at paintings. The basement galleries pulse with punk posters, squat manifestos, and Provo movement ephemera. This is Amsterdam\'s radical heart in cardboard boxes and neon.\",im:\"It\'s 1965. Student protestors glue posters to canal walls at midnight. The air smells like spray paint and defiance.\",t:\"Amsterdam Museum, Kalverstraat 92. Pay entry fee. Ask staff where the street art collection lives—most visitors never find it.",c:["history_big", "street_art", "local_only"],r:"g",nn:"Amsterdam Museum Hidden Wing",ns:"Kunst die van de muren spreekt en de straat transformeert.",nst:"Kijk omhoog. Kleuren springen eruit. Kunstenaars claim de muren. Gemeenschappen volgen. Het is echt. Het is politiek. Het is levend. Dit is waar de stad zichzelf schildert.",nt:"Neem de tijd om rond te wandelen. Let op details. Spreek met locals als ze open staan. Respecteer de ruimten. Bezoek zonder je telefoon. De ochtend is beter dan de middag. Weekends veranderen de sfeer. Kom met water en goede schoenen."},
@@ -163,20 +160,20 @@ const P = [
   {id:106,n:"Wild Swimming Beaches (Sloterstrand)",a:"West",v:["nature","free","sport"],d:25,s:"Legal designated swim spots — escape the canals for open water",st:"Sloterstrand on Sloterplas is an official swim beach where locals take dips in summer. The shallow lake is clean and monitored; bring a towel and a cold beer from a supermarket.",im:"Sloterplas was created in 1886 as an industrial water feature; now it\'s Amsterdam\'s neighborhood swimming hole.",t:"Free. Tram 2 to Slotermeer. Check the Zwemwater app for water safety.",c:["parks","free_museum"],r:"g",nn:"Sloterstrand Zwemplek",ns:"Wettelijke zwemstranden — ontsnap aan de grachten",nst:"Zwem in de schone wateren van Sloterplas met locals in de zomer.",nt:"Gratis. Tram 2 naar Slotermeer. Controleer de Zwemwater-app."},
   {id:107,n:"Bloedstraat Folklore Walk",a:"Centrum",v:["weird","history","night"],d:8,s:"Urban legend hunt for the "House with Blood Stains" — a spooky self-guided folklore walk",st:"Bloedstraat (Blood Street) and surrounding alleyways have a dark folklore reputation. Local stories speak of blood-stained houses and tragic deaths. It\'s best explored at night with a flashlight, discovering Amsterdam\'s gothic underbelly.",im:"Time-travel: 17th-century crime and plague deaths marked this neighborhood; the names persist in street names.",t:"Free. Self-guided walk starting from Bloedstraat in the Centrum. Best at dusk/night.",c:["scary","history_big"],r:"g",nn:"Bloedstraat Spookwandeling",ns:"Stedenjacht naar de "Bloedstraat" legenden",nst:"Verken de duistere folklore van het oude Amsterdam met dit eng verhaal.",nt:"Gratis. Zelfgeleide wandeling in de Centrum. \'s Avonds het best."}
 ];
-
-const M = [
-  {id:1,title:"The Centrum Deep Dive",desc:"Hit 5 hidden spots in Centrum. Walk slow, look up, read everything.",places:[1, 2, 19, 26, 33],time:"125 min"},
-  {id:2,title:"The Oost Deep Dive",desc:"Hit 5 hidden spots in Oost. Walk slow, look up, read everything.",places:[11, 15, 17, 24, 25],time:"125 min"},
-  {id:3,title:"The Jordaan Deep Dive",desc:"Hit 5 hidden spots in Jordaan. Walk slow, look up, read everything.",places:[3, 6, 37, 46, 49],time:"125 min"},
-  {id:4,title:"The Noord Deep Dive",desc:"Hit 5 hidden spots in Noord. Walk slow, look up, read everything.",places:[12, 13, 31, 40, 44],time:"125 min"},
-  {id:5,title:"The Grachtengordel Deep Dive",desc:"Hit 5 hidden spots in Grachtengordel. Walk slow, look up, read everything.",places:[16, 23, 54, 60, 81],time:"125 min"},
-  {id:6,title:"The De Pijp Deep Dive",desc:"Hit 5 hidden spots in De Pijp. Walk slow, look up, read everything.",places:[8, 32, 58, 67, 76],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 9, 10],time:"120 min"},
-  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 4, 8, 14, 21, 58],time:"120 min"},
-  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[7, 18, 41, 47, 62, 66],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 100. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100],time:"multi-day"}
+const PHRASES = [
+  {native:"Waar is...?",en:"Where is...?"},
+  {native:"Hoeveel kost het?",en:"How much does it cost?"},
+  {native:"Spreek je Engels?",en:"Do you speak English?"},
+  {native:"Alstublieft",en:"Please"},
+  {native:"Dank je wel",en:"Thank you"},
+  {native:"Tot ziens",en:"Goodbye"},
+  {native:"Proost!",en:"Cheers!"},
+  {native:"Hoe laat is het?",en:"What time is it?"},
+  {native:"Aangenaam!",en:"Nice to meet you!"},
+  {native:"Het is prachtig!",en:"It\'s beautiful!"}
 ];
-
+const AREAS = ["Amstelveen", "Amsterdam East", "Amsterdam South", "Amsterdam West", "Bijlmer", "Centrum", "Day Trip", "De Pijp", "East", "Grachtengordel", "Jordaan", "NDSM", "Noord", "North", "North Amsterdam", "Oost", "Oud-West", "Plantage", "South", "Vondelpark", "Westerpark"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
 const COLLECTIONS = [
   {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
   {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
@@ -190,25 +187,23 @@ const COLLECTIONS = [
   {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
   {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
 ];
-
-const AREAS = ["Amstelveen", "Amsterdam East", "Amsterdam South", "Amsterdam West", "Bijlmer", "Centrum", "Day Trip", "De Pijp", "East", "Grachtengordel", "Jordaan", "NDSM", "Noord", "North", "North Amsterdam", "Oost", "Oud-West", "Plantage", "South", "Vondelpark", "Westerpark"];
-
-const PHRASES = [
-  {native:"Waar is...?",en:"Where is...?"},
-  {native:"Hoeveel kost het?",en:"How much does it cost?"},
-  {native:"Spreek je Engels?",en:"Do you speak English?"},
-  {native:"Alstublieft",en:"Please"},
-  {native:"Dank je wel",en:"Thank you"},
-  {native:"Tot ziens",en:"Goodbye"},
-  {native:"Proost!",en:"Cheers!"},
-  {native:"Hoe laat is het?",en:"What time is it?"},
-  {native:"Aangenaam!",en:"Nice to meet you!"},
-  {native:"Het is prachtig!",en:"It\'s beautiful!"}
+const M = [
+  {id:1,title:"The Centrum Deep Dive",desc:"Hit 5 hidden spots in Centrum. Walk slow, look up, read everything.",places:[1, 2, 19, 26, 33],time:"125 min"},
+  {id:2,title:"The Oost Deep Dive",desc:"Hit 5 hidden spots in Oost. Walk slow, look up, read everything.",places:[11, 15, 17, 24, 25],time:"125 min"},
+  {id:3,title:"The Jordaan Deep Dive",desc:"Hit 5 hidden spots in Jordaan. Walk slow, look up, read everything.",places:[3, 6, 37, 46, 49],time:"125 min"},
+  {id:4,title:"The Noord Deep Dive",desc:"Hit 5 hidden spots in Noord. Walk slow, look up, read everything.",places:[12, 13, 31, 40, 44],time:"125 min"},
+  {id:5,title:"The Grachtengordel Deep Dive",desc:"Hit 5 hidden spots in Grachtengordel. Walk slow, look up, read everything.",places:[16, 23, 54, 60, 81],time:"125 min"},
+  {id:6,title:"The De Pijp Deep Dive",desc:"Hit 5 hidden spots in De Pijp. Walk slow, look up, read everything.",places:[8, 32, 58, 67, 76],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 9, 10],time:"120 min"},
+  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 4, 8, 14, 21, 58],time:"120 min"},
+  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[7, 18, 41, 47, 62, 66],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 100. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100],time:"multi-day"}
 ];
-
-const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Dutch";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
