@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Kraków...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Polish";
-
+<script>
 const P = [
   {id:1,n:"Kazimierz Jewish Quarter (Medieval & Tragic) — Kazimierz",a:"Kazimierz",v:["history", "beautiful"],d:1,s:"Jewish neighborhood from 1500s where thriving community existed, now empty of people but full of memory.",st:"Streets curve in medieval patterns. Synagogues (now museums) stand empty. Plaques mark destroyed buildings. The quiet is heavy. Art installations everywhere. You feel the weight of what was and was taken.",im:"It\'s 1920. The quarter thrives. Yiddish is spoken. Stores are open. Jewish life in full volume.",t:"Streets curve in medieval patterns. Synagogues (now museums) stand empty. Plaques mark destroyed buildings. The quiet is heavy. Art installations everywhere. You feel the weight of what was and was taken.\",im:\"It\'s 1920. The quarter thrives. Yiddish is spoken. Stores are open. Jewish life in full volume.\",t:\"Walk freely. Museums €5-10 each. Don\'t photograph if praying. Go respectfully. Old Cemetery €7. Spend full day. Get guidebook.",c:["history_big", "beautiful"],r:"g",nn:"",ns:"",nst:"",nt:""},
   {id:2,n:"Nowa Huta (Soviet Planned City) — Nowa Huta",a:"Nowa Huta",v:["weird", "history"],d:2,s:"Complete city built in 1950s by Soviets—wide streets, identical blocks, grand socialist vision now slightly decayed.",st:"Enormous squares with monumental buildings. Wide streets designed for parades. Apartment blocks in rows. The scale is immense and slightly terrifying. You can trace the idea: housing for workers, standardized and equal.",im:"It\'s 1956. The city is brand new. Soviet engineers created something unprecedented.",t:"Enormous squares with monumental buildings. Wide streets designed for parades. Apartment blocks in rows. The scale is immense and slightly terrifying. You can trace the idea: housing for workers, standardized and equal.\",im:\"It\'s 1956. The city is brand new. Soviet engineers created something unprecedented.\",t:\"Tram to Nowa Huta. Free exploration. Walking tours €10-15. Go in daytime. Scale best appreciated walking. Bring camera.",c:["architecture", "history_big"],r:"g",nn:"",ns:"",nst:"",nt:""},
@@ -160,7 +157,30 @@ const P = [
   {id:104,n:"Kraków Sunset Any High Place — Various",a:"Various",v:["beautiful", "night"],d:104,s:"Final sunset—any elevated point, the light is perfect, the moment is eternal.",st:"Light burns. The city glows. The moment is eternal. Beauty is everywhere.",im:"It\'s sunset. The light is magic.",t:"Light burns. The city glows. The moment is eternal. Beauty is everywhere.\",im:\"It\'s sunset. The light is magic.\",t:\"Go before sunset. Any high point. Camera ready. Stay after dark. Free.",c:["high_spots", "beautiful"],r:"g",nn:"",ns:"",nst:"",nt:""},
   {id:105,n:"Krakow Night Lights Reflection Final Moment — Various",a:"Various",v:["night", "beautiful"],d:105,s:"City at night—lights emerge, monuments glow, the city becomes magic after dark.",st:"Lights appear. The city transforms. Beauty deepens in darkness. Night is magical.",im:"It\'s night. The city glows.",t:"Lights appear. The city transforms. Beauty deepens in darkness. Night is magical.\",im:\"It\'s night. The city glows.\",t:\"Any evening. Walk the city. Lights everywhere. Photography excellent. Magic is free.",c:["night", "beautiful"],r:"g",nn:"",ns:"",nst:"",nt:""}
 ];
-
+const PHRASES = [
+  {native:"Jak się masz?",en:"How are you?"},
+  {native:"Dziękuję bardzo",en:"Thank you very much"},
+  {native:"Ile to kosztuje?",en:"How much does it cost?"},
+  {native:"Gdzie jest toaleta?",en:"Where is the toilet?"},
+  {native:"Poproszę rachunek",en:"The bill, please"},
+  {native:"Czy mówisz po angielsku?",en:"Do you speak English?"},
+  {native:"Smacznego!",en:"Enjoy your meal!"},
+  {native:"Do widzenia",en:"Goodbye"},
+  {native:"Przepraszam",en:"Sorry/Excuse me"},
+  {native:"Na zdrowie!",en:"Cheers!"}
+];
+const AREAS = ["Auschwitz", "Kazimierz", "Krak\u00f3w", "Main Square", "Nowa Huta", "Ojc\u00f3w", "Old Town", "Podg\u00f3rze", "Tyniec", "Various", "Wieliczka", "Zab\u0142ocie", "Zakrz\u00f3wek"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"abandoned",name:"Abandoned & Forgotten",desc:"Places time left behind",emoji:"🏚️",color:"#78716c"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
 const M = [
   {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[4, 5, 6, 13, 25],time:"125 min"},
   {id:2,title:"The Kazimierz Deep Dive",desc:"Hit 5 hidden spots in Kazimierz. Walk slow, look up, read everything.",places:[1, 8, 21, 29, 42],time:"125 min"},
@@ -174,36 +194,11 @@ const M = [
   {id:10,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[5, 26, 50, 64, 77, 85],time:"120 min"},
   {id:11,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
 ];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"abandoned",name:"Abandoned & Forgotten",desc:"Places time left behind",emoji:"🏚️",color:"#78716c"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Auschwitz", "Kazimierz", "Krak\u00f3w", "Main Square", "Nowa Huta", "Ojc\u00f3w", "Old Town", "Podg\u00f3rze", "Tyniec", "Various", "Wieliczka", "Zab\u0142ocie", "Zakrz\u00f3wek"];
-
-const PHRASES = [
-  {native:"Jak się masz?",en:"How are you?"},
-  {native:"Dziękuję bardzo",en:"Thank you very much"},
-  {native:"Ile to kosztuje?",en:"How much does it cost?"},
-  {native:"Gdzie jest toaleta?",en:"Where is the toilet?"},
-  {native:"Poproszę rachunek",en:"The bill, please"},
-  {native:"Czy mówisz po angielsku?",en:"Do you speak English?"},
-  {native:"Smacznego!",en:"Enjoy your meal!"},
-  {native:"Do widzenia",en:"Goodbye"},
-  {native:"Przepraszam",en:"Sorry/Excuse me"},
-  {native:"Na zdrowie!",en:"Cheers!"}
-];
-
-const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Polish";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
