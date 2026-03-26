@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Hamburg...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="German";
-
+<script>
 const P = [
   {id:1,n:"Warehouse Shadows #1 — Speicherstadt",a:"Speicherstadt",v:["hidden", "history"],d:1,s:"Red brick time machines rising from dark canal water — illegal smuggling route turned hipster heaven.",st:"You walk between six-story warehouses that predate the Panama Canal. The cobblestones glisten. Canal boats drift silently below. Street-level galleries hide behind unmarked doors.",im:"It\'s 1890. Boats are loading contraband under gas lamps.",t:"You walk between six-story warehouses that predate the Panama Canal. The cobblestones glisten. Canal boats drift silently below. Street-level galleries hide behind unmarked doors.\",im:\"It\'s 1890. Boats are loading contraband under gas lamps.\",t:\"U-Bahn to Metrowerke. Free to walk. Early morning best.",c:["history_big", "local_only"],r:"g",nn:"Hafen",ns:"Der Hafen, der Hamburg zur Hansestadt machte.",nst:"Der Hafen ist riesig und immer in Bewegung. Große Schiffe kommen und gehen. Du kannst vom Ufer zusehen, wie die Welt ankommt und geht.",nt:"Frei zugänglich. Beste Aussicht von St. Pauli-Landungsbrücken. Hafenrundfahrten kosten etwa €15-18. Besuch am frühen Morgen für weniger Touristen."},
   {id:2,n:"Rote Flora Squat #2 — Schanzenviertel",a:"Schanzenviertel",v:["weird", "history", "night"],d:2,s:"Graffitied anarchist theater where punks still squat — Hamburg\'s unbroken punk heart.",st:"Pink building covered in murals. Boarded windows. Inside: underground theater, raves. Outside: street art constantly evolving. This is not a museum.",im:"It\'s 1989. Squatters chain the doors. A riot ignites.",t:"Pink building covered in murals. Boarded windows. Inside: underground theater, raves. Outside: street art constantly evolving. This is not a museum.\",im:\"It\'s 1989. Squatters chain the doors. A riot ignites.\",t:\"U-Bahn to Feldstrasse. Go at night for energy. Completely free.",c:["street_art", "history_big"],r:"y",nn:"Reeperbahn",ns:"Hamburgs berüchtigte Vergnügungsmeile – auch tagsüber interessant.",nst:"Das war die Straße der Beatels und Piraten. Heute haben sich die Clubs und Theater etabliert. Du kannst tagsüber spazieren, die Geschichte atmen, und nachts die Energie spüren.",nt:"St. Pauli. Tagsüber sicher, tagsüber interessant. Nachts für Nachtleben. Preise sind gehobener als anderswo in Hamburg."},
@@ -163,25 +160,6 @@ const P = [
   {id:106,n:"Elbe Tunnel Pedestrian Path",a:"Neuwerk/South",v:["weird","free","local"],d:15,s:"408m tunnel under the Elbe River with escalators and stained glass",st:"The Old Elbe Tunnel is a working pedestrian/bike underpass decorated with tiled murals and original escalators from 1911. Walk 50 meters below the river while ships pass overhead. Surreal and rarely crowded.",im:"Time-travel: Opened in 1911 to connect workers from the South Bank to the docks.",t:"Free. Entrances at Landungsbrücken (north) and Neuwerk (south). Strollers/cycles allowed.",c:["architecture","history_big"],r:"g",nn:"Alter Elbtunnel",ns:"Tunnel unter der Elbe mit historischen Leitern",nst:"Spazieren Sie 50 Meter unter dem Fluss durch den Tunnel.",nt:"Kostenlos. Eingänge bei Landungsbrücken und Neuwerk."},
   {id:107,n:"Miniatur Wunderland Model Railway",a:"Warehouse",v:["weird","art","local"],d:20,s:"Obsessive model train empire — 1,500 square meters of miniature detail",st:"This is the world\'s largest model railway; it\'s hypnotic. Tiny villages, airports, and trains operate in perfect miniature. The level of detail is insane: individual trees, working lights, thousands of tiny figures. It\'s an art form disguised as a hobby.",im:"Time-travel: Built starting in 2000, it\'s still expanding—a labor of love.",t:"Paid entry (€15). Warehouse district. Self-guided or guided.",c:["weird","architecture"],r:"g",nn:"Miniatur Wunderland",ns:"Obsessive Modellbahn mit 1.500 qm Detail",nst:"Besuchen Sie die größte Modellbahn der Welt.",nt:"Eintritt erforderlich. Warehouse-Bezirk."}
 ];
-
-const M = [
-  {id:1,title:"The Speicherstadt Deep Dive",desc:"Hit 5 hidden spots in Speicherstadt. Walk slow, look up, read everything.",places:[1, 4, 7, 10, 13],time:"125 min"},
-  {id:2,title:"The Schanzenviertel Deep Dive",desc:"Hit 5 hidden spots in Schanzenviertel. Walk slow, look up, read everything.",places:[2, 5, 8, 11, 14],time:"125 min"},
-  {id:3,title:"The Altona Deep Dive",desc:"Hit 5 hidden spots in Altona. Walk slow, look up, read everything.",places:[3, 6, 9, 12, 15],time:"125 min"},
-  {id:4,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 4, 5, 7, 8],time:"120 min"},
-  {id:5,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 5, 8, 11, 14, 17],time:"120 min"},
-  {id:6,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"}
-];
-
-const AREAS = ["Altona", "Schanzenviertel", "Speicherstadt"];
-
 const PHRASES = [
   {native:"Wo ist...?",en:"Where is...?"},
   {native:"Wie komme ich zu...?",en:"How do I get to...?"},
@@ -194,10 +172,27 @@ const PHRASES = [
   {native:"Die Rechnung, bitte",en:"The bill, please"},
   {native:"Guten Morgen",en:"Good morning"}
 ];
-
+const AREAS = ["Altona", "Schanzenviertel", "Speicherstadt"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"}
+];
+const M = [
+  {id:1,title:"The Speicherstadt Deep Dive",desc:"Hit 5 hidden spots in Speicherstadt. Walk slow, look up, read everything.",places:[1, 4, 7, 10, 13],time:"125 min"},
+  {id:2,title:"The Schanzenviertel Deep Dive",desc:"Hit 5 hidden spots in Schanzenviertel. Walk slow, look up, read everything.",places:[2, 5, 8, 11, 14],time:"125 min"},
+  {id:3,title:"The Altona Deep Dive",desc:"Hit 5 hidden spots in Altona. Walk slow, look up, read everything.",places:[3, 6, 9, 12, 15],time:"125 min"},
+  {id:4,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 4, 5, 7, 8],time:"120 min"},
+  {id:5,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 5, 8, 11, 14, 17],time:"120 min"},
+  {id:6,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="German";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
