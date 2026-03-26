@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Berlin...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="German";
-
+<script>
 const P = [
   {id:1,n:"Hinterhöfe of Sophienstraße",a:"Mitte",v:["hidden", "history"],d:1,s:"Courtyards that survived the war",st:"Walk through the doorways and find chains of hidden courtyards dating to the 1800s. Most survived the bombing. Old signage on the walls if you look up.",im:"It\'s 1920. Workshops — tailors, metalworkers, printing presses. Kids running between buildings. The city roaring into the Weimar Republic.",t:"Walk through the doorways and find chains of hidden courtyards dating to the 1800s. Most survived the bombing. Old signage on the walls if you look up.\", im:\"It\'s 1920. Workshops — tailors, metalworkers, printing presses. Kids running between buildings. The city roaring into the Weimar Republic.\", t:\"Many courtyards are semi-public and accessible through unlocked doorways. Be quiet and respectful — people live here.",c:["courtyards"],r:"g",nn:"Hinterhöfe der Sophienstraße — Mitte",ns:"Versteckte Welten im Zentrum — Hinterhöfe, die den Krieg überlebt haben",nst:"Du gehst durch eine unscheinbare Toreinfahrt und plötzlich stehst du in einer ganz anderen Welt. Alte Backsteinwände, baumelnde Wäscheleinen, die Zeit bleibt stehen. Hier tickt Berlin noch wie damals.",nt:"Kostenlos. Sophienstraße in Mitte, einfach durch die Toreinfahrten gehen. Am besten tagsüber und leise sein — es wohnen Menschen dort."},
   {id:2,n:"Invalidenfriedhof",a:"Mitte",v:["quiet", "history"],d:2,s:"A cemetery split by the Wall",st:"Military cemetery from 1748 cut in half by the Berlin Wall. Graves destroyed for the death strip. You can see where the Wall ran.",im:"1961. Soldiers stringing barbed wire through a cemetery. The dead on one side, families on the other, unable to visit for 28 years.",t:"Military cemetery from 1748 cut in half by the Berlin Wall. Graves destroyed for the death strip. You can see where the Wall ran.\", im:\"1961. Soldiers stringing barbed wire through a cemetery. The dead on one side, families on the other, unable to visit for 28 years.\", t:\"Scharnhorststraße. Free, daylight hours. Almost nobody comes.",c:["scary", "history_big"],r:"g",nn:"Invalidenfriedhof — Mitte",ns:"Ein Friedhof, durch den die Mauer schnitt — doppelt getrennt",nst:"Du stehst auf diesem Friedhof und siehst noch immer: wo die Mauer den Boden spaltete. Gräber zerstört, Familien auf einer Seite, ihre Toten auf der anderen. 28 Jahre ohne Besuch.",nt:"Kostenlos. Scharnhorststraße in Mitte. Tagsüber offen. Fast niemand kommt hin."},
@@ -206,33 +203,6 @@ const P = [
 ,
   {id:108,n:"DDR Museum (Ostkreuz)",a:"Friedrichshain",v:["history","weird","local"],d:12,s:"Former East German spy headquarters — now a raw historical museum",st:"The Stasi offices (secret police) are preserved as a museum showing surveillance techniques and propaganda. It\'s eerie to walk through the interrogation rooms and filing systems; a reminder of totalitarian control.",im:"Time-travel: The Stasi operated here until 1990, monitoring millions of East Germans.",t:"Paid entry (€15). U-Bahn to Ostkreuz. Audioguide recommended.",c:["history_big","scary"],r:"g",nn:"Gedenkstätte Deutsche Teilung",ns:"Ehemalige Stasi-Zentrale — jetzt Museum für Spionage",nst:"Besuchen Sie die erhaltenen Büros der Geheimpolizei.",nt:"Eintritt erforderlich. U-Bahn nach Ostkreuz."}
 ];
-
-const M = [
-  {id:1,title:"The Mitte Deep Dive",desc:"Hit 5 hidden spots in Mitte. Walk slow, look up, read everything.",places:[1, 2, 3, 4, 5],time:"125 min"},
-  {id:2,title:"The Kreuzberg Deep Dive",desc:"Hit 5 hidden spots in Kreuzberg. Walk slow, look up, read everything.",places:[11, 12, 13, 14, 15],time:"125 min"},
-  {id:3,title:"The Friedrichshain Deep Dive",desc:"Hit 5 hidden spots in Friedrichshain. Walk slow, look up, read everything.",places:[22, 24, 25, 100, 102],time:"125 min"},
-  {id:4,title:"The Schöneberg Deep Dive",desc:"Hit 5 hidden spots in Schöneberg. Walk slow, look up, read everything.",places:[31, 41, 43, 44, 45],time:"125 min"},
-  {id:5,title:"The Wedding Deep Dive",desc:"Hit 5 hidden spots in Wedding. Walk slow, look up, read everything.",places:[32, 33, 35, 36, 72],time:"125 min"},
-  {id:6,title:"The Various Deep Dive",desc:"Hit 5 hidden spots in Various. Walk slow, look up, read everything.",places:[83, 88, 89, 91, 93],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 7, 8, 9, 15],time:"120 min"},
-  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[5, 9, 11, 19, 21, 34],time:"120 min"},
-  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 11, 16, 18, 20, 24],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 149. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 109, 110, 111, 112, 113, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"courtyards",name:"Secret Courtyards",desc:"Walk through the doorways",emoji:"🚪",color:"#8b5cf6"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
-  {id:"abandoned",name:"Abandoned & Forgotten",desc:"Places time left behind",emoji:"🏚️",color:"#78716c"}
-];
-
-const AREAS = ["Beelitz", "Brandenburg", "Buckow", "Charlottenburg", "Dahlem", "Friedrichshain", "Gesundbrunnen", "Grunewald", "Kreuzberg", "K\u00f6penick", "Lichtenberg", "Marzahn", "Mitte", "Moabit", "Neuk\u00f6lln", "Oranienburg", "Pankow", "Potsdam", "Prenzlauer Berg", "Reinickendorf", "Rheinsberg", "Sch\u00f6neberg", "Sch\u00f6neweide", "Spandau", "Spreewald", "Steglitz", "Strausberg", "Tiergarten", "Treptow", "Various", "Wandlitz", "Wannsee", "Wedding", "Westend", "Zehlendorf"];
-
 const PHRASES = [
   {native:"Hallo, wie geht\'s?",en:"Hello, how are you?"},
   {native:"Wo ist...?",en:"Where is...?"},
@@ -245,10 +215,35 @@ const PHRASES = [
   {native:"Können Sie mir helfen?",en:"Can you help me?"},
   {native:"Tschüss!",en:"Bye!"}
 ];
-
+const AREAS = ["Beelitz", "Brandenburg", "Buckow", "Charlottenburg", "Dahlem", "Friedrichshain", "Gesundbrunnen", "Grunewald", "Kreuzberg", "K\u00f6penick", "Lichtenberg", "Marzahn", "Mitte", "Moabit", "Neuk\u00f6lln", "Oranienburg", "Pankow", "Potsdam", "Prenzlauer Berg", "Reinickendorf", "Rheinsberg", "Sch\u00f6neberg", "Sch\u00f6neweide", "Spandau", "Spreewald", "Steglitz", "Strausberg", "Tiergarten", "Treptow", "Various", "Wandlitz", "Wannsee", "Wedding", "Westend", "Zehlendorf"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"courtyards",name:"Secret Courtyards",desc:"Walk through the doorways",emoji:"🚪",color:"#8b5cf6"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"abandoned",name:"Abandoned & Forgotten",desc:"Places time left behind",emoji:"🏚️",color:"#78716c"}
+];
+const M = [
+  {id:1,title:"The Mitte Deep Dive",desc:"Hit 5 hidden spots in Mitte. Walk slow, look up, read everything.",places:[1, 2, 3, 4, 5],time:"125 min"},
+  {id:2,title:"The Kreuzberg Deep Dive",desc:"Hit 5 hidden spots in Kreuzberg. Walk slow, look up, read everything.",places:[11, 12, 13, 14, 15],time:"125 min"},
+  {id:3,title:"The Friedrichshain Deep Dive",desc:"Hit 5 hidden spots in Friedrichshain. Walk slow, look up, read everything.",places:[22, 24, 25, 100, 102],time:"125 min"},
+  {id:4,title:"The Schöneberg Deep Dive",desc:"Hit 5 hidden spots in Schöneberg. Walk slow, look up, read everything.",places:[31, 41, 43, 44, 45],time:"125 min"},
+  {id:5,title:"The Wedding Deep Dive",desc:"Hit 5 hidden spots in Wedding. Walk slow, look up, read everything.",places:[32, 33, 35, 36, 72],time:"125 min"},
+  {id:6,title:"The Various Deep Dive",desc:"Hit 5 hidden spots in Various. Walk slow, look up, read everything.",places:[83, 88, 89, 91, 93],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 7, 8, 9, 15],time:"120 min"},
+  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[5, 9, 11, 19, 21, 34],time:"120 min"},
+  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 11, 16, 18, 20, 24],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 149. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 109, 110, 111, 112, 113, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="German";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
