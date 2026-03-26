@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Bern...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="German";
-
+<script>
 const P = [
   {id:1,n:"Aare River Swimming (Naked River Bath) — Downtown",a:"Downtown",v:["nature", "free"],d:0,s:"Alpine river flowing through city, locals swim naked year-round",st:"Crystal-cold water, summer tradition, accept it",im:"Medieval bathers using river for washing",t:"Pick any bank access point, 8C water in summer",c:["nature", "free"],r:"g",nn:"Aare Fluss Schwimmen (Nackt) — Zentrum",ns:"Alpenfluss, Einheimische schwimmen nackt",nst:"Eiskaltes Wasser, Sommertradition",nt:"Beliebiger Uferzugang, 8C Wasser im Sommer"},
   {id:2,n:"Zytglogge (Clock Tower) — Old Town",a:"Old Town",v:["history", "beautiful"],d:2,s:"Medieval clock tower with automata figures, 500+ years old",st:"Watch bells ring and figures perform at hour",im:"1407: first mechanical clock in Switzerland",t:"Free to watch from street, paid tour up tower",c:["history_big"],r:"g",nn:"Zytglogge (Uhr Turm) — Altstadt",ns:"Mittelalter Uhr Turm mit Automaten",nst:"Höre Glocken läuten und Figuren aufführen",nt:"Kostenloses Anschauen von der Straße aus"},
@@ -163,27 +160,6 @@ const P = [
   {id:106,n:"Federal Parliament Building Free Tours",a:"Centrum",v:["history","free","architecture"],d:8,s:"Swiss government\'s stunning palazzo — free guided tours through the chambers",st:"The Bundeshaus (Federal Parliament) offers free tours showing the National Council and Council of States. The building is monumentally Swiss; the interior is all wood, tradition, and order. Tours usually only 45 min but thorough.",im:"Time-travel: Built 1857-1902, it\'s the heart of Swiss democracy.",t:"Free tours. Check schedule ahead (booking may be required). Security screening.",c:["architecture","history_big"],r:"g",nn:"Bundeshaus Führungen",ns:"Visitas guiadas gratuitas a la casa del gobierno suizo",nst:"Recorre los salones donde se toman decisiones suizas.",nt:"Tours gratuitas. Reservar con anticipación."},
   {id:107,n:"Aare River Swimming (Aarebad)",a:"Marzili",v:["nature","free","sport"],d:15,s:"Open-air lido and cold-water swimming in the city — locals\' summer tradition",st:"Marzili is a public swimming area on the Aare where Bern goes to cool off. The water is ice-cold year-round (3-10°C depending on season), but locals leap in like it\'s normal. It\'s a rite of passage and costs almost nothing (€5-10).",im:"Time-travel: Aare swimming culture has existed since the 1800s.",t:"Cost: €5-10. Summer season (June-September mainly). Towel rental available.",c:["parks","sport"],r:"g",nn:"Aarenbad Marzili",ns:"Natación en agua fría en la ciudad — tradición local",nst:"Nada en el Aare glacial como hacen los locales.",nt:"Costo: €5-10. Temporada de verano."}
 ];
-
-const M = [
-  {id:1,title:"The Area1 Deep Dive",desc:"Hit 5 hidden spots in Area1. Walk slow, look up, read everything.",places:[11, 16, 21, 26, 31],time:"125 min"},
-  {id:2,title:"The Area2 Deep Dive",desc:"Hit 5 hidden spots in Area2. Walk slow, look up, read everything.",places:[12, 17, 22, 27, 32],time:"125 min"},
-  {id:3,title:"The Area3 Deep Dive",desc:"Hit 5 hidden spots in Area3. Walk slow, look up, read everything.",places:[13, 18, 23, 28, 33],time:"125 min"},
-  {id:4,title:"The Area4 Deep Dive",desc:"Hit 5 hidden spots in Area4. Walk slow, look up, read everything.",places:[14, 19, 24, 29, 34],time:"125 min"},
-  {id:5,title:"The Area0 Deep Dive",desc:"Hit 5 hidden spots in Area0. Walk slow, look up, read everything.",places:[15, 20, 25, 30, 35],time:"125 min"},
-  {id:6,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[2, 3, 4, 5, 8],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 4, 5, 10, 12, 16],time:"120 min"},
-  {id:8,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[6, 7, 8, 11, 13, 14],time:"120 min"},
-  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Area0", "Area1", "Area2", "Area3", "Area4", "Day Trip", "Downtown", "Old Town", "South"];
-
 const PHRASES = [
   {native:"Grüezi",en:"Hello"},
   {native:"Dankeschön",en:"Thank you"},
@@ -196,10 +172,29 @@ const PHRASES = [
   {native:"Nein, danke",en:"No, thanks"},
   {native:"Gute Nacht",en:"Good night"}
 ];
-
+const AREAS = ["Area0", "Area1", "Area2", "Area3", "Area4", "Day Trip", "Downtown", "Old Town", "South"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Area1 Deep Dive",desc:"Hit 5 hidden spots in Area1. Walk slow, look up, read everything.",places:[11, 16, 21, 26, 31],time:"125 min"},
+  {id:2,title:"The Area2 Deep Dive",desc:"Hit 5 hidden spots in Area2. Walk slow, look up, read everything.",places:[12, 17, 22, 27, 32],time:"125 min"},
+  {id:3,title:"The Area3 Deep Dive",desc:"Hit 5 hidden spots in Area3. Walk slow, look up, read everything.",places:[13, 18, 23, 28, 33],time:"125 min"},
+  {id:4,title:"The Area4 Deep Dive",desc:"Hit 5 hidden spots in Area4. Walk slow, look up, read everything.",places:[14, 19, 24, 29, 34],time:"125 min"},
+  {id:5,title:"The Area0 Deep Dive",desc:"Hit 5 hidden spots in Area0. Walk slow, look up, read everything.",places:[15, 20, 25, 30, 35],time:"125 min"},
+  {id:6,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[2, 3, 4, 5, 8],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 4, 5, 10, 12, 16],time:"120 min"},
+  {id:8,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[6, 7, 8, 11, 13, 14],time:"120 min"},
+  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="German";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
