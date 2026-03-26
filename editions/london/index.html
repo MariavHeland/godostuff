@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading London...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="English";
-
+<script>
 const P = [
   {id:1,n:"Brick Lane Murals — Shoreditch",a:"Shoreditch",v:["street_art", "hidden"],d:1,s:"Ever-changing street art on a gritty brick wall — the best illegal gallery in London",st:"Walk down Brick Lane and watch the walls transform. New murals appear overnight. Artists spray legally here at night — you\'re seeing real talent from the moment their work hits brick. The whole street pulses with color.",im:"It\'s 3 AM. A crew with cans moving fast. They\'re painting a massive phoenix across the brick. By morning, thousands will see it. By next week, it\'ll be covered.",t:"Walk down Brick Lane and watch the walls transform. New murals appear overnight. Artists spray legally here at night — you\'re seeing real talent from the moment their work hits brick. The whole street pulses with color.\",im:\"It\'s 3 AM. A crew with cans moving fast. They\'re painting a massive phoenix across the brick. By morning, thousands will see it. By next week, it\'ll be covered.\",t:\"Free entry. Best between Bethnal Green Road and Osborn Street. Go in daylight to photograph. Street food vendors nearby. The wall changes constantly — no two visits are the same.",c:["street_art", "local_only", "free_museum"],r:"g",nn:"",ns:"",nst:"",nt:""},
   {id:2,n:"Glimpse Brewery — Hackney Wick",a:"Hackney",v:["local", "hidden"],d:2,s:"Artist-run brewery where the walls ARE the gallery and beer tastes like rebellion",st:"Industrial space filled with murals, sculptures, and installations. Artists live and work here. You\'re in someone\'s home studio drinking craft beer. It\'s raw, real, unapologetic. The energy is pure creative chaos.",im:"It\'s 2010. Squatters claim the building. Within months, it\'s a thriving arts hub. Paint flies. Installations grow. Community happens.",t:"Industrial space filled with murals, sculptures, and installations. Artists live and work here. You\'re in someone\'s home studio drinking craft beer. It\'s raw, real, unapologetic. The energy is pure creative chaos.\",im:\"It\'s 2010. Squatters claim the building. Within months, it\'s a thriving arts hub. Paint flies. Installations grow. Community happens.\",t:\"Check opening times online first — irregular hours. Go on a Friday evening. Bring cash. Art, beer, live music. A 10-minute walk from Hackney Central.",c:["architecture", "local_only", "street_art"],r:"g",nn:"",ns:"",nst:"",nt:""},
@@ -163,34 +160,6 @@ const P = [
   {id:108,n:"Leake Street Graffiti Tunnel",a:"Waterloo",v:["art","free","weird"],d:15,s:"Legal graffiti tunnel under railway arches — Banksy\'s home territory",st:"Leake Street is a legal graffiti space under railway arches where artists create constantly. The walls change weekly. It\'s raw, energetic, and free to view or contribute (if skilled).",im:"Time-travel: Banksy helped open it as a legal space; he famously painted here.",t:"Free to walk and photograph.",c:["street_art","weird"],r:"g",nn:"Leake Street Graffiti",ns:"Túnel de graffiti legal — territorio de Banksy",nst:"Explora el arte callejero legal de Leake Street.",nt:"Gratis. Waterloo."},
   {id:109,n:"Shoreditch Street Art Walking",a:"East London",v:["art","free","local"],d:15,s:"Evolving street art district where murals change weekly",st:"Shoreditch and Brick Lane are constantly painted and repainted. The scene is raw, political, and authentic. Walk in the early morning to see artists at work.",im:"Time-travel: Shoreditch was rough; street art gentrified it in the 2000s.",t:"Free to walk. Brick Lane cafes/shops have costs.",c:["street_art","local_only"],r:"g",nn:"Shoreditch Street Art",ns:"Distrito de arte callejero en constante evolución",nst:"Camina Brick Lane viendo murales frescos.",nt:"Gratis paseo."}
 ];
-
-const M = [
-  {id:1,title:"The City Deep Dive",desc:"Hit 5 hidden spots in City. Walk slow, look up, read everything.",places:[21, 22, 23, 24, 34],time:"125 min"},
-  {id:2,title:"The Hackney Deep Dive",desc:"Hit 5 hidden spots in Hackney. Walk slow, look up, read everything.",places:[2, 12, 29, 42, 55],time:"125 min"},
-  {id:3,title:"The Southwark Deep Dive",desc:"Hit 5 hidden spots in Southwark. Walk slow, look up, read everything.",places:[6, 26, 28, 80, 92],time:"125 min"},
-  {id:4,title:"The Shoreditch Deep Dive",desc:"Hit 4 hidden spots in Shoreditch. Walk slow, look up, read everything.",places:[1, 11, 51, 62],time:"100 min"},
-  {id:5,title:"The Peckham Deep Dive",desc:"Hit 4 hidden spots in Peckham. Walk slow, look up, read everything.",places:[3, 13, 41, 52],time:"100 min"},
-  {id:6,title:"The Greenwich Deep Dive",desc:"Hit 4 hidden spots in Greenwich. Walk slow, look up, read everything.",places:[15, 30, 48, 63],time:"100 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[3, 4, 5, 7, 8, 9],time:"120 min"},
-  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[1, 2, 20, 28, 29, 32],time:"120 min"},
-  {id:9,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[13, 26, 30, 50, 57, 59],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Aldersgate", "Aldgate", "Aldwych", "Barbican", "Battersea", "Bermondsey", "Bloomsbury", "Borough", "Brixton", "Camden", "Canary Wharf", "Charing Cross", "Cheapside", "City", "Clerkenwell", "Covent Garden", "Crystal Palace", "Dalston", "Deptford", "Eltham", "Epping Forest", "Fitzrovia", "Gospel Oak", "Greenwich", "Hackney", "Hampstead", "Highgate", "Holborn", "Isle of Dogs", "Islington", "Kensington", "Kew", "King's Cross", "Monument", "Newington Green", "Paddington", "Peckham", "Primrose Hill", "Richmond", "Rotherhithe", "Shoreditch", "Smithfield", "Soho", "South Bank", "South Kensington", "South London", "Southwark", "Spitalfields", "St. Paul's", "Stoke Newington", "Strand", "Tower Hamlets", "Wapping", "Waterloo", "West End", "Whitechapel"];
-
 const PHRASES = [
   {native:"Bob\'s your uncle",en:"And there you have it (easy solution)"},
   {native:"Brilliant!",en:"Excellent!"},
@@ -203,10 +172,36 @@ const PHRASES = [
   {native:"Mind the gap",en:"Watch out for the gap (Tube announcement)"},
   {native:"Pip pip!",en:"Cheerio/goodbye"}
 ];
-
+const AREAS = ["Aldersgate", "Aldgate", "Aldwych", "Barbican", "Battersea", "Bermondsey", "Bloomsbury", "Borough", "Brixton", "Camden", "Canary Wharf", "Charing Cross", "Cheapside", "City", "Clerkenwell", "Covent Garden", "Crystal Palace", "Dalston", "Deptford", "Eltham", "Epping Forest", "Fitzrovia", "Gospel Oak", "Greenwich", "Hackney", "Hampstead", "Highgate", "Holborn", "Isle of Dogs", "Islington", "Kensington", "Kew", "King's Cross", "Monument", "Newington Green", "Paddington", "Peckham", "Primrose Hill", "Richmond", "Rotherhithe", "Shoreditch", "Smithfield", "Soho", "South Bank", "South Kensington", "South London", "Southwark", "Spitalfields", "St. Paul's", "Stoke Newington", "Strand", "Tower Hamlets", "Wapping", "Waterloo", "West End", "Whitechapel"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The City Deep Dive",desc:"Hit 5 hidden spots in City. Walk slow, look up, read everything.",places:[21, 22, 23, 24, 34],time:"125 min"},
+  {id:2,title:"The Hackney Deep Dive",desc:"Hit 5 hidden spots in Hackney. Walk slow, look up, read everything.",places:[2, 12, 29, 42, 55],time:"125 min"},
+  {id:3,title:"The Southwark Deep Dive",desc:"Hit 5 hidden spots in Southwark. Walk slow, look up, read everything.",places:[6, 26, 28, 80, 92],time:"125 min"},
+  {id:4,title:"The Shoreditch Deep Dive",desc:"Hit 4 hidden spots in Shoreditch. Walk slow, look up, read everything.",places:[1, 11, 51, 62],time:"100 min"},
+  {id:5,title:"The Peckham Deep Dive",desc:"Hit 4 hidden spots in Peckham. Walk slow, look up, read everything.",places:[3, 13, 41, 52],time:"100 min"},
+  {id:6,title:"The Greenwich Deep Dive",desc:"Hit 4 hidden spots in Greenwich. Walk slow, look up, read everything.",places:[15, 30, 48, 63],time:"100 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[3, 4, 5, 7, 8, 9],time:"120 min"},
+  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[1, 2, 20, 28, 29, 32],time:"120 min"},
+  {id:9,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[13, 26, 30, 50, 57, 59],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="English";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
