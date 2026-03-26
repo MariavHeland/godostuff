@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Brno...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Czech";
-
+<script>
 const P = [
   {id:1,n:"Ossuary Chapel — Sedlec",a:"Sedlec",v:["scary", "history"],d:20,s:"Chapel decorated with 40,000 human bones arranged into art",st:"Medieval plague killed half Europe. Monks stacked 40,000 skeletons into decorative patterns. Skulls form coat-of-arms. Femurs chandelier. Spine decorates arches. It\'s the darkest art museum ever.",im:"1400s: Bodies pile up. Monks layer them. 2024: Still standing, still surreal.",t:"Day trip 40 min. €4 entry. Prepare psychologically. Good bones pun humor required.",c:["scary", "history_big"],r:"y",nn:"Kapsa Kostnice — Sedlec",ns:"Kaple zdobená 40 000 lidských kostí uspořádaných v umění",nst:"Středověká morová rána. Mniši skládají 40 000 kostí. Lebky, stehenní kosti, páteř. Nejtemější umění.",nt:"Výlet 40 minut. €4 vstupné. Psychologicky se připrav. Humor potřebný."},
   {id:2,n:"Špilberk Castle Fortress — Brno Heights",a:"Brno Heights",v:["history", "high_spots"],d:3,s:"Medieval fortress overlooking the city since 1200s",st:"Climb to ramparts. Prison museum inside (torture equipment, cells). Views of entire Brno. Moats 30m deep. Museum €5. Real fortress, not romantic castle.",im:"1200s: Fortified against invaders. Used as WWII Nazi/Soviet prison. 2024: Open for tourists.",t:"2-hour visit. Go early avoid crowds. Cell descriptions hard. Bring water.",c:["history_big", "high_spots"],r:"y",nn:"Hrad Špilberk — Výšiny Brna",ns:"Středověký hrad přehlížející město od 1200let",nst:"Vylez na hradby. Muzeum vězení (tortury, cely). Pohled na Brno. Příkopy 30m. Muzeum €5.",nt:"2 hodiny. Jdi brzy. Popisy jsou těžké. Voda."},
@@ -167,31 +164,6 @@ const P = [
   {id:110,n:"Hády ridge / Klajdovka viewpoint walk (sunset + city panorama)",a:"Centro",v:["free","local","hidden"],d:15,s:"Hády ridge / Klajdovka viewpoint walk (sunset + city panorama) — locals — free local gem",st:"Hády ridge / Klajdovka viewpoint walk (sunset + city panorama) — locals explicitly call these go-to stroll spots; pack a supermarket beer + pastry picnic for the broke-romantic version (r/Brno thread)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Brno",ns:"Joya oculta local — Hády ridge / Klajdovka viewpoint",nst:"Hády ridge / Klajdovka viewpoint walk (sunset + city panorama) — locals explicitly call these go-to stroll spots; pack a supermarket beer + pastry pic",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Bílá hora sunset lookout (date-night walk)",a:"Centro",v:["free","local","hidden"],d:15,s:"Bílá hora sunset lookout (date-night walk) — recommended in the “couple activities” — free local gem",st:"Bílá hora sunset lookout (date-night walk) — recommended in the “couple activities” thread as a skyline view spot when the weather behaves (r/Brno couple activities).",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Brno",ns:"Joya oculta local — Bílá hora sunset lookout (date-night",nst:"Bílá hora sunset lookout (date-night walk) — recommended in the “couple activities” thread as a skyline view spot when the weather behaves (r/Brno cou",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The City Center Deep Dive",desc:"Hit 5 hidden spots in City Center. Walk slow, look up, read everything.",places:[3, 5, 13, 15, 23],time:"125 min"},
-  {id:2,title:"The Sedlec Deep Dive",desc:"Hit 5 hidden spots in Sedlec. Walk slow, look up, read everything.",places:[1, 11, 21, 31, 41],time:"125 min"},
-  {id:3,title:"The Brno Heights Deep Dive",desc:"Hit 5 hidden spots in Brno Heights. Walk slow, look up, read everything.",places:[2, 12, 22, 32, 42],time:"125 min"},
-  {id:4,title:"The Brno Deep Dive",desc:"Hit 5 hidden spots in Brno. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
-  {id:5,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
-  {id:6,title:"The Denis Gardens Deep Dive",desc:"Hit 5 hidden spots in Denis Gardens. Walk slow, look up, read everything.",places:[7, 17, 27, 37, 47],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 4, 5, 6, 11],time:"120 min"},
-  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[2, 12, 22, 32, 42, 52],time:"120 min"},
-  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[7, 9, 17, 19, 27, 29],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Brno", "Brno Heights", "City Center", "Denis Gardens", "Holesovice", "Macocha", "Moravian Karst", "Old Town", "Sedlec"];
-
 const PHRASES = [
   {native:"Ahoj",en:"Hello"},
   {native:"Kde je...?",en:"Where is...?"},
@@ -204,10 +176,33 @@ const PHRASES = [
   {native:"Hrad",en:"Castle"},
   {native:"Les",en:"Forest"}
 ];
-
+const AREAS = ["Brno", "Brno Heights", "City Center", "Denis Gardens", "Holesovice", "Macocha", "Moravian Karst", "Old Town", "Sedlec"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The City Center Deep Dive",desc:"Hit 5 hidden spots in City Center. Walk slow, look up, read everything.",places:[3, 5, 13, 15, 23],time:"125 min"},
+  {id:2,title:"The Sedlec Deep Dive",desc:"Hit 5 hidden spots in Sedlec. Walk slow, look up, read everything.",places:[1, 11, 21, 31, 41],time:"125 min"},
+  {id:3,title:"The Brno Heights Deep Dive",desc:"Hit 5 hidden spots in Brno Heights. Walk slow, look up, read everything.",places:[2, 12, 22, 32, 42],time:"125 min"},
+  {id:4,title:"The Brno Deep Dive",desc:"Hit 5 hidden spots in Brno. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
+  {id:5,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
+  {id:6,title:"The Denis Gardens Deep Dive",desc:"Hit 5 hidden spots in Denis Gardens. Walk slow, look up, read everything.",places:[7, 17, 27, 37, 47],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 4, 5, 6, 11],time:"120 min"},
+  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[2, 12, 22, 32, 42, 52],time:"120 min"},
+  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[7, 9, 17, 19, 27, 29],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Czech";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
