@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Sarajevo...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Bosnian";
-
+<script>
 const P = [
   {id:1,n:"Baščaršija\'s Hidden Hammams — Baščaršija",a:"Baščaršija",v:["hidden", "history"],d:1,s:"Ottoman bathhouses still operating in 500-year-old structures—working museums of bathing culture",st:"The hammams in Baščaršija are functional. You\'re bathing in Ottoman architecture built in the 1500s. The ritual—hot room, warm room, cold plunge—follows the same pattern for 500 years. It\'s tradition as lived experience.",im:"It\'s 1550. Ottoman merchants relax in hammams after trading in the bazaar. The ritual is sacred, the architecture is permanent, the tradition will last centuries.",t:"The hammams in Baščaršija are functional. You\'re bathing in Ottoman architecture built in the 1500s. The ritual—hot room, warm room, cold plunge—follows the same pattern for 500 years. It\'s tradition as lived experience.\",im:\"It\'s 1550. Ottoman merchants relax in hammams after trading in the bazaar. The ritual is sacred, the architecture is permanent, the tradition will last centuries.\",t:\"Entry ~15-20 KM. Located throughout Baščaršija (Gazi Husrev-beg Hamam is most famous). Bring towel. Gender-separated bathhouses. Morning hours quieter.",c:["history_big", "local_only"],r:"g",nn:"Sarajevo",ns:"Gdje rijeka Miljacka nosi sjećanja od propasti i obnove.",nst:"Sarajevo je grad koji je prošao kroz ratne oluje i ponovno se rodio. Stari grad blista sa osmanlijskim arhitekturom i bosanskom toplinom. Lat de bas je vijekne kafiće gdje se vrijeme zaustavlja. Sarajlije su duhovni narod, strpljivi i puni humora.",nt:"Baščaršija je srce grada—šetnja kroz vjekovne ulice. Odgajeni su bira i rakija u kafiću. Čaj od limunskoga bilja je lijek za sve. Novine su pune priča o otpornosti. Bošnjakom je čudan jezik, ali srce je jasno. Grad čini ljude toplim."},
   {id:2,n:"Baščaršija\'s Copper Bazaar — Baščaršija",a:"Baščaršija",v:["history", "beautiful"],d:2,s:"An Ottoman marketplace where coppersmiths still hammer goods using 500-year-old techniques",st:"The copper bazaar is working, not preserved. Coppersmiths hammer bowls and pots using the same techniques Ottoman craftspeople used. The sound—hammer on copper—is the actual sound of the bazaar for 500 years.",im:"It\'s 1580. A copper smith hammers a tray while merchants sell spices and textiles around him. The bazaar is alive with trade and craft.",t:"The copper bazaar is working, not preserved. Coppersmiths hammer bowls and pots using the same techniques Ottoman craftspeople used. The sound—hammer on copper—is the actual sound of the bazaar for 500 years.\",im:\"It\'s 1580. A copper smith hammers a tray while merchants sell spices and textiles around him. The bazaar is alive with trade and craft.\",t:\"Free to watch. Items for sale. Located in central Baščaršija. Best mornings when craftspeople work. Buy something small.",c:["history_big", "local_only"],r:"g",nn:"Sarajevo",ns:"Gdje rijeka Miljacka nosi sjećanja od propasti i obnove.",nst:"Sarajevo je grad koji je prošao kroz ratne oluje i ponovno se rodio. Stari grad blista sa osmanlijskim arhitekturom i bosanskom toplinom. Lat de bas je vijekne kafiće gdje se vrijeme zaustavlja. Sarajlije su duhovni narod, strpljivi i puni humora.",nt:"Baščaršija je srce grada—šetnja kroz vjekovne ulice. Odgajeni su bira i rakija u kafiću. Čaj od limunskoga bilja je lijek za sve. Novine su pune priča o otpornosti. Bošnjakom je čudan jezik, ali srce je jasno. Grad čini ljude toplim."},
@@ -167,21 +164,6 @@ const P = [
   {id:110,n:"Hecco Deluxe rooftop (9th fl, near Eternal Flame)",a:"Centro",v:["free","local","hidden"],d:15,s:"Hecco Deluxe rooftop (9th fl, near Eternal Flame)—free city vistas w/cheap coffee — free local gem",st:"Hecco Deluxe rooftop (9th fl, near Eternal Flame)—free city vistas w/cheap coffee (~3 KM).MyWanderlust",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Sarajevo",ns:"Joya oculta local — Hecco Deluxe rooftop (9th fl,",nst:"Hecco Deluxe rooftop (9th fl, near Eternal Flame)—free city vistas w/cheap coffee (~3 KM).MyWanderlust",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"City street art trails",a:"Centro",v:["free","local","hidden"],d:15,s:"City street art trails—Fasada fest murals on war-scarred walls, Trebević snakes.Daily Sabah — free local gem",st:"City street art trails—Fasada fest murals on war-scarred walls, Trebević snakes.Daily Sabah",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Sarajevo",ns:"Joya oculta local — City street art trails—Fasada fest",nst:"City street art trails—Fasada fest murals on war-scarred walls, Trebević snakes.Daily Sabah",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Baščaršija Deep Dive",desc:"Hit 5 hidden spots in Baščaršija. Walk slow, look up, read everything.",places:[1, 2, 3, 4, 6],time:"125 min"},
-  {id:2,title:"The Latin Bridge Deep Dive",desc:"Hit 5 hidden spots in Latin Bridge. Walk slow, look up, read everything.",places:[5, 10, 15, 20, 25],time:"125 min"},
-  {id:3,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 5, 6],time:"120 min"},
-  {id:4,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"}
-];
-
-const AREAS = ["Ba\u0161\u010dar\u0161ija", "Latin Bridge"];
-
 const PHRASES = [
   {native:"Zdravo!",en:"Hello!"},
   {native:"Hvala!",en:"Thank you!"},
@@ -194,10 +176,23 @@ const PHRASES = [
   {native:"Pomoć!",en:"Help!"},
   {native:"Lijepo je",en:"Beautiful/Nice"}
 ];
-
+const AREAS = ["Ba\u0161\u010dar\u0161ija", "Latin Bridge"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"}
+];
+const M = [
+  {id:1,title:"The Baščaršija Deep Dive",desc:"Hit 5 hidden spots in Baščaršija. Walk slow, look up, read everything.",places:[1, 2, 3, 4, 6],time:"125 min"},
+  {id:2,title:"The Latin Bridge Deep Dive",desc:"Hit 5 hidden spots in Latin Bridge. Walk slow, look up, read everything.",places:[5, 10, 15, 20, 25],time:"125 min"},
+  {id:3,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 5, 6],time:"120 min"},
+  {id:4,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Bosnian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
