@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Dubrovnik...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Croatian";
-
+<script>
 const P = [
   {id:1,n:"Dubrovnik Location 1 — Lapad",a:"Lapad",v:["quiet", "nature"],d:1,s:"Authentic Dubrovnik location with depth.",st:"You\'re experiencing Dalmatian culture at location 1. Stone and sea converge.",im:"It\'s a timeless Adriatic moment. History and nature intertwine.",t:"You\'re experiencing Dalmatian culture at location 1. Stone and sea converge.\",im:\"It\'s a timeless Adriatic moment. History and nature intertwine.\",t:\"Best visited morning or evening. Many locations free. Bring water.",c:["parks"],r:"g",nn:"Dubrovnik",ns:"Što je zvani \'Perl Jadrana\' živi u zidinama starog grada.",nst:"Dubrovnik je zamrznutu malo vrijeme u zidinama renesansnog grada. Stradun je zlatna ulica gdje se hodaju milijuni koraka godišnje. Stara Luka je mirna zatvorena bazena, mjesto gdje vrijeme gubi smisao. Dubrovčani su ponošni na svoju ljepotu, ali i iskusni u turizmu.",nt:"Gradske zidine su hod od nekoliko sati—počni rano. Jedrenje je jedini način doživljaja otoka. Riblja juha je nacionalna tradicija. Noću grad postaje još ljepši kad turiste zaspave. Dubrovčani pričaju s elegancijom. Sunčni zraki dolaze najpoznije u vrijeme zalaska."},
   {id:2,n:"Dubrovnik Location 2 — Stari Grad",a:"Stari Grad",v:["weird", "free"],d:2,s:"Authentic Dubrovnik location with depth.",st:"You\'re experiencing Dalmatian culture at location 2. Stone and sea converge.",im:"It\'s a timeless Adriatic moment. History and nature intertwine.",t:"You\'re experiencing Dalmatian culture at location 2. Stone and sea converge.\",im:\"It\'s a timeless Adriatic moment. History and nature intertwine.\",t:\"Best visited morning or evening. Many locations free. Bring water.",c:["romantic_water"],r:"g",nn:"Dubrovnik",ns:"Što je zvani \'Perl Jadrana\' živi u zidinama starog grada.",nst:"Dubrovnik je zamrznutu malo vrijeme u zidinama renesansnog grada. Stradun je zlatna ulica gdje se hodaju milijuni koraka godišnje. Stara Luka je mirna zatvorena bazena, mjesto gdje vrijeme gubi smisao. Dubrovčani su ponošni na svoju ljepotu, ali i iskusni u turizmu.",nt:"Gradske zidine su hod od nekoliko sati—počni rano. Jedrenje je jedini način doživljaja otoka. Riblja juha je nacionalna tradicija. Noću grad postaje još ljepši kad turiste zaspave. Dubrovčani pričaju s elegancijom. Sunčni zraki dolaze najpoznije u vrijeme zalaska."},
@@ -167,29 +164,6 @@ const P = [
   {id:110,n:"Cliff jumping rocks by Old City walls/coves Instag",a:"Centro",v:["free","local","hidden"],d:15,s:"Cliff jumping rocks by Old City walls/coves Instagram. — free local gem",st:"Cliff jumping rocks by Old City walls/coves Instagram.",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Dubrovnik",ns:"Joya oculta local — Cliff jumping rocks by Old",nst:"Cliff jumping rocks by Old City walls/coves Instagram.",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Wander Cavtat/Mlini villages",a:"Centro",v:["free","local","hidden"],d:15,s:"Wander Cavtat/Mlini villages—chat locals — free local gem",st:"Wander Cavtat/Mlini villages—chat locals",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Dubrovnik",ns:"Joya oculta local — Wander Cavtat/Mlini villages—chat locals",nst:"Wander Cavtat/Mlini villages—chat locals",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Lapad Deep Dive",desc:"Hit 5 hidden spots in Lapad. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
-  {id:2,title:"The Stari Grad Deep Dive",desc:"Hit 5 hidden spots in Stari Grad. Walk slow, look up, read everything.",places:[2, 7, 12, 17, 22],time:"125 min"},
-  {id:3,title:"The Ploče Deep Dive",desc:"Hit 5 hidden spots in Ploče. Walk slow, look up, read everything.",places:[3, 8, 13, 18, 23],time:"125 min"},
-  {id:4,title:"The Pile Deep Dive",desc:"Hit 5 hidden spots in Pile. Walk slow, look up, read everything.",places:[4, 9, 14, 19, 24],time:"125 min"},
-  {id:5,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[5, 10, 15, 20, 25],time:"125 min"},
-  {id:6,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[5, 10, 15, 20, 25, 30],time:"120 min"},
-  {id:7,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[4, 9, 14, 19, 24, 29],time:"120 min"},
-  {id:8,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[1, 6, 11, 16, 21, 26],time:"120 min"},
-  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"}
-];
-
-const AREAS = ["Lapad", "Old Town", "Pile", "Plo\u010de", "Stari Grad"];
-
 const PHRASES = [
   {native:"Zdravo!",en:"Hello!"},
   {native:"Hvala!",en:"Thank you!"},
@@ -202,10 +176,31 @@ const PHRASES = [
   {native:"Pomoć!",en:"Help!"},
   {native:"Lijepo je",en:"Beautiful/Nice"}
 ];
-
+const AREAS = ["Lapad", "Old Town", "Pile", "Plo\u010de", "Stari Grad"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"}
+];
+const M = [
+  {id:1,title:"The Lapad Deep Dive",desc:"Hit 5 hidden spots in Lapad. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
+  {id:2,title:"The Stari Grad Deep Dive",desc:"Hit 5 hidden spots in Stari Grad. Walk slow, look up, read everything.",places:[2, 7, 12, 17, 22],time:"125 min"},
+  {id:3,title:"The Ploče Deep Dive",desc:"Hit 5 hidden spots in Ploče. Walk slow, look up, read everything.",places:[3, 8, 13, 18, 23],time:"125 min"},
+  {id:4,title:"The Pile Deep Dive",desc:"Hit 5 hidden spots in Pile. Walk slow, look up, read everything.",places:[4, 9, 14, 19, 24],time:"125 min"},
+  {id:5,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[5, 10, 15, 20, 25],time:"125 min"},
+  {id:6,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[5, 10, 15, 20, 25, 30],time:"120 min"},
+  {id:7,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[4, 9, 14, 19, 24, 29],time:"120 min"},
+  {id:8,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[1, 6, 11, 16, 21, 26],time:"120 min"},
+  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Croatian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
