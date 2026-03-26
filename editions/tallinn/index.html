@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Tallinn...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Estonian";
-
+<script>
 const P = [
   {id:1,n:"Old Town Medieval Walls — Old Town",a:"Old Town",v:["history", "beautiful"],d:1,s:"Nearly intact 14th-century walls surrounding the medieval city—walk the ramparts for complete perspective",st:"Tallinn\'s walls are nearly complete. You can walk the ramparts for sections, seeing the entire city spread below. The walls are original stone. You\'re literally walking on medieval defense infrastructure.",im:"It\'s 1350. Walls are built to defend Tallinn from Hanseatic incursions. Stone-by-stone, fortification takes shape.",t:"Tallinn\'s walls are nearly complete. You can walk the ramparts for sections, seeing the entire city spread below. The walls are original stone. You\'re literally walking on medieval defense infrastructure.\",im:\"It\'s 1350. Walls are built to defend Tallinn from Hanseatic incursions. Stone-by-stone, fortification takes shape.\",t:\"Free. Located around Old Town perimeter. Rampart walks available in sections. Open 9am-sunset. Bring layers. Photography is striking.",c:["history_big", "beautiful"],r:"g",nn:"Tallinn",ns:"Kus Läänemere tuul räägib keskaegsete saladustest.",nst:"Tallinn on väike keskaegne linn, kus kivilinnused ja tornid vaatavad Läänemerest. Vanalinn on justnagu Hansa-ajal kristalliseerunud aeg. Estonaasid on rahvus, kes armastab digitehnoloogiat ja veikesi jooke. Saarisel Prantsuse basseinil on armastus ja pirtsad.",nt:"Vanalinna kivipersioonid on võluvad. Kohvikutes käib väga hea õhkkond. Eesti keel on kummaline aga soojane. Suvel on käimas suurepärased festivalid. Talvine Tallinn on nagu jääkuninga riik. Eestlased on vaiksed aga põhjus on neil teised."},
   {id:2,n:"Kalamaja\'s Wooden Houses — Kalamaja",a:"Kalamaja",v:["history", "beautiful"],d:2,s:"A neighborhood of 18th-century wooden buildings painted in pastels—feels like stepping into a fairy tale",st:"Kalamaja is the Caribbean of the North—colorful wooden houses, narrow streets, genuine neighborhood. Most houses are private residences. The atmosphere is intimate and charming.",im:"It\'s 1850. Estonian fisherman build simple wooden houses painted in colors. The neighborhood becomes the fishermen\'s quarter.",t:"Kalamaja is the Caribbean of the North—colorful wooden houses, narrow streets, genuine neighborhood. Most houses are private residences. The atmosphere is intimate and charming.\",im:\"It\'s 1850. Estonian fisherman build simple wooden houses painted in colors. The neighborhood becomes the fishermen\'s quarter.\",t:\"Free to walk. Located north of Old Town. Best early morning light. Respectful photography. Bring coffee from a cafe. Walk without destination.",c:["history_big", "beautiful"],r:"g",nn:"Tallinn",ns:"Kus Läänemere tuul räägib keskaegsete saladustest.",nst:"Tallinn on väike keskaegne linn, kus kivilinnused ja tornid vaatavad Läänemerest. Vanalinn on justnagu Hansa-ajal kristalliseerunud aeg. Estonaasid on rahvus, kes armastab digitehnoloogiat ja veikesi jooke. Saarisel Prantsuse basseinil on armastus ja pirtsad.",nt:"Vanalinna kivipersioonid on võluvad. Kohvikutes käib väga hea õhkkond. Eesti keel on kummaline aga soojane. Suvel on käimas suurepärased festivalid. Talvine Tallinn on nagu jääkuninga riik. Eestlased on vaiksed aga põhjus on neil teised."},
@@ -167,23 +164,6 @@ const P = [
   {id:110,n:"Danish King’s Garden (Toompea edge)",a:"Centro",v:["free","local","hidden"],d:15,s:"Danish King’s Garden (Toompea edge) — atmospheric, lantern-lit-feeling lane by Kiek in — free local gem",st:"Danish King’s Garden (Toompea edge) — atmospheric, lantern-lit-feeling lane by Kiek in de Kök area; tied to old legends (Hidden Tallinn).",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Tallinn",ns:"Joya oculta local — Danish King’s Garden (Toompea edge)",nst:"Danish King’s Garden (Toompea edge) — atmospheric, lantern-lit-feeling lane by Kiek in de Kök area; tied to old legends (Hidden Tallinn).",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Free “sunset-by-seaside” urban roam: Linnahall steps/roofline + harbor edge",a:"Centro",v:["free","local","hidden"],d:15,s:"Free “sunset-by-seaside” urban roam: Linnahall steps/roofline + harbor edge — suggested as — free local gem",st:"Free “sunset-by-seaside” urban roam: Linnahall steps/roofline + harbor edge — suggested as a Tallinn sunset area and also a common spot locals mention for quick sea access (Visit Estonia, Reddit threa",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Tallinn",ns:"Joya oculta local — Free “sunset-by-seaside” urban roam: Linnahall",nst:"Free “sunset-by-seaside” urban roam: Linnahall steps/roofline + harbor edge — suggested as a Tallinn sunset area and also a common spot locals mention",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Kalamaja Deep Dive",desc:"Hit 5 hidden spots in Kalamaja. Walk slow, look up, read everything.",places:[2, 3, 7, 8, 12],time:"125 min"},
-  {id:2,title:"The Toompea Deep Dive",desc:"Hit 5 hidden spots in Toompea. Walk slow, look up, read everything.",places:[4, 5, 9, 10, 14],time:"125 min"},
-  {id:3,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
-  {id:4,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 5, 6, 7],time:"120 min"},
-  {id:5,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Kalamaja", "Old Town", "Toompea"];
-
 const PHRASES = [
   {native:"Tere!",en:"Hello!"},
   {native:"Tänan!",en:"Thank you!"},
@@ -196,10 +176,25 @@ const PHRASES = [
   {native:"Abi!",en:"Help!"},
   {native:"Nägemiseni",en:"Goodbye"}
 ];
-
+const AREAS = ["Kalamaja", "Old Town", "Toompea"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Kalamaja Deep Dive",desc:"Hit 5 hidden spots in Kalamaja. Walk slow, look up, read everything.",places:[2, 3, 7, 8, 12],time:"125 min"},
+  {id:2,title:"The Toompea Deep Dive",desc:"Hit 5 hidden spots in Toompea. Walk slow, look up, read everything.",places:[4, 5, 9, 10, 14],time:"125 min"},
+  {id:3,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
+  {id:4,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 5, 6, 7],time:"120 min"},
+  {id:5,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Estonian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
