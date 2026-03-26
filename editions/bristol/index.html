@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Bristol...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="English";
-
+<script>
 const P = [
   {id:1,n:"Banksy Graffiti Trail — Various",a:"Various",v:["street_art", "local"],d:3,s:"Artist\'s hidden murals scattered throughout the city",st:"Bristol\'s famous street artist left signatures everywhere. Girl with Balloon, Well Hung Lover, Mild Mild West. Maps online. Treasure hunt through Stokes Croft and Bethnal Green.",im:"2000s: Banksy paints anonymously. 2024: Tourists hunt his work.",t:"Get street art map. Some fading—photograph now. Trespassing not required.",c:["street_art", "local_only"],r:"g",nn:"",ns:"",nst:"",nt:""},
   {id:2,n:"Clifton Suspension Bridge — Clifton",a:"Clifton",v:["beautiful", "history"],d:4,s:"Isambard Kingdom Brunel\'s Victorian engineering marvel",st:"Built 1864, soaring over Avon Gorge. Walk across (free). Victorian engineering drama. Below, the gorge cuts deep. Views across England.",im:"1864: Engineering pushed limits. 2024: Still standing, still stunning.",t:"Free to walk. 8am-6pm. Viewpoint café at both ends.",c:["high_spots", "architecture"],r:"g",nn:"",ns:"",nst:"",nt:""},
@@ -167,7 +164,29 @@ const P = [
   {id:110,n:"Banksy Trail in Bedminster",a:"Centro",v:["free","local","hidden"],d:15,s:"Self-guided Banksy trail through Bristol neighborhoods",st:"Self-guided Banksy art hunt through neighborhoods",im:"Time-travel: Historic significance or local transformation.",t:"Free to visit/explore. Check local guides for hours.",c:["local_only","hidden"],r:"g",nn:"Bristol",ns:"Arte callejero oculto — murales en Stokes Croft",nst:"Self-guided Banksy art hunt through neighborhoods",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Arnolfini Contemporary Art Space",a:"Centro",v:["free","local","hidden"],d:15,s:"Free entry contemporary art in industrial waterfront",st:"Free to walk through innovative art galleries",im:"Time-travel: Historic significance or local transformation.",t:"Free to visit/explore. Check local guides for hours.",c:["local_only","hidden"],r:"g",nn:"Bristol",ns:"Arte callejero oculto — murales en Stokes Croft",nst:"Free to walk through innovative art galleries",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
+const PHRASES = [
+  {native:"Alright my lover",en:"Hello/How are you? (West Country)"},
+  {native:"Ooh ar",en:"Yes/expression of agreement"},
+  {native:"Gert lush",en:"Really nice/brilliant (Bristol)"},
+  {native:"Cheers drive",en:"Thanks mate"},
+  {native:"Lush",en:"Great/excellent"},
+  {native:"Where\'s it at",en:"What\'s up/What\'s happening"},
+  {native:"Nice one my handsome",en:"Well done"},
+  {native:"Ta",en:"Thanks"},
+  {native:"Tidy",en:"Good/nice"},
+  {native:"Innit",en:"Isn\'t it (modern British slang)"}
+];
+const AREAS = ["Bath (Day trip)", "Brandon Hill", "City Center", "Clifton", "Floating Harbour", "Harbourside", "Leigh Woods", "Stokes Croft", "Various"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
 const M = [
   {id:1,title:"The City Center Deep Dive",desc:"Hit 5 hidden spots in City Center. Walk slow, look up, read everything.",places:[4, 5, 14, 15, 24],time:"125 min"},
   {id:2,title:"The Various Deep Dive",desc:"Hit 5 hidden spots in Various. Walk slow, look up, read everything.",places:[1, 11, 21, 31, 41],time:"125 min"},
@@ -181,35 +200,11 @@ const M = [
   {id:10,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 7, 14, 17, 24, 27],time:"120 min"},
   {id:11,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
 ];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Bath (Day trip)", "Brandon Hill", "City Center", "Clifton", "Floating Harbour", "Harbourside", "Leigh Woods", "Stokes Croft", "Various"];
-
-const PHRASES = [
-  {native:"Alright my lover",en:"Hello/How are you? (West Country)"},
-  {native:"Ooh ar",en:"Yes/expression of agreement"},
-  {native:"Gert lush",en:"Really nice/brilliant (Bristol)"},
-  {native:"Cheers drive",en:"Thanks mate"},
-  {native:"Lush",en:"Great/excellent"},
-  {native:"Where\'s it at",en:"What\'s up/What\'s happening"},
-  {native:"Nice one my handsome",en:"Well done"},
-  {native:"Ta",en:"Thanks"},
-  {native:"Tidy",en:"Good/nice"},
-  {native:"Innit",en:"Isn\'t it (modern British slang)"}
-];
-
-const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="English";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
