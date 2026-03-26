@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Naples...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Italian";
-
+<script>
 const P = [
   {id:1,n:"Spaccanapoli Division Street #1 — Centro Storico",a:"Centro Storico",v:["history", "weird"],d:1,s:"A straight street that splits Naples in half — walk it and feel the city\'s pulse in laundry lines, street food, chaos.",st:"The street is narrow. Clotheslines criss-cross overhead. Mopeds weave. A pizza stand. A saint shrine. You feel every layer of Naples at once.",im:"It\'s 1650. This street is Naples\' spine. Everything flows along it.",t:"The street is narrow. Clotheslines criss-cross overhead. Mopeds weave. A pizza stand. A saint shrine. You feel every layer of Naples at once.\",im:\"It\'s 1650. This street is Naples\' spine. Everything flows along it.\",t:\"Metro Line 1 to Dante. Free. 1-2 hours walking. Go midday for energy.",c:["history_big", "local_only"],r:"g",nn:"Spaccanapoli Division Street #1",ns:"Spaccanapoli Division Street #1 è una gioia italiana.",nst:"Spaccanapoli Division Street #1 respira storia. Generazioni hanno camminato qui. Ora tu. È esperienza che cambia.",nt:"Ascolta i locali. Arriva presto. Respira lentamente. Lasciati sorprendere."},
   {id:2,n:"Napoli Sotterranea Underground City #2 — Centro Storico",a:"Centro Storico",v:["history", "hidden"],d:2,s:"40 meters below Naples: Greek quarries, Roman aqueducts, WWII shelters — a city stacked vertically.",st:"You descend stairs. The air cools. You\'re in ancient stone. Water channels. Graffiti from 1943 bomb shelters. It\'s surreal and haunting.",im:"It\'s 79 AD. Vesuvius is about to destroy Pompeii. This Naples survives.",t:"You descend stairs. The air cools. You\'re in ancient stone. Water channels. Graffiti from 1943 bomb shelters. It\'s surreal and haunting.\",im:\"It\'s 79 AD. Vesuvius is about to destroy Pompeii. This Naples survives.\",t:\"Centro Storico area. €10 entry. 1.5 hours with guide. Book ahead.",c:["history_big", "scary"],r:"g",nn:"Napoli Sotterranea Underground City #2",ns:"Napoli Sotterranea Underground City #2 è una gioia italiana.",nst:"Napoli Sotterranea Underground City #2 respira storia. Generazioni hanno camminato qui. Ora tu. È esperienza che cambia.",nt:"Ascolta i locali. Arriva presto. Respira lentamente. Lasciati sorprendere."},
@@ -167,23 +164,6 @@ const P = [
   {id:110,n:"Spaccanapoli Walking the Old City",a:"Centro",v:["free","local","hidden"],d:15,s:"Ancient street cutting through old Naples core",st:"Historic narrow street cutting through ancient Naples",im:"Time-travel: Historic significance or local transformation.",t:"Free to visit/explore. Check local guides for hours.",c:["local_only","hidden"],r:"g",nn:"Napoli",ns:"Túneles antiguos bajo la ciudad — exploración",nst:"Historic narrow street cutting through ancient Naples",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Vesuvius Views from Vomero",a:"Centro",v:["free","local","hidden"],d:15,s:"Hilltop views over Vesuvius and Bay of Naples",st:"Hilltop neighborhood with views over volcano and bay",im:"Time-travel: Historic significance or local transformation.",t:"Free to visit/explore. Check local guides for hours.",c:["local_only","hidden"],r:"g",nn:"Napoli",ns:"Túneles antiguos bajo la ciudad — exploración",nst:"Hilltop neighborhood with views over volcano and bay",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Centro Storico Deep Dive",desc:"Hit 5 hidden spots in Centro Storico. Walk slow, look up, read everything.",places:[1, 2, 4, 5, 7],time:"125 min"},
-  {id:2,title:"The Quartieri Spagnoli Deep Dive",desc:"Hit 5 hidden spots in Quartieri Spagnoli. Walk slow, look up, read everything.",places:[3, 6, 9, 12, 15],time:"125 min"},
-  {id:3,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 4, 5, 7, 8],time:"120 min"},
-  {id:4,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Centro Storico", "Quartieri Spagnoli"];
-
 const PHRASES = [
   {native:"Ciao, bella!",en:""},
   {native:"Grazie infinite",en:""},
@@ -196,10 +176,25 @@ const PHRASES = [
   {native:"Un caffè, per favore",en:""},
   {native:"Buona notte",en:""}
 ];
-
+const AREAS = ["Centro Storico", "Quartieri Spagnoli"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Centro Storico Deep Dive",desc:"Hit 5 hidden spots in Centro Storico. Walk slow, look up, read everything.",places:[1, 2, 4, 5, 7],time:"125 min"},
+  {id:2,title:"The Quartieri Spagnoli Deep Dive",desc:"Hit 5 hidden spots in Quartieri Spagnoli. Walk slow, look up, read everything.",places:[3, 6, 9, 12, 15],time:"125 min"},
+  {id:3,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 4, 5, 7, 8],time:"120 min"},
+  {id:4,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Italian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
