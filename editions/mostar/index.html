@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Mostar...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Bosnian";
-
+<script>
 const P = [
   {id:1,n:"Stari Most — Old Bridge",a:"Old Bridge",v:["history", "beautiful"],d:0,s:"Iconic 450-year-old Ottoman bridge over emerald water",st:"Built 1566. Destroyed 1993 in war, rebuilt 2004. Divers jump from 23m (mad but awesome). Bridge connects Muslim and Christian sides. Museum inside shows war damage still.",im:"1566: Ottoman master builds beauty. 1993: War destroys it. 2024: Rebuilt and defiant.",t:"Watch divers jump around 11am. Museum €4. Water absolutely cold.",c:["history_big", "architecture"],r:"g",nn:"Stari Most — Stari Most",ns:"Ikonična osmanska ćuprija stara 450 godina",nst:"Izgrađena 1566. Srušena 1993 u ratu, ponovo izgrađena 2004. Ronilci skaču sa 23m. Muzej pokazuje ratnu štetu.",nt:"Gledaj ronioce skakati 11 sati. Muzej €4. Voda hladna."},
   {id:2,n:"Koski Mosque — Old Bridge",a:"Old Bridge",v:["history", "beautiful"],d:0,s:"Ottoman mosque with minaret views over the bridge",st:"Built 1617. Climb 83 steps to minaret for views down to Stari Most. Prayer times 5x daily—visit between. Shoes off. Modest dress. Money box voluntary (€1-2).",im:"1617: Ottomans build minaret. 2024: You climb same 83 steps.",t:"Go before 1pm prayers. Light best at 10am. Respectful visits only.",c:["history_big", "architecture"],r:"g",nn:"Koski Mehmed-paša Džamija — Stari Most",ns:"Osmanska džamija sa minaret pogledom na ćupriju",nst:"Izgrađena 1617. Popni se 83 stepenika na minaret. Bolje između molitev. Bosih nogu. Skromna odeća. Novčanik dobrovoljno.",nt:"Idi prije 13h molitve. Svjetlo best 10h. Samo pošteni posjetitelji."},
@@ -167,29 +164,6 @@ const P = [
   {id:110,n:"Kujundžiluk (Old Bazaar) after-hours",a:"Centro",v:["free","local","hidden"],d:15,s:"Kujundžiluk (Old Bazaar) after-hours — the bazaar gets packed mid-day; visit early — free local gem",st:"Kujundžiluk (Old Bazaar) after-hours — the bazaar gets packed mid-day; visit early morning or late evening for quieter, moodier photos and fewer sales pitches. (Dark Tourism guide to Mostar)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Mostar",ns:"Joya oculta local — Kujundžiluk (Old Bazaar) after-hours —",nst:"Kujundžiluk (Old Bazaar) after-hours — the bazaar gets packed mid-day; visit early morning or late evening for quieter, moodier photos and fewer sales",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Kriva Ćuprija (“Crooked Bridge”) + creekside micro-picnic",a:"Centro",v:["free","local","hidden"],d:15,s:"Kriva Ćuprija (“Crooked Bridge”) + creekside micro-picnic — smaller Ottoman bridge near — free local gem",st:"Kriva Ćuprija (“Crooked Bridge”) + creekside micro-picnic — smaller Ottoman bridge near the Old Bridge area; great for a quieter romantic stroll and people-watching. (Dark Tourism guide to Mostar)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Mostar",ns:"Joya oculta local — Kriva Ćuprija (“Crooked Bridge”) +",nst:"Kriva Ćuprija (“Crooked Bridge”) + creekside micro-picnic — smaller Ottoman bridge near the Old Bridge area; great for a quieter romantic stroll and p",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Old Bridge Deep Dive",desc:"Hit 5 hidden spots in Old Bridge. Walk slow, look up, read everything.",places:[1, 2, 11, 12, 21],time:"125 min"},
-  {id:2,title:"The Blagaj Deep Dive",desc:"Hit 5 hidden spots in Blagaj. Walk slow, look up, read everything.",places:[3, 13, 23, 33, 43],time:"125 min"},
-  {id:3,title:"The East Side Deep Dive",desc:"Hit 5 hidden spots in East Side. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
-  {id:4,title:"The Kravice Deep Dive",desc:"Hit 5 hidden spots in Kravice. Walk slow, look up, read everything.",places:[5, 15, 25, 35, 45],time:"125 min"},
-  {id:5,title:"The Počitelj Deep Dive",desc:"Hit 5 hidden spots in Počitelj. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
-  {id:6,title:"The Lower Neretva Deep Dive",desc:"Hit 5 hidden spots in Lower Neretva. Walk slow, look up, read everything.",places:[7, 17, 27, 37, 47],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 6, 7],time:"120 min"},
-  {id:8,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[5, 10, 15, 20, 25, 30],time:"120 min"},
-  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Blagaj", "East Side", "Kravice", "Lower Neretva", "Old Bridge", "Old Town", "Po\u010ditelj", "Regional", "\u0160umava"];
-
 const PHRASES = [
   {native:"Zdravo",en:"Hello"},
   {native:"Gdje je...?",en:"Where is...?"},
@@ -202,10 +176,31 @@ const PHRASES = [
   {native:"Ćuprija",en:"Bridge"},
   {native:"Voda",en:"Water"}
 ];
-
+const AREAS = ["Blagaj", "East Side", "Kravice", "Lower Neretva", "Old Bridge", "Old Town", "Po\u010ditelj", "Regional", "\u0160umava"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Old Bridge Deep Dive",desc:"Hit 5 hidden spots in Old Bridge. Walk slow, look up, read everything.",places:[1, 2, 11, 12, 21],time:"125 min"},
+  {id:2,title:"The Blagaj Deep Dive",desc:"Hit 5 hidden spots in Blagaj. Walk slow, look up, read everything.",places:[3, 13, 23, 33, 43],time:"125 min"},
+  {id:3,title:"The East Side Deep Dive",desc:"Hit 5 hidden spots in East Side. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
+  {id:4,title:"The Kravice Deep Dive",desc:"Hit 5 hidden spots in Kravice. Walk slow, look up, read everything.",places:[5, 15, 25, 35, 45],time:"125 min"},
+  {id:5,title:"The Počitelj Deep Dive",desc:"Hit 5 hidden spots in Počitelj. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
+  {id:6,title:"The Lower Neretva Deep Dive",desc:"Hit 5 hidden spots in Lower Neretva. Walk slow, look up, read everything.",places:[7, 17, 27, 37, 47],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 2, 3, 4, 6, 7],time:"120 min"},
+  {id:8,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[5, 10, 15, 20, 25, 30],time:"120 min"},
+  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Bosnian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
