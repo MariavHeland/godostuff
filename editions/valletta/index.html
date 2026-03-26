@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Valletta...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="English";
-
+<script>
 const P = [
   {id:1,n:"Upper Barrakka Gardens — Valletta",a:"Valletta",v:["beautiful","high_spots","history"],d:20,s:"The finest view in Malta — Grand Harbour, the Three Cities, and tankers at anchor, all free",st:"From this 16th-century garden bastion, the Grand Harbour spreads below you. The dockyard creeks, Vittoriosa, Senglea, and the open sea beyond. Free to enter, always open. Nothing in Malta competes with this view.",im:"Time-travel: Knights of St John watching the Ottoman fleet fill the harbour in the Great Siege, 1565",t:"Free. Open daily. Cannon fired at noon — very loud.",c:["high_spots"],r:"g",nn:"Upper Barrakka Gardens — Valletta",ns:"Il panorama più bello di Malta — il Grand Harbour, le Tre Città",nst:"Da questo bastione-giardino del XVI secolo, il Grand Harbour si apre sotto di te.",nt:"Gratis. Aperto quotidianamente. Cannone sparato a mezzogiorno."},
   {id:2,n:"Republic Street Walk — Valletta",a:"Valletta",v:["history","architecture","local"],d:30,s:"Valletta\'s spine — walk end to end past baroque churches, the Grand Master\'s Palace, and the sea",st:"Republic Street runs from the City Gate to Fort St Elmo, the full length of Valletta. The Grand Master\'s Palace courtyard is free entry. The street narrows and the light changes at every intersection.",im:"Time-travel: the Knights of St John processing in full ceremony along this street on feast days, 1600",t:"Free always.",c:["architecture"],r:"g",nn:"Republic Street — Valletta",ns:"La spina di Valletta - percorrila da un\'estremita all\'altra",nst:"Republic Street corre dal City Gate a Fort St Elmo.",nt:"Sempre gratis."},
@@ -160,18 +157,20 @@ const P = [
   {id:104,n:"Mdina Bastion Viewpoint — Mdina & Rabat #104",a:"Mdina & Rabat",v:["beautiful","high_spots","nature"],d:54,s:"360° view across nearly the whole island — Valletta, the harbours, Dingli, and the sea",st:"The bastions of Mdina offer a 360° view across nearly the whole island: Valletta and its harbours to the east, Dingli cliffs to the west, and the rural centre in every direction. Most dramatic at sunset.",im:"Time-travel: the medieval city of Mdina visible from ships far out at sea, a beacon for returning sailors, 1400",t:"Free. Always accessible. The main bastion is Bastion Square.",c:["high_spots"],r:"g",nn:"Bastioni di Mdina — Mdina & Rabat #104",ns:"Vista a 360° su quasi tutta l\'isola — Valletta, i porti, Dingli e il mare",nst:"I bastioni di Mdina offrono una vista a 360°.",nt:"Gratis. Sempre accessibile."},
   {id:105,n:"Rabat Town Walk — Mdina & Rabat #105",a:"Mdina & Rabat",v:["local","history","hidden"],d:23,s:"The town just outside Mdina\'s walls — excellent churches, local market, ancient catacombs",st:"Rabat sits just outside Mdina\'s walls and is far less visited. The town has excellent parish churches, a local market on weekday mornings, and the St Agatha catacombs (small entry fee). Walk freely above ground.",im:"Time-travel: Rabat as the suburb of Roman Melita, the Roman town sprawling outside the city walls, 200 AD",t:"Free to walk. Catacombs have small entry fee.",c:["parks"],r:"g",nn:"Rabat — Mdina & Rabat #105",ns:"La città appena fuori le mura di Mdina — chiese, mercato locale, catacombe",nst:"Rabat si trova appena fuori dalle mura di Mdina.",nt:"Gratis a piedi. Catacombe con piccolo biglietto."}
 ];
-
-const M = [
-  {id:1,title:"The Valletta Deep Dive",desc:"Hit 5 spots in Valletta. Walk slow, look up.",places:[1,2,3,4,5],time:"125 min"},
-  {id:2,title:"The Vittoriosa (Birgu) Deep Dive",desc:"Hit 4 spots in Vittoriosa (Birgu). Walk slow, look up.",places:[8,9,10,30],time:"125 min"},
-  {id:3,title:"The Mdina & Rabat Deep Dive",desc:"Hit 4 spots in Mdina & Rabat. Walk slow, look up.",places:[13,14,15,24],time:"125 min"},
-  {id:4,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1,2,7,8,9,12],time:"120 min"},
-  {id:5,title:"Hidden Gems",desc:"The places nobody talks about.",places:[6,9,11,12,15],time:"100 min"},
-  {id:6,title:"Green Escape",desc:"Parks, nature, silence. All free.",places:[3,4,6,13],time:"90 min"},
-  {id:7,title:"Golden Hour Tour",desc:"Best views as the light turns gold.",places:[1,3,5,6,8],time:"100 min"},
-  {id:8,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105],time:"multi-day"}
+const PHRASES = [
+  {native:"Bonġu",en:"Good morning"},
+  {native:"Ħello / Bonċi",en:"Hello"},
+  {native:"Grazzi",en:"Thank you"},
+  {native:"Iva / Le",en:"Yes / No"},
+  {native:"Toilet?",en:"Toilets?"},
+  {native:"Għali wisq",en:"Too expensive"},
+  {native:"Ma nafx",en:"I don't know"},
+  {native:"Birra waħda, jekk jogħġbok",en:"A beer, please"},
+  {native:"Saħħa",en:"Cheers / Goodbye"},
+  {native:"Skużani",en:"Excuse me"}
 ];
-
+const AREAS = ["Valletta","Floriana","Vittoriosa (Birgu)","Senglea","Mdina & Rabat","Marsaxlokk","Cottonera Lines","Gozo"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
 const COLLECTIONS = [
   {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
   {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
@@ -186,25 +185,21 @@ const COLLECTIONS = [
   {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
   {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
 ];
-
-const AREAS = ["Valletta","Floriana","Vittoriosa (Birgu)","Senglea","Mdina & Rabat","Marsaxlokk","Cottonera Lines","Gozo"];
-
-const PHRASES = [
-  {native:"Bonġu",en:"Good morning"},
-  {native:"Ħello / Bonċi",en:"Hello"},
-  {native:"Grazzi",en:"Thank you"},
-  {native:"Iva / Le",en:"Yes / No"},
-  {native:"Toilet?",en:"Toilets?"},
-  {native:"Għali wisq",en:"Too expensive"},
-  {native:"Ma nafx",en:"I don't know"},
-  {native:"Birra waħda, jekk jogħġbok",en:"A beer, please"},
-  {native:"Saħħa",en:"Cheers / Goodbye"},
-  {native:"Skużani",en:"Excuse me"}
+const M = [
+  {id:1,title:"The Valletta Deep Dive",desc:"Hit 5 spots in Valletta. Walk slow, look up.",places:[1,2,3,4,5],time:"125 min"},
+  {id:2,title:"The Vittoriosa (Birgu) Deep Dive",desc:"Hit 4 spots in Vittoriosa (Birgu). Walk slow, look up.",places:[8,9,10,30],time:"125 min"},
+  {id:3,title:"The Mdina & Rabat Deep Dive",desc:"Hit 4 spots in Mdina & Rabat. Walk slow, look up.",places:[13,14,15,24],time:"125 min"},
+  {id:4,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1,2,7,8,9,12],time:"120 min"},
+  {id:5,title:"Hidden Gems",desc:"The places nobody talks about.",places:[6,9,11,12,15],time:"100 min"},
+  {id:6,title:"Green Escape",desc:"Parks, nature, silence. All free.",places:[3,4,6,13],time:"90 min"},
+  {id:7,title:"Golden Hour Tour",desc:"Best views as the light turns gold.",places:[1,3,5,6,8],time:"100 min"},
+  {id:8,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105],time:"multi-day"}
 ];
-
-const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="English";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
