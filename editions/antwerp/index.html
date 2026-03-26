@@ -326,10 +326,12 @@ if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
 if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
 
 const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
-if(showPicker){const rp=spinPlace||P[0];
-return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",background:"radial-gradient(ellipse at 50% 40%, #1b5e34 0%, #0e3a1e 45%, #061209 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
-{/* felt texture shimmer */}
-<div style={{position:"absolute",inset:0,background:"repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,255,255,.015) 2px,rgba(255,255,255,.015) 4px)",pointerEvents:"none"}}/>
+if(showPicker){const rp=spinPlace||P[0];const _bgs=["https://mariavheland.github.io/godostuff/dice/bg1.jpg","https://mariavheland.github.io/godostuff/dice/bg2.jpg","https://mariavheland.github.io/godostuff/dice/bg3.jpg"];const _bg=_bgs[Math.floor(Math.random()*_bgs.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backgroundImage:`url(${_bg})`,backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+{/* dark scrim over photo */}
+<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.55)",pointerEvents:"none"}}/>
+{/* felt grain */}
+<div style={{position:"absolute",inset:0,background:"repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,255,255,.018) 2px,rgba(255,255,255,.018) 4px)",pointerEvents:"none"}}/>
 {/* center spotlight */}
 <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:420,height:420,borderRadius:"50%",background:"radial-gradient(ellipse,rgba(255,220,80,.07) 0%,transparent 70%)",pointerEvents:"none"}}/>
 {/* floating card suits */}
