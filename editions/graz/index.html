@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Graz...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="German";
-
+<script>
 const P = [
   {id:1,n:"Kunsthaus (Art House) — City Center",a:"City Center",v:["weird", "beautiful", "local"],d:2,s:"Blue alien spaceship landed on Graz—it\'s a museum",st:"Peter Cook\'s blob of blue spikes and glass. Inside: contemporary art. Outside: locals argue if it\'s genius or terrible.",im:"Time-travel: Graz City Center 100 years ago",t:"Ask locals about history. Come back at sunset. Explore alleys.",c:["high_spots"],r:"g",nn:"Kunsthaus Graz — City Center",ns:"Blue alien spaceship landed on Graz—it\'s a museum",nst:"Peter Cook\'s blob of blue spikes and glass. Inside: contemporary art. Outside: locals argue if it\'s genius or terrible.",nt:"Fragen Sie Locals. Zurück beim Sonnenuntergang. Erkunden Sie Gassen."},
   {id:2,n:"Schlossberg Mountain — City Center",a:"City Center",v:["history", "nature"],d:7,s:"Climb 260m to fortress ruins with 360° city views",st:"Fortress built 1244. Views over red-tile roofs toward Styrian Alps. Easy hike. Reward: Graz spreads like a map.",im:"Time-travel: Graz City Center 100 years ago",t:"Ask locals about history. Come back at sunset. Explore alleys.",c:["street_art"],r:"g",nn:"Schlossberg — City Center",ns:"Climb 260m to fortress ruins with 360° city views",nst:"Fortress built 1244. Views over red-tile roofs toward Styrian Alps. Easy hike. Reward: Graz spreads like a map.",nt:"Fragen Sie Locals. Zurück beim Sonnenuntergang. Erkunden Sie Gassen."},
@@ -167,21 +164,20 @@ const P = [
   {id:110,n:"Free mini‑exhibition at GrazMuseum (Palais Khuenburg; GrazMuseum)",a:"Centro",v:["free","local","hidden"],d:15,s:"Free mini‑exhibition at GrazMuseum (Palais Khuenburg; GrazMuseum) — There’s a little‑known free — free local gem",st:"Free mini‑exhibition at GrazMuseum (Palais Khuenburg; GrazMuseum) — There’s a little‑known free exhibition on the ground floor (great for bad weather + quick history hits). (Happy to Wander)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Graz",ns:"Joya oculta local — Free mini‑exhibition at GrazMuseum (Palais",nst:"Free mini‑exhibition at GrazMuseum (Palais Khuenburg; GrazMuseum) — There’s a little‑known free exhibition on the ground floor (great for bad weather ",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Doppelwendeltreppe (Double Spiral Staircase)",a:"Centro",v:["free","local","hidden"],d:15,s:"Doppelwendeltreppe (Double Spiral Staircase) — Free to enter + climb; a surreal — free local gem",st:"Doppelwendeltreppe (Double Spiral Staircase) — Free to enter + climb; a surreal “two people can pass without meeting” staircase hidden in a courtyard of a public building (often overlooked by visitors",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Graz",ns:"Joya oculta local — Doppelwendeltreppe (Double Spiral Staircase) —",nst:"Doppelwendeltreppe (Double Spiral Staircase) — Free to enter + climb; a surreal “two people can pass without meeting” staircase hidden in a courtyard ",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The City Center Deep Dive",desc:"Hit 5 hidden spots in City Center. Walk slow, look up, read everything.",places:[1, 2, 8, 11, 15],time:"125 min"},
-  {id:2,title:"The North Deep Dive",desc:"Hit 5 hidden spots in North. Walk slow, look up, read everything.",places:[7, 12, 20, 23, 27],time:"125 min"},
-  {id:3,title:"The Schlossberg Deep Dive",desc:"Hit 5 hidden spots in Schlossberg. Walk slow, look up, read everything.",places:[5, 24, 31, 47, 49],time:"125 min"},
-  {id:4,title:"The West Deep Dive",desc:"Hit 5 hidden spots in West. Walk slow, look up, read everything.",places:[6, 26, 33, 34, 43],time:"125 min"},
-  {id:5,title:"The River Center Deep Dive",desc:"Hit 5 hidden spots in River Center. Walk slow, look up, read everything.",places:[3, 22, 25, 38, 41],time:"125 min"},
-  {id:6,title:"The Wölfnitz Deep Dive",desc:"Hit 5 hidden spots in Wölfnitz. Walk slow, look up, read everything.",places:[10, 21, 28, 48, 69],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[3, 19, 28, 32, 49],time:"100 min"},
-  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 25, 29, 45, 71, 99],time:"120 min"},
-  {id:9,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[1, 47, 50, 54, 69, 77],time:"120 min"},
-  {id:10,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 9, 11, 43, 58, 73],time:"120 min"},
-  {id:11,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+const PHRASES = [
+  {native:"Grüß Gott",en:"Hello"},
+  {native:"Wie geht\'s?",en:"How are you?"},
+  {native:"Danke schön",en:"Thank you"},
+  {native:"Ja / Nein",en:"Yes / No"},
+  {native:"Wo ist die Toilette?",en:"Where\'s the toilet?"},
+  {native:"Das ist teuer",en:"That\'s expensive"},
+  {native:"Entschuldigen Sie",en:"Excuse me"},
+  {native:"Ein Punschgetränk, bitte",en:"A punch drink, please"},
+  {native:"Guten Tag",en:"Good day"},
+  {native:"Alles Gute",en:"All the best"}
 ];
-
+const AREAS = ["Altstadt", "City Center", "East", "East Styria", "North", "Peggau", "River Center", "Schlossberg", "West", "W\u00f6lfnitz"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
 const COLLECTIONS = [
   {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
   {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
@@ -196,25 +192,24 @@ const COLLECTIONS = [
   {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
   {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
 ];
-
-const AREAS = ["Altstadt", "City Center", "East", "East Styria", "North", "Peggau", "River Center", "Schlossberg", "West", "W\u00f6lfnitz"];
-
-const PHRASES = [
-  {native:"Grüß Gott",en:"Hello"},
-  {native:"Wie geht\'s?",en:"How are you?"},
-  {native:"Danke schön",en:"Thank you"},
-  {native:"Ja / Nein",en:"Yes / No"},
-  {native:"Wo ist die Toilette?",en:"Where\'s the toilet?"},
-  {native:"Das ist teuer",en:"That\'s expensive"},
-  {native:"Entschuldigen Sie",en:"Excuse me"},
-  {native:"Ein Punschgetränk, bitte",en:"A punch drink, please"},
-  {native:"Guten Tag",en:"Good day"},
-  {native:"Alles Gute",en:"All the best"}
+const M = [
+  {id:1,title:"The City Center Deep Dive",desc:"Hit 5 hidden spots in City Center. Walk slow, look up, read everything.",places:[1, 2, 8, 11, 15],time:"125 min"},
+  {id:2,title:"The North Deep Dive",desc:"Hit 5 hidden spots in North. Walk slow, look up, read everything.",places:[7, 12, 20, 23, 27],time:"125 min"},
+  {id:3,title:"The Schlossberg Deep Dive",desc:"Hit 5 hidden spots in Schlossberg. Walk slow, look up, read everything.",places:[5, 24, 31, 47, 49],time:"125 min"},
+  {id:4,title:"The West Deep Dive",desc:"Hit 5 hidden spots in West. Walk slow, look up, read everything.",places:[6, 26, 33, 34, 43],time:"125 min"},
+  {id:5,title:"The River Center Deep Dive",desc:"Hit 5 hidden spots in River Center. Walk slow, look up, read everything.",places:[3, 22, 25, 38, 41],time:"125 min"},
+  {id:6,title:"The Wölfnitz Deep Dive",desc:"Hit 5 hidden spots in Wölfnitz. Walk slow, look up, read everything.",places:[10, 21, 28, 48, 69],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[3, 19, 28, 32, 49],time:"100 min"},
+  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 25, 29, 45, 71, 99],time:"120 min"},
+  {id:9,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[1, 47, 50, 54, 69, 77],time:"120 min"},
+  {id:10,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 9, 11, 43, 58, 73],time:"120 min"},
+  {id:11,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
 ];
-
-const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="German";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
