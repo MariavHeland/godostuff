@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Bucharest...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Romanian";
-
+<script>
 const P = [
   {id:1,n:"Cărturești Carusel Bookshop — Centru Istoric",a:"Centru Istoric",v:["beautiful","hidden","free"],d:5,s:"Six floors of books in a 19th century palace — the most beautiful bookshop in Eastern Europe",st:"The Carusel Palace was built in 1860 and became a bookshop in 2013. The atrium is wrapped in white cast iron and books floor to ceiling. Free to enter and stay.",im:"Time-travel: Carusel Palace as a bustling commercial arcade in 1900, the Paris of the East",t:"Free to enter. Open daily. The reading gallery on the top floor is best.",c:["architecture"],r:"g",nn:"Cărturești Carusel — Centru Istoric",ns:"Șase etaje de cărți într-un palat din sec. XIX — cea mai frumoasă librărie din Europa de Est",nst:"Palatul Carusel a fost construit în 1860 și a devenit librărie în 2013.",nt:"Intrare gratuită. Deschis zilnic."},
   {id:2,n:"Hanul lui Manuc — Centru Istoric",a:"Centru Istoric",v:["history","hidden","beautiful"],d:5,s:"1808 Ottoman caravanserai — the oldest inn in Bucharest still functioning",st:"Built by Armenian merchant Manuc Bey, the inn has a wooden galleried courtyard from the early 19th century. The Treaty of Bucharest was signed here in 1812.",im:"Time-travel: Ottoman merchants unloading caravans in this courtyard, 1820",t:"Courtyard free. Restaurant inside. Walk through slowly.",c:["history_big"],r:"g",nn:"Hanul lui Manuc — Centru Istoric",ns:"Caravanserai otoman din 1808 — cel mai vechi han din București funcțional",nst:"Construit de negustorul armean Manuc Bei. Tratatul de la București semnat aici în 1812.",nt:"Curtea gratuită. Restaurant înăuntru."},
@@ -160,18 +157,20 @@ const P = [
   {id:104,n:"Parcul Carol — Berceni #104",a:"Berceni",v:["history","beautiful","quiet"],d:19,s:"Bucharest\'s oldest formal park — a mausoleum, an aqueduct, and almost nobody here",st:"Carol Park was inaugurated in 1906 for the 40th anniversary of King Carol I. The communist mausoleum at the top was later used for unknown soldiers.",im:"Time-travel: the 1906 Jubilee Exhibition in this park — Romania showing itself to Europe",t:"Free. Enter from Șos. Olteniței. The hilltop has the best view.",c:["history_big"],r:"g",nn:"Parcul Carol — Berceni #104",ns:"Cel mai vechi parc formal din București — un mausoleu, un apeduct și aproape nimeni",nst:"Parcul Carol inaugurat în 1906 pentru aniversarea a 40 de ani a Regelui Carol I.",nt:"Gratuit. Intrare de pe Șos. Olteniței."},
   {id:105,n:"Antim Monastery — Centru Istoric #105",a:"Centru Istoric",v:["history","quiet","beautiful"],d:54,s:"Hidden monastery in a residential street — golden icons, silence, and no tourists at all",st:"Built in 1715 in the Brâncovenesc style. The founder Antim Ivireanul was later martyred by the Ottomans. You can walk in off the street and be in total silence.",im:"Time-travel: Antim Ivireanul printing books in the monastery press in 1715",t:"Free. Ring the bell to enter outside mass times.",c:["high_spots"],r:"g",nn:"Mănăstirea Antim — Centru Istoric #105",ns:"Mănăstire ascunsă pe o stradă rezidențială — icoane de aur, liniște, zero turiști",nst:"Construită în 1715 în stilul Brâncovenesc.",nt:"Gratuit. Sunați la clopoțel pentru a intra."}
 ];
-
-const M = [
-  {id:1,title:"The Centru Istoric Deep Dive",desc:"Hit 5 spots in Centru Istoric. Walk slow, look up.",places:[1,2,8,9,12],time:"125 min"},
-  {id:2,title:"The Berceni Deep Dive",desc:"Hit 3 spots in Berceni. Walk slow, look up.",places:[5,11,21],time:"125 min"},
-  {id:3,title:"The Cotroceni Deep Dive",desc:"Hit 3 spots in Cotroceni. Walk slow, look up.",places:[6,14,30],time:"125 min"},
-  {id:4,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2,5,6,8,11,12],time:"120 min"},
-  {id:5,title:"Hidden Gems",desc:"The places nobody talks about.",places:[1,2,3,6,8],time:"100 min"},
-  {id:6,title:"Green Escape",desc:"Parks, nature, silence. All free.",places:[3,4,5,7],time:"90 min"},
-  {id:7,title:"Golden Hour Tour",desc:"Best views as the light turns gold.",places:[1,2,4,5,6],time:"100 min"},
-  {id:8,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105],time:"multi-day"}
+const PHRASES = [
+  {native:"Bună ziua",en:"Good day"},
+  {native:"Ce mai faci?",en:"How are you?"},
+  {native:"Mulțumesc",en:"Thank you"},
+  {native:"Da / Nu",en:"Yes / No"},
+  {native:"Toaletă?",en:"Toilets?"},
+  {native:"Prea scump",en:"Too expensive"},
+  {native:"Nu știu",en:"I don't know"},
+  {native:"O bere, vă rog",en:"One beer, please"},
+  {native:"Bună dimineața",en:"Good morning"},
+  {native:"La revedere",en:"Goodbye"}
 ];
-
+const AREAS = ["Centru Istoric","Floreasca","Văcărești","Cotroceni","Drumul Taberei","Herăstrău","Colentina","Berceni"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
 const COLLECTIONS = [
   {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
   {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
@@ -186,25 +185,21 @@ const COLLECTIONS = [
   {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
   {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
 ];
-
-const AREAS = ["Centru Istoric","Floreasca","Văcărești","Cotroceni","Drumul Taberei","Herăstrău","Colentina","Berceni"];
-
-const PHRASES = [
-  {native:"Bună ziua",en:"Good day"},
-  {native:"Ce mai faci?",en:"How are you?"},
-  {native:"Mulțumesc",en:"Thank you"},
-  {native:"Da / Nu",en:"Yes / No"},
-  {native:"Toaletă?",en:"Toilets?"},
-  {native:"Prea scump",en:"Too expensive"},
-  {native:"Nu știu",en:"I don't know"},
-  {native:"O bere, vă rog",en:"One beer, please"},
-  {native:"Bună dimineața",en:"Good morning"},
-  {native:"La revedere",en:"Goodbye"}
+const M = [
+  {id:1,title:"The Centru Istoric Deep Dive",desc:"Hit 5 spots in Centru Istoric. Walk slow, look up.",places:[1,2,8,9,12],time:"125 min"},
+  {id:2,title:"The Berceni Deep Dive",desc:"Hit 3 spots in Berceni. Walk slow, look up.",places:[5,11,21],time:"125 min"},
+  {id:3,title:"The Cotroceni Deep Dive",desc:"Hit 3 spots in Cotroceni. Walk slow, look up.",places:[6,14,30],time:"125 min"},
+  {id:4,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2,5,6,8,11,12],time:"120 min"},
+  {id:5,title:"Hidden Gems",desc:"The places nobody talks about.",places:[1,2,3,6,8],time:"100 min"},
+  {id:6,title:"Green Escape",desc:"Parks, nature, silence. All free.",places:[3,4,5,7],time:"90 min"},
+  {id:7,title:"Golden Hour Tour",desc:"Best views as the light turns gold.",places:[1,2,4,5,6],time:"100 min"},
+  {id:8,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105],time:"multi-day"}
 ];
-
-const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Romanian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
