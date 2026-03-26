@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Riga...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Latvian";
-
+<script>
 const P = [
   {id:1,n:"Alberta iela\'s Art Nouveau Facades — Art Nouveau District",a:"Alberta iela",v:["architecture", "beautiful"],d:1,s:"A complete street of Art Nouveau buildings from 1901-1906—the largest collection of Art Nouveau in the world",st:"Alberta iela is a masterclass in Art Nouveau. Every building is ornate. The street is unchanged since 1906. You feel like you\'ve stepped into a design museum.",im:"It\'s 1905. Architects compete to create the most elaborate Art Nouveau facades. Alberta iela becomes the jewel of Riga\'s design.",t:"Alberta iela is a masterclass in Art Nouveau. Every building is ornate. The street is unchanged since 1906. You feel like you\'ve stepped into a design museum.\",im:\"It\'s 1905. Architects compete to create the most elaborate Art Nouveau facades. Alberta iela becomes the jewel of Riga\'s design.\",t:\"Free to walk. Located in central Riga (short walk from Old Town). Photo from street level. Buildings open variable hours. Go early morning for light.",c:["architecture", "beautiful"],r:"g",nn:"Rīga",ns:"Kur jūras gaiss un mākslas siltums mijas.",nst:"Rīga ir skaista un romantiska pilsēta pie Daugavas upes. Vecrīga ir vecā hanzas laika ozols, vēsturisks un senos mājās paslēpts. Moderni muzieji un jauni kafejnīcas rada čaļa atmosfēru. Latvieši ir mierīgs un pamatots tautas ieguves gars.",nt:"Pārgājiens pa Vecrīgas ieliņām ir nacionālais rituāls. Rudenī Rīga zied kristu spēlēs. Mākslas scena ir dinamiska. Latvieši ir gardi, bet sāļi. Pievienotais Daugavpils parkā snaudz. Balta nakts gaisma vasarā."},
   {id:2,n:"Zeppelin Hangar Market — Central Market",a:"Central Market",v:["history", "local_only"],d:2,s:"A market housed in repurposed German Zeppelin hangar from WWI—massive industrial space converted to marketplace",st:"Central Market is housed in a Zeppelin hangar. You\'re shopping in a piece of WWI history. The scale is enormous. The market energy is genuine—this is where Riga shops.",im:"It\'s 1920. Germans abandon their Zeppelin hangar. Latvians repurpose it as a marketplace. The space becomes the heart of commerce.",t:"Central Market is housed in a Zeppelin hangar. You\'re shopping in a piece of WWI history. The scale is enormous. The market energy is genuine—this is where Riga shops.\",im:\"It\'s 1920. Germans abandon their Zeppelin hangar. Latvians repurpose it as a marketplace. The space becomes the heart of commerce.\",t:\"Free to browse. Produce and goods cheap. Located in central Riga. Open daily. Best mornings. Bring backpack. Cash friendly.",c:["history_big", "local_only"],r:"g",nn:"Rīga",ns:"Kur jūras gaiss un mākslas siltums mijas.",nst:"Rīga ir skaista un romantiska pilsēta pie Daugavas upes. Vecrīga ir vecā hanzas laika ozols, vēsturisks un senos mājās paslēpts. Moderni muzieji un jauni kafejnīcas rada čaļa atmosfēru. Latvieši ir mierīgs un pamatots tautas ieguves gars.",nt:"Pārgājiens pa Vecrīgas ieliņām ir nacionālais rituāls. Rudenī Rīga zied kristu spēlēs. Mākslas scena ir dinamiska. Latvieši ir gardi, bet sāļi. Pievienotais Daugavpils parkā snaudz. Balta nakts gaisma vasarā."},
@@ -167,24 +164,6 @@ const P = [
   {id:110,n:"Daugavpils/Satekles pedestrian tunnel mural “Tā daļa Rīgas” (Maskačka/Latgale suburb vibe)",a:"Centro",v:["free","local","hidden"],d:15,s:"Daugavpils/Satekles pedestrian tunnel mural “Tā daļa Rīgas” (Maskačka/Latgale suburb vibe) — Satekles — free local gem",st:"Daugavpils/Satekles pedestrian tunnel mural “Tā daļa Rīgas” (Maskačka/Latgale suburb vibe) — Satekles iela 15; daytime only; treat it like a mini “underground gallery.” (LiveRiga — Riga Street Art Gui",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Rīga",ns:"Joya oculta local — Daugavpils/Satekles pedestrian tunnel mural “Tā",nst:"Daugavpils/Satekles pedestrian tunnel mural “Tā daļa Rīgas” (Maskačka/Latgale suburb vibe) — Satekles iela 15; daytime only; treat it like a mini “und",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Sarkandaugava “The Red One” mural (bright face on a quiet neighborhood street)",a:"Centro",v:["free","local","hidden"],d:15,s:"Sarkandaugava “The Red One” mural (bright face on a quiet neighborhood street) — free local gem",st:"Sarkandaugava “The Red One” mural (bright face on a quiet neighborhood street) — Priežu iela 8; go for eerie, empty-street photos. (LiveRiga — Riga Street Art Guide)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Rīga",ns:"Joya oculta local — Sarkandaugava “The Red One” mural",nst:"Sarkandaugava “The Red One” mural (bright face on a quiet neighborhood street) — Priežu iela 8; go for eerie, empty-street photos. (LiveRiga — Riga St",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[3, 4, 8, 9, 13],time:"125 min"},
-  {id:2,title:"The Alberta iela Deep Dive",desc:"Hit 5 hidden spots in Alberta iela. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
-  {id:3,title:"The Central Market Deep Dive",desc:"Hit 5 hidden spots in Central Market. Walk slow, look up, read everything.",places:[2, 7, 12, 17, 22],time:"125 min"},
-  {id:4,title:"The Spīķeri Deep Dive",desc:"Hit 5 hidden spots in Spīķeri. Walk slow, look up, read everything.",places:[5, 10, 15, 20, 25],time:"125 min"},
-  {id:5,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 4, 7, 8, 9],time:"120 min"},
-  {id:6,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Alberta iela", "Central Market", "Old Town", "Sp\u012b\u0137eri"];
-
 const PHRASES = [
   {native:"Sveiki!",en:"Hello!"},
   {native:"Paldies!",en:"Thank you!"},
@@ -197,10 +176,26 @@ const PHRASES = [
   {native:"Palīgs!",en:"Help!"},
   {native:"Uz redzēšanos",en:"Goodbye"}
 ];
-
+const AREAS = ["Alberta iela", "Central Market", "Old Town", "Sp\u012b\u0137eri"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[3, 4, 8, 9, 13],time:"125 min"},
+  {id:2,title:"The Alberta iela Deep Dive",desc:"Hit 5 hidden spots in Alberta iela. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
+  {id:3,title:"The Central Market Deep Dive",desc:"Hit 5 hidden spots in Central Market. Walk slow, look up, read everything.",places:[2, 7, 12, 17, 22],time:"125 min"},
+  {id:4,title:"The Spīķeri Deep Dive",desc:"Hit 5 hidden spots in Spīķeri. Walk slow, look up, read everything.",places:[5, 10, 15, 20, 25],time:"125 min"},
+  {id:5,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 4, 7, 8, 9],time:"120 min"},
+  {id:6,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Latvian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
