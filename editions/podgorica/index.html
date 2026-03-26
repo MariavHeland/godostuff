@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Podgorica...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Montenegrin";
-
+<script>
 const P = [
   {id:1,n:"Millennium Bridge",a:"Centre",v:["beautiful"],d:5,s:"Modern arch over Morača River",st:"Walk river views",im:"2000: New century bridge",t:"Sunset crossing",c:["architecture"],r:"g",nn:"Миленијумски мост",ns:"Нови мост",nst:"Прелаз Мораче",nt:"Захід"},
   {id:2,n:"Podgorica Location",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Time",t:"Go",c:["history_big"],r:"g",nn:"Место",ns:"Место",nst:"Видите",nt:"Идите"},
@@ -167,20 +164,6 @@ const P = [
   {id:110,n:"Old Ribnica River Bridge + surrounding ruins/park: atmospheric stroll and easy free “old Podgorica” vibe",a:"Centro",v:["free","local","hidden"],d:15,s:"Old Ribnica River Bridge + surrounding ruins/park: atmospheric stroll and easy free — free local gem",st:"Old Ribnica River Bridge + surrounding ruins/park: atmospheric stroll and easy free “old Podgorica” vibe—nice at golden hour. (Reddit r/travel thread)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Подгорица",ns:"Joya oculta local — Old Ribnica River Bridge +",nst:"Old Ribnica River Bridge + surrounding ruins/park: atmospheric stroll and easy free “old Podgorica” vibe—nice at golden hour. (Reddit r/travel thread)",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Stara Varoš (Old Town) wandering: maze-y Ottoman-e",a:"Centro",v:["free","local","hidden"],d:15,s:"Stara Varoš (Old Town) wandering: maze-y Ottoman-era neighborhood remnants + mosques + — free local gem",st:"Stara Varoš (Old Town) wandering: maze-y Ottoman-era neighborhood remnants + mosques + Clock Tower area; go with a coffee and just drift. (My Wanderlust)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Подгорица",ns:"Joya oculta local — Stara Varoš (Old Town) wandering:",nst:"Stara Varoš (Old Town) wandering: maze-y Ottoman-era neighborhood remnants + mosques + Clock Tower area; go with a coffee and just drift. (My Wanderlu",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Area Deep Dive",desc:"Hit 5 hidden spots in Area. Walk slow, look up, read everything.",places:[2, 3, 4, 5, 6],time:"125 min"},
-  {id:2,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 4, 5, 6, 7],time:"120 min"},
-  {id:3,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Area", "Centre"];
-
 const PHRASES = [
   {native:"Здравo",en:"Hello"},
   {native:"Хвала",en:"Thank you"},
@@ -193,10 +176,22 @@ const PHRASES = [
   {native:"Могу ли фотографисати?",en:"Photo ok?"},
   {native:"Где је излаз?",en:"Exit?"}
 ];
-
+const AREAS = ["Area", "Centre"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Area Deep Dive",desc:"Hit 5 hidden spots in Area. Walk slow, look up, read everything.",places:[2, 3, 4, 5, 6],time:"125 min"},
+  {id:2,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 4, 5, 6, 7],time:"120 min"},
+  {id:3,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Montenegrin";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
