@@ -36,6 +36,9 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 .dice-spin{animation:diceSpin .18s linear infinite}
 .slot-flicker{animation:slotFlicker .12s ease infinite}
 .final-land{animation:finalLand .55s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes floatSuit{0%,100%{transform:translateY(0) rotate(0deg);opacity:.12}50%{transform:translateY(-18px) rotate(8deg);opacity:.22}}
+@keyframes floatSuit2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.08}50%{transform:translateY(14px) rotate(-6deg);opacity:.18}}
+@keyframes feltShimmer{0%,100%{opacity:0}50%{opacity:.07}}
 #loading .dot{animation:pulse 1.2s infinite}
 .lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
 .lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
@@ -351,18 +354,35 @@ if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)}
 
 const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
 if(showPicker){const rp=spinPlace||P[0];
-return <div style={{position:"fixed",inset:0,zIndex:1000,background:"linear-gradient(180deg,#0f0f1e,#1a1a2e,#2d1b69)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
-<p className={spinning?"text-5xl mb-6 dice-spin":"text-5xl mb-6 final-land"} style={{lineHeight:1}}>🎲</p>
-{!spinPlace&&<p style={{color:"#6b65a0",fontSize:14}}>rolling…</p>}
-{spinPlace&&<div className={spinning?"slot-flicker text-center":"final-land text-center"} style={{maxWidth:320}}>
-<h2 className="text-2xl font-black" style={{color:"white",letterSpacing:"-.5px",lineHeight:1.15}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
-<p className="text-xs font-bold mt-2 uppercase" style={{color:"#6366F1",letterSpacing:"1.5px"}}>{rp.a} · {rp.d} min walk</p>
-<p className="text-sm mt-3 px-2" style={{color:"#b8b0d0",lineHeight:1.65}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",background:"radial-gradient(ellipse at 50% 40%, #1b5e34 0%, #0e3a1e 45%, #061209 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+{/* felt texture shimmer */}
+<div style={{position:"absolute",inset:0,background:"repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,255,255,.015) 2px,rgba(255,255,255,.015) 4px)",pointerEvents:"none"}}/>
+{/* center spotlight */}
+<div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:420,height:420,borderRadius:"50%",background:"radial-gradient(ellipse,rgba(255,220,80,.07) 0%,transparent 70%)",pointerEvents:"none"}}/>
+{/* floating card suits */}
+<span style={{position:"absolute",top:"8%",left:"6%",fontSize:48,color:"#c8102e",animation:"floatSuit 6.2s ease-in-out infinite",pointerEvents:"none"}}>♥</span>
+<span style={{position:"absolute",top:"12%",right:"8%",fontSize:40,color:"#1a1a1a",textShadow:"0 0 0 #fff",WebkitTextStroke:"1px rgba(255,255,255,.25)",animation:"floatSuit2 5.8s ease-in-out infinite .8s",pointerEvents:"none"}}>♠</span>
+<span style={{position:"absolute",bottom:"18%",left:"5%",fontSize:36,color:"#c8102e",animation:"floatSuit 7.1s ease-in-out infinite 1.5s",pointerEvents:"none"}}>♦</span>
+<span style={{position:"absolute",bottom:"15%",right:"6%",fontSize:44,color:"rgba(255,255,255,.18)",animation:"floatSuit2 6.5s ease-in-out infinite 2.2s",pointerEvents:"none"}}>♣</span>
+<span style={{position:"absolute",top:"35%",left:"2%",fontSize:28,color:"rgba(255,220,80,.2)",animation:"floatSuit 8s ease-in-out infinite .4s",pointerEvents:"none"}}>⚄</span>
+<span style={{position:"absolute",top:"55%",right:"3%",fontSize:30,color:"rgba(255,220,80,.18)",animation:"floatSuit2 7.4s ease-in-out infinite 1.1s",pointerEvents:"none"}}>⚂</span>
+{/* gold border frame */}
+<div style={{position:"absolute",inset:16,border:"1px solid rgba(212,175,55,.18)",borderRadius:24,pointerEvents:"none"}}/>
+<div style={{position:"absolute",inset:20,border:"1px solid rgba(212,175,55,.08)",borderRadius:22,pointerEvents:"none"}}/>
+{/* content */}
+<p className={spinning?"text-5xl mb-6 dice-spin":"text-5xl mb-6 final-land"} style={{lineHeight:1,filter:spinning?"drop-shadow(0 0 12px rgba(255,220,80,.7))":"drop-shadow(0 0 8px rgba(255,220,80,.5))"}}>🎲</p>
+{!spinPlace&&<p style={{color:"rgba(212,175,55,.6)",fontSize:14,letterSpacing:"2px",textTransform:"uppercase"}}>rolling…</p>}
+{spinPlace&&<div className={spinning?"slot-flicker text-center":"final-land text-center"} style={{maxWidth:320,position:"relative",zIndex:1}}>
+<div style={{background:"rgba(0,0,0,.35)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(212,175,55,.25)",padding:"20px 24px",boxShadow:"0 8px 40px rgba(0,0,0,.5)"}}>
+<h2 className="text-2xl font-black" style={{color:"#fff",letterSpacing:"-.5px",lineHeight:1.15}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-xs font-bold mt-2 uppercase" style={{color:"#d4af37",letterSpacing:"2px"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3" style={{color:"rgba(255,255,255,.75)",lineHeight:1.65}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+</div>
 </div>}
-<div className="flex gap-3 mt-8">
-<button onClick={()=>{setShowPicker(false);setSpinPlace(null);setSpinning(false);}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #4a4570",cursor:"pointer"}}>✕ Close</button>
-{!spinning&&spinPlace&&<button onClick={()=>{setSelected(rp);setShowPicker(false);setSpinPlace(null);}} className="px-6 py-2 rounded-full text-sm font-black" style={{background:"linear-gradient(135deg,#6366F1,#8b5cf6)",color:"white",border:"none",cursor:"pointer",boxShadow:"0 4px 16px #6366f155"}}>Let's go →</button>}
-{!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"transparent",color:"#8b7fb8",border:"1px solid #4a4570",cursor:"pointer"}}>🎲 Again</button>}
+<div className="flex gap-3 mt-8" style={{position:"relative",zIndex:1}}>
+<button onClick={()=>{setShowPicker(false);setSpinPlace(null);setSpinning(false);}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>✕ Close</button>
+{!spinning&&spinPlace&&<button onClick={()=>{setSelected(rp);setShowPicker(false);setSpinPlace(null);}} className="px-6 py-2 rounded-full text-sm font-black" style={{background:"linear-gradient(135deg,#d4af37,#f0c040)",color:"#0e3a1e",border:"none",cursor:"pointer",boxShadow:"0 4px 20px rgba(212,175,55,.5)",letterSpacing:".3px"}}>Let's go →</button>}
+{!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
 return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FAFBFF 0%,#F0F2FF 100%)"}}>
