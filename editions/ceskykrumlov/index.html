@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Český Krumlov...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Czech";
-
+<script>
 const P = [
   {id:1,n:"Castle with Bear Pit — Krumlov Ridge",a:"Castle",v:["history", "weird"],d:2,s:"Medieval castle where live bears still roam the moat",st:"Castle dating 1250s. Bear pit active (2 bears roam). Tower climb (€5). Views over river bend. 40-room palace inside. Bears have names, they recognize visitors. Surreal.",im:"1250s: Bears as status. 2024: Same pit, same bears, same wonder.",t:"Feed bears grain (€2). They\'ll approach. Watch sunset from tower. €10 full castle tour.",c:["history_big", "weird"],r:"g",nn:"Hrad s Medvědí Jámou — Krumlovský Hřeben",ns:"Středověký hrad kde živí medvědi stále putují v příkopě",nst:"Hrad 1250. Medvědi v jámě. Věž (€5). 40 místností. Medvědi znají jména. Surrealní.",nt:"Kousky medvědům (€2). Přiblíží se. Západ z věže. €10 tour."},
   {id:2,n:"Vltava River Rafting — All Town",a:"River",v:["nature", "local"],d:1,s:"Float down river past castles for 2 hours (€12)",st:"Kayak or raft rental. Flow 2 hours through gorge, past castle reflections, medieval towns appear downstream. Paddling moderate. Teens do it solo. €12 and you\'re floating.",im:"Medieval: Trade route. 2024: Tourists paddle it for fun.",t:"Go early (9am rental). Current gentle. Bring towel. Don\'t flip—water\'s cold but fun. Beginners fine.",c:["nature", "local_only"],r:"g",nn:"Rafting Řeka Vltava — Po Městě",ns:"Plovoucí řekou kolem hradů 2 hodiny (€12)",nst:"Kajak nebo plť. 2 hodiny. Hrad, reflexe, překrásné. Adolescenti sami. €12.",nt:"Brzy (9h pronájem). Proud jemný. Ručník. Nevrhej. Začátečníci v pořádku."},
@@ -160,30 +157,6 @@ const P = [
   {id:104,n:"Egon Schiele Centre  (var 94) — Town Center",a:"Town Center",v:["history", "weird"],d:1,s:"Expressionist painter who lived and died here—raw artworks",st:"€7 entry. Schiele lived here 1910-1918. Sketches intense—nudes, contorted figures. Raw, sexual, emotional. Museum in his room. Dark beautiful work. Not for prudes.",im:"1910: Schiele moved. Art scandalized. 2024: Celebrated as genius.",t:"Adults only energy. Intense work. 1 hour minimum. Photography allowed.",c:["history_big", "weird"],r:"y",nn:"Egon Schiele Centrum  (var 94) — Town Center",ns:"Expresionistický malíř který žil a zemřel zde—surové umění",nst:"€7. Schiele 1910-1918. Skici intenzivní—nahé, zkroucené. Surové, tmavě krásné. Ne pro prudéry.",nt:"Pouze dospělí. Intenzivní. 1 hodina. Fotografie."},
   {id:105,n:"Castle Tower  (var 95) — Castle",a:"Castle",v:["high_spots", "history"],d:2,s:"Tower climb 180 steps to 360-degree river views",st:"€3. Climb spiral stone steps. No rail. Medieval exposure. 50m high. Views of river bend, forest, distant castles. Teenagers dare each other. Pulse-racing beauty.",im:"1250s: Watchers stood here. 2024: Tourists climb with selfie sticks.",t:"Go early for best light. Heights required. Photos worth it. No photos of guards.",c:["high_spots", "history_big"],r:"g",nn:"Věž Hradu  (var 95) — Castle",ns:"Věž 180 schodů na 360-stupňový pohled na řeku",nst:"€3. Spirála bez zábradlí. Středověký. Pohled řeky, lesa. Středové srdeční údery.",nt:"Brzy pro světlo. Výšky potřebné. Fotografie stojí. Bez fotografií strážců."}
 ];
-
-const M = [
-  {id:1,title:"The Castle Deep Dive",desc:"Hit 5 hidden spots in Castle. Walk slow, look up, read everything.",places:[1, 3, 5, 11, 13],time:"125 min"},
-  {id:2,title:"The River Deep Dive",desc:"Hit 5 hidden spots in River. Walk slow, look up, read everything.",places:[2, 12, 22, 32, 42],time:"125 min"},
-  {id:3,title:"The Town Center Deep Dive",desc:"Hit 5 hidden spots in Town Center. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
-  {id:4,title:"The Monastery Deep Dive",desc:"Hit 5 hidden spots in Monastery. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
-  {id:5,title:"The Graphite Mine Deep Dive",desc:"Hit 5 hidden spots in Graphite Mine. Walk slow, look up, read everything.",places:[7, 17, 27, 37, 47],time:"125 min"},
-  {id:6,title:"The Hluboká Deep Dive",desc:"Hit 5 hidden spots in Hluboká. Walk slow, look up, read everything.",places:[8, 18, 28, 38, 48],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 3, 4, 5, 7, 8],time:"120 min"},
-  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[5, 15, 25, 35, 45, 55],time:"120 min"},
-  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[9, 10, 19, 20, 29, 30],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Castle", "Graphite Mine", "Hlubok\u00e1", "Lipno Lake", "Monastery", "River", "Town Center", "\u0160umava"];
-
 const PHRASES = [
   {native:"Ahoj",en:"Hello"},
   {native:"Kde je...?",en:"Where is...?"},
@@ -196,10 +169,32 @@ const PHRASES = [
   {native:"Řeka",en:"River"},
   {native:"Les",en:"Forest"}
 ];
-
+const AREAS = ["Castle", "Graphite Mine", "Hlubok\u00e1", "Lipno Lake", "Monastery", "River", "Town Center", "\u0160umava"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Castle Deep Dive",desc:"Hit 5 hidden spots in Castle. Walk slow, look up, read everything.",places:[1, 3, 5, 11, 13],time:"125 min"},
+  {id:2,title:"The River Deep Dive",desc:"Hit 5 hidden spots in River. Walk slow, look up, read everything.",places:[2, 12, 22, 32, 42],time:"125 min"},
+  {id:3,title:"The Town Center Deep Dive",desc:"Hit 5 hidden spots in Town Center. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
+  {id:4,title:"The Monastery Deep Dive",desc:"Hit 5 hidden spots in Monastery. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
+  {id:5,title:"The Graphite Mine Deep Dive",desc:"Hit 5 hidden spots in Graphite Mine. Walk slow, look up, read everything.",places:[7, 17, 27, 37, 47],time:"125 min"},
+  {id:6,title:"The Hluboká Deep Dive",desc:"Hit 5 hidden spots in Hluboká. Walk slow, look up, read everything.",places:[8, 18, 28, 38, 48],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[1, 3, 4, 5, 7, 8],time:"120 min"},
+  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[5, 15, 25, 35, 45, 55],time:"120 min"},
+  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[9, 10, 19, 20, 29, 30],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Czech";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
