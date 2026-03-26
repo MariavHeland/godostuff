@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Paris...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="French";
-
+<script>
 const P = [
   {id:1,n:"Belleville Murals and Street Art — Belleville",a:"Belleville",v:["street_art", "local_only"],d:1,s:"Entire neighborhood is moving mural — immigrant communities paint identity on brick",st:"Walk and stare upward. Color explodes on walls. Arabic, Chinese, French. Every language. Every culture. The neighborhood paints itself. It\'s alive. It\'s real. It\'s political.",im:"It\'s 2000. Artists come. They claim walls. Communities follow. Color happens. Gentrification arrives anyway. But the murals remain as witness.",t:"Walk and stare upward. Color explodes on walls. Arabic, Chinese, French. Every language. Every culture. The neighborhood paints itself. It\'s alive. It\'s real. It\'s political.\",im:\"It\'s 2000. Artists come. They claim walls. Communities follow. Color happens. Gentrification arrives anyway. But the murals remain as witness.\",t:\"Free walk. Rue Denoyez best for murals. Start early morning. Weekends busier. Small cafés for coffee and croissants. Street food vendors afternoons. Respectful photography appreciated.",c:["street_art", "local_only"],r:"g",nn:"Belleville Murals and Street Art — Belleville",ns:"Un quartier qui crie ses couleurs sur le béton et l\'histoire.",nst:"Levez les yeux. Les couleurs explosent partout — arabe, chinois, français. Chaque langue. Chaque culture. Le quartier se peint lui-même. C\'est vivant. C\'est vrai. C\'est politique. Les artistes revendiquent les murs depuis les années 2000. Les communautés suivent. Malgré la gentrification, les fresques restent comme témoins du passé.",nt:"Prenez le temps de flâner. Observez les détails. Parlez aux habitants s\'ils sont ouverts. Respectez les espaces. Visitez sans téléphone en main. Le matin est souvent meilleur que l\'après-midi. Les fins de semaine changent l\'atmosphère. Venez avec une bouteille d\'eau et une bonne paire de chaussures."},
   {id:2,n:"La Maroquinerie Concert Venue — Belleville",a:"Belleville",v:["local_only", "history"],d:2,s:"Former leather workshop turned music venue — working-class soul in concert form",st:"Dark venue. Raw acoustics. Musicians perform where craftsmen worked. The walls remember leather-working. Now music vibrates the same stone. Community here is real.",im:"It\'s 1960. Leather workers cut and stitch. Now musicians arrive. The space transforms but keeps its working-class spirit.",t:"Dark venue. Raw acoustics. Musicians perform where craftsmen worked. The walls remember leather-working. Now music vibrates the same stone. Community here is real.\",im:\"It\'s 1960. Leather workers cut and stitch. Now musicians arrive. The space transforms but keeps its working-class spirit.\",t:\"Check concert schedule online. Most shows evening/night. Ticket prices reasonable. Standing room often available. Arrive early for good position. Crowd is mixed and welcoming.",c:["local_only", "history_big"],r:"g",nn:"La Maroquinerie Concert Venue — Belleville",ns:"Une fenêtre ouverte sur l\'âme ouvrière de Paris.",nst:"C\'est un endroit où l\'authenticité persiste. Où les locaux viennent vraiment. Où l\'histoire souffle encore. Où les traditions se mélangent avec la modernité. C\'est Paris qui vit, respire, et continue.",nt:"Prenez le temps de flâner. Observez les détails. Parlez aux habitants s\'ils sont ouverts. Respectez les espaces. Visitez sans téléphone en main. Le matin est souvent meilleur que l\'après-midi. Les fins de semaine changent l\'atmosphère. Venez avec une bouteille d\'eau et une bonne paire de chaussures."},
@@ -163,34 +160,6 @@ const P = [
   {id:108,n:"Père-Lachaise Cemetery Walking Tour",a:"East",v:["history","quiet","free"],d:20,s:"The famous dead buried in ornate tombs — a free historical walk among monuments",st:"Père-Lachaise contains Oscar Wilde, Jim Morrison, Balzac, and thousands of graves. It\'s a sculpture garden; locals come to research family history and reflect. Get a map.",im:"Time-travel: Opened 1804; became fashionable when the famous were buried here.",t:"Free. Métro Lines 2/6 to Père Lachaise.",c:["history_big","quiet"],r:"g",nn:"Cimetière Père-Lachaise",ns:"Tumbas ornamentadas de los famosos — caminar gratis",nst:"Camina entre las tumbas de celebridades en Père-Lachaise.",nt:"Gratis. Métro a Père Lachaise."},
   {id:109,n:"Belleville Street Art District",a:"Northeast",v:["art","free","local"],d:15,s:"Raw neighborhood murals constantly evolving — Paris\' real street art scene",st:"Belleville is the anti-Champs-Élysées. Rue Denoyez and alleys are covered in constantly evolving murals. It\'s raw, political, and authentic. Grab a crêpe and wander.",im:"Time-travel: Belleville was poor Jewish/Italian; street art is gentrifying it.",t:"Free. Métro Line 11 to Belleville.",c:["street_art","local_only"],r:"g",nn:"Belleville Street Art",ns:"Murales dinámicas en constante evolución",nst:"Camina Rue Denoyez viendo arte callejero fresco.",nt:"Gratis. Métro a Belleville."}
 ];
-
-const M = [
-  {id:1,title:"The Bastille Deep Dive",desc:"Hit 5 hidden spots in Bastille. Walk slow, look up, read everything.",places:[5, 11, 13, 16, 22],time:"125 min"},
-  {id:2,title:"The Belleville Deep Dive",desc:"Hit 5 hidden spots in Belleville. Walk slow, look up, read everything.",places:[1, 2, 8, 12, 17],time:"125 min"},
-  {id:3,title:"The Le Marais Deep Dive",desc:"Hit 5 hidden spots in Le Marais. Walk slow, look up, read everything.",places:[18, 19, 20, 21, 23],time:"125 min"},
-  {id:4,title:"The Montmartre Deep Dive",desc:"Hit 5 hidden spots in Montmartre. Walk slow, look up, read everything.",places:[6, 7, 46, 55, 65],time:"125 min"},
-  {id:5,title:"The Saint-Germain Deep Dive",desc:"Hit 5 hidden spots in Saint-Germain. Walk slow, look up, read everything.",places:[14, 15, 25, 31, 34],time:"125 min"},
-  {id:6,title:"The Latin Quarter Deep Dive",desc:"Hit 5 hidden spots in Latin Quarter. Walk slow, look up, read everything.",places:[69, 70, 93, 94, 96],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 6, 7, 10, 13],time:"120 min"},
-  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[1, 35, 39, 74, 76, 77],time:"120 min"},
-  {id:9,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[9, 18, 45, 64, 65, 72],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["13th Arrondissement", "14th Arrondissement", "Bastille", "Batignolles", "Belleville", "Bercy", "Buttes-Chaumont", "Canal Saint-Martin", "Chatelet", "Denfert-Rochereau", "Fontainebleau", "Latin Quarter", "Le Marais", "Marais", "Meudon", "Montmartre", "Montparnasse", "M\u00e9nilmontant", "North Paris", "Northeast Paris", "Opera", "Paris Ring", "Passy", "P\u00e8re Lachaise", "Saint-Denis", "Saint-Germain", "Saint-Ouen", "Stalingrad", "Throughout", "Tuileries", "Various", "Various (2nd arrondissement)", "Various (Marais, 4th)", "Versailles", "Vincennes", "West Bank", "\u00cele Saint-Louis", "\u00cele de la Cit\u00e9"];
-
 const PHRASES = [
   {native:"Où est...?",en:"Where is...?"},
   {native:"Combien ça coûte?",en:"How much does it cost?"},
@@ -203,10 +172,36 @@ const PHRASES = [
   {native:"Enchanté!",en:"Nice to meet you!"},
   {native:"C\'est magnifique!",en:"It\'s magnificent!"}
 ];
-
+const AREAS = ["13th Arrondissement", "14th Arrondissement", "Bastille", "Batignolles", "Belleville", "Bercy", "Buttes-Chaumont", "Canal Saint-Martin", "Chatelet", "Denfert-Rochereau", "Fontainebleau", "Latin Quarter", "Le Marais", "Marais", "Meudon", "Montmartre", "Montparnasse", "M\u00e9nilmontant", "North Paris", "Northeast Paris", "Opera", "Paris Ring", "Passy", "P\u00e8re Lachaise", "Saint-Denis", "Saint-Germain", "Saint-Ouen", "Stalingrad", "Throughout", "Tuileries", "Various", "Various (2nd arrondissement)", "Various (Marais, 4th)", "Versailles", "Vincennes", "West Bank", "\u00cele Saint-Louis", "\u00cele de la Cit\u00e9"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Bastille Deep Dive",desc:"Hit 5 hidden spots in Bastille. Walk slow, look up, read everything.",places:[5, 11, 13, 16, 22],time:"125 min"},
+  {id:2,title:"The Belleville Deep Dive",desc:"Hit 5 hidden spots in Belleville. Walk slow, look up, read everything.",places:[1, 2, 8, 12, 17],time:"125 min"},
+  {id:3,title:"The Le Marais Deep Dive",desc:"Hit 5 hidden spots in Le Marais. Walk slow, look up, read everything.",places:[18, 19, 20, 21, 23],time:"125 min"},
+  {id:4,title:"The Montmartre Deep Dive",desc:"Hit 5 hidden spots in Montmartre. Walk slow, look up, read everything.",places:[6, 7, 46, 55, 65],time:"125 min"},
+  {id:5,title:"The Saint-Germain Deep Dive",desc:"Hit 5 hidden spots in Saint-Germain. Walk slow, look up, read everything.",places:[14, 15, 25, 31, 34],time:"125 min"},
+  {id:6,title:"The Latin Quarter Deep Dive",desc:"Hit 5 hidden spots in Latin Quarter. Walk slow, look up, read everything.",places:[69, 70, 93, 94, 96],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 6, 7, 10, 13],time:"120 min"},
+  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[1, 35, 39, 74, 76, 77],time:"120 min"},
+  {id:9,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[9, 18, 45, 64, 65, 72],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="French";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
