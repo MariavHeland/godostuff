@@ -211,13 +211,17 @@ const EntryGate=({onAccept})=>(
 <p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
 {P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
 <div className="rounded-2xl p-6 mt-8 mx-4 text-left" style={{background:"rgba(10,10,30,0.93)",border:"1px solid rgba(255,255,255,0.15)",maxWidth:380}}>
-<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
+<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start / Zanim zaczniesz</h2>
 <p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to hidden places. Content is curated for curiosity — not as instructions.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>Ta aplikacja to kreatywny przewodnik po ukrytych miejscach. Treści są dobrane z ciekawości — nie jako instrukcje.</p>
 <p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Some locations include natural environments, heights, water, or areas that may be restricted or unsafe. You explore at your own risk and are responsible for your own safety.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>Niektóre miejsca obejmują naturalne środowisko, wysokości, wodę lub obszary, które mogą być objęte ograniczeniami lub być niebezpieczne. Zwiedzasz na własne ryzyko i jesteś odpowiedzialny/a za swoje bezpieczeństwo.</p>
 <p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>This app does not provide safety advice. Always follow local laws, respect private property, and check current conditions before visiting any place.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>Ta aplikacja nie udziela porad bezpieczeństwa. Zawsze przestrzegaj lokalnych przepisów, szanuj prywatną własność i sprawdzaj aktualne warunki przed wizytą.</p>
 <p className="text-sm leading-relaxed mt-3" style={{color:"#e8c0f0"}}>If you are under 18, please explore responsibly and avoid risky locations on your own.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#c890d8",fontStyle:"italic"}}>Jeśli masz mniej niż 18 lat: eksploruj odpowiedzialnie i unikaj ryzykownych miejsc samodzielnie.</p>
 </div>
-<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore</button>
+<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore<br/><span style={{fontSize:"12px",opacity:0.85}}>Rozumiem — odkrywam</span></button>
 </div>);
 
 const CITY_EN="Gdansk";
