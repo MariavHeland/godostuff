@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Helsinki...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Finnish";
-
+<script>
 const P = [
   {id:1,n:"Sompasauna",a:"Vallila",v:["hidden", "local", "nature", "free"],d:1,s:"Free floating sauna where locals strip and dive into the Baltic",st:"Jump into the icy sea from a wooden sauna on the shore. No frills, no fees, pure Finnish ritual. Weekends pack with regulars who\'ve been coming for decades.",im:"It\'s 6am. Steam rises from wooden benches. You strip down, sweat, then plunge into black water while the city sleeps.",t:"Jump into the icy sea from a wooden sauna on the shore. No frills, no fees, pure Finnish ritual. Weekends pack with regulars who\'ve been coming for decades.\",im:\"It\'s 6am. Steam rises from wooden benches. You strip down, sweat, then plunge into black water while the city sleeps.\",t:\"Sompasauna, Kallioniementie 4, Vallila. Winter Oct–Apr, weekends. Bring towel. Brace for cold.",c:["local_only", "nature"],r:"g",nn:"Helsinki",ns:"Pohjolan modernismin sydän.",nst:"Helsinki on pienehkö pääkaupunki, jossa design ja minimalismi ovat elämäntapoja. Rautatieasema on Eliel Saarinens mestariteoksia, kun taas modernit museot hyrähtelevät kallioista. Sauna on elämää—kuumaan veteen heitetään löyly ja mielessä syntyy selkeys. Suomalaiset ovat hiljaisia, mutta sauna avaa sydämen.",nt:"Saunominen on pakollista—ota löyly. Museoiden joukossa voit hukuttaa päiviä. Ruoka on yksinkertaista ja terveellistä. Sokos-tavaratalo on shoppiin. Saariset houkuttelevat kesällä. Talvi on pimmeä mutta kaunis. Suomalaiset eivät tykkää pienpuhumisesta."},
   {id:2,n:"Kallio Street Art Alley",a:"Kallio",v:["street_art", "local", "beautiful"],d:2,s:"Walls that change every month with Finnish and Nordic street art",st:"Walk down narrow alleys where murals cover every surface. Artists add new pieces constantly. It\'s where Helsinki\'s creative energy lives.",im:"It\'s summer dusk. A crew paints a 4-story whale. Tourists stop. Locals nod and keep walking.",t:"Walk down narrow alleys where murals cover every surface. Artists add new pieces constantly. It\'s where Helsinki\'s creative energy lives.\",im:\"It\'s summer dusk. A crew paints a 4-story whale. Tourists stop. Locals nod and keep walking.\",t:\"Kallio neighborhood, Hämeentie to Arabianranta area. Weekday walks are quieter. Check @kalliograffiti for current pieces.",c:["street_art"],r:"g",nn:"Helsinki",ns:"Pohjolan modernismin sydän.",nst:"Helsinki on pienehkö pääkaupunki, jossa design ja minimalismi ovat elämäntapoja. Rautatieasema on Eliel Saarinens mestariteoksia, kun taas modernit museot hyrähtelevät kallioista. Sauna on elämää—kuumaan veteen heitetään löyly ja mielessä syntyy selkeys. Suomalaiset ovat hiljaisia, mutta sauna avaa sydämen.",nt:"Saunominen on pakollista—ota löyly. Museoiden joukossa voit hukuttaa päiviä. Ruoka on yksinkertaista ja terveellistä. Sokos-tavaratalo on shoppiin. Saariset houkuttelevat kesällä. Talvi on pimmeä mutta kaunis. Suomalaiset eivät tykkää pienpuhumisesta."},
@@ -163,34 +160,6 @@ const P = [
   {id:106,n:"Temppeliaukio Church (Rock Church)",a:"Tolo",v:["beautiful","free","quiet"],d:12,s:"Brutalist church carved into solid rock — a spiritual bunker with acoustics",st:"This church is literally built into bedrock, its ceiling open to the sky. The interior echoes hauntingly; locals come for concerts and silence. It\'s modern, strange, and moving.",im:"Time-travel: Built in 1969, it was controversial but is now beloved.",t:"Free entry. Closed during services. Tram 2/4 to Tolo.",c:["architecture","history_big"],r:"g",nn:"Temppeliaukion kirkko",ns:"Brutalista kirkka skåret i fast bergart",nst:"Besök kyrkan i berggrunden för akustik och andlighet.",nt:"Gratis entré. Spärrad under gudstjänster. Spårväg 2/4."},
   {id:107,n:"Saunas (Public Hammams)",a:"Various",v:["local","free","community"],d:15,s:"Communal saunas where Finns socialize naked and steaming — pure culture",st:"Public saunas are central to Finnish life. Löyly (sauna bar) offers saunas with Sauna culture; for budget versions, try smaller municipal saunas in neighborhoods. The etiquette is serious: quiet, respectful, and completely au naturel.",im:"Time-travel: Finns have sauna culture dating back 2,000 years; it\'s not a luxury, it\'s survival.",t:"Paid entry (€12-20). Various locations. Swimsuits optional (usually).",c:["local_only","community"],r:"g",nn:"Suomalaiset saunat",ns:"Gemensamma badhus där finner samlas",nst:"Upplev finsk saunakulturell i sitt purest form.",nt:"Betald entré. Olika platser. Simkläder valfritt."}
 ];
-
-const M = [
-  {id:1,title:"The Kallio Deep Dive",desc:"Hit 5 hidden spots in Kallio. Walk slow, look up, read everything.",places:[2, 14, 19, 22, 30],time:"125 min"},
-  {id:2,title:"The Kamppi Deep Dive",desc:"Hit 5 hidden spots in Kamppi. Walk slow, look up, read everything.",places:[3, 9, 11, 13, 18],time:"125 min"},
-  {id:3,title:"The Vallila Deep Dive",desc:"Hit 5 hidden spots in Vallila. Walk slow, look up, read everything.",places:[1, 10, 12, 28, 38],time:"125 min"},
-  {id:4,title:"The Katajanokka Deep Dive",desc:"Hit 5 hidden spots in Katajanokka. Walk slow, look up, read everything.",places:[8, 15, 17, 25, 47],time:"125 min"},
-  {id:5,title:"The Sörnäinen Deep Dive",desc:"Hit 5 hidden spots in Sörnäinen. Walk slow, look up, read everything.",places:[32, 34, 42, 51, 54],time:"125 min"},
-  {id:6,title:"The Töölö Deep Dive",desc:"Hit 5 hidden spots in Töölö. Walk slow, look up, read everything.",places:[5, 23, 31, 36, 55],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[4, 7, 10, 15, 17, 20],time:"120 min"},
-  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 14, 43, 59, 60, 76],time:"120 min"},
-  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 56, 58, 61, 65, 67],time:"120 min"},
-  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"courtyards",name:"Secret Courtyards",desc:"Walk through the doorways",emoji:"🚪",color:"#8b5cf6"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Arabia", "Arabianranta", "Central", "Downtown", "Espoo", "Hakaniemi", "Hietaniemi", "H\u00e4meentie", "Kaisaniemi", "Kaivopuisto", "Kalasatama", "Kallio", "Kamppi", "Katajanokka", "Kruununhaka", "Kumpula", "Lauttasaari", "Pasila", "Porvoo", "Punavuori", "Seurasaari", "Suomenlinna", "S\u00f6rn\u00e4inen", "Taka-T\u00f6\u00f6l\u00f6", "T\u00f6\u00f6l\u00f6", "Uspenski", "Vallila", "Vanajanlinna", "Vantaa", "Vartiokyl\u00e4"];
-
 const PHRASES = [
   {native:"Terve!",en:"Hello!"},
   {native:"Kiitos",en:"Thank you"},
@@ -203,10 +172,36 @@ const PHRASES = [
   {native:"Apua!",en:"Help!"},
   {native:"Tervetuloa",en:"Welcome"}
 ];
-
+const AREAS = ["Arabia", "Arabianranta", "Central", "Downtown", "Espoo", "Hakaniemi", "Hietaniemi", "H\u00e4meentie", "Kaisaniemi", "Kaivopuisto", "Kalasatama", "Kallio", "Kamppi", "Katajanokka", "Kruununhaka", "Kumpula", "Lauttasaari", "Pasila", "Porvoo", "Punavuori", "Seurasaari", "Suomenlinna", "S\u00f6rn\u00e4inen", "Taka-T\u00f6\u00f6l\u00f6", "T\u00f6\u00f6l\u00f6", "Uspenski", "Vallila", "Vanajanlinna", "Vantaa", "Vartiokyl\u00e4"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"courtyards",name:"Secret Courtyards",desc:"Walk through the doorways",emoji:"🚪",color:"#8b5cf6"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Kallio Deep Dive",desc:"Hit 5 hidden spots in Kallio. Walk slow, look up, read everything.",places:[2, 14, 19, 22, 30],time:"125 min"},
+  {id:2,title:"The Kamppi Deep Dive",desc:"Hit 5 hidden spots in Kamppi. Walk slow, look up, read everything.",places:[3, 9, 11, 13, 18],time:"125 min"},
+  {id:3,title:"The Vallila Deep Dive",desc:"Hit 5 hidden spots in Vallila. Walk slow, look up, read everything.",places:[1, 10, 12, 28, 38],time:"125 min"},
+  {id:4,title:"The Katajanokka Deep Dive",desc:"Hit 5 hidden spots in Katajanokka. Walk slow, look up, read everything.",places:[8, 15, 17, 25, 47],time:"125 min"},
+  {id:5,title:"The Sörnäinen Deep Dive",desc:"Hit 5 hidden spots in Sörnäinen. Walk slow, look up, read everything.",places:[32, 34, 42, 51, 54],time:"125 min"},
+  {id:6,title:"The Töölö Deep Dive",desc:"Hit 5 hidden spots in Töölö. Walk slow, look up, read everything.",places:[5, 23, 31, 36, 55],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[4, 7, 10, 15, 17, 20],time:"120 min"},
+  {id:8,title:"Street Art Safari",desc:"Find every mural, stencil, and hidden masterpiece.",places:[2, 14, 43, 59, 60, 76],time:"120 min"},
+  {id:9,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 56, 58, 61, 65, 67],time:"120 min"},
+  {id:10,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Finnish";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
