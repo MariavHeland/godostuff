@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Tbilisi...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Georgian";
-
+<script>
 const P = [
   {id:1,n:"Abanotubani Sulfur Baths",a:"Abanotubani",v:["hidden", "history", "beautiful", "weird"],d:1,s:"Subterranean baths where hot sulfur water rises from the earth and humans soak in 1500-year-old ritual",st:"Descend stairs. The smell hits. The heat wraps. You soak in water older than empires. Locals know every bath\'s personality.",im:"It\'s 500 AD. A merchant bathes. The water heals. The ritual continues unchanged into your moment.",t:"Descend stairs. The smell hits. The heat wraps. You soak in water older than empires. Locals know every bath\'s personality.\",im:\"It\'s 500 AD. A merchant bathes. The water heals. The ritual continues unchanged into your moment.\",t:\"Abanotubani baths, multiple locations. Metekhi area. Entrance fee varies. Private baths nicer than shared. Go early morning for calm.",c:["history_big"],r:"g",nn:"",ns:"",nst:"",nt:""},
   {id:2,n:"Narikala Fortress Ruins from the Hill",a:"Sololaki",v:["history", "beautiful", "nature"],d:2,s:"A fortress crumbling from the 4th century watching Tbilisi below like a patient ghost",st:"Walk ruins. Stone whispers siege. War. Peace. The walls hold 1600 years of occupation and resistance.",im:"It\'s 400 AD. Builders construct walls. They don\'t know the walls will last until you stand inside them.",t:"Walk ruins. Stone whispers siege. War. Peace. The walls hold 1600 years of occupation and resistance.\",im:\"It\'s 400 AD. Builders construct walls. They don\'t know the walls will last until you stand inside them.\",t:\"Narikala Fortress, Sololaki district. Cable car access or hike up stone paths. Free to walk ruins. Best sunset. Bring water.",c:["history_big"],r:"g",nn:"",ns:"",nst:"",nt:""},
@@ -167,7 +164,31 @@ const P = [
   {id:110,n:"Fabrika courtyard hangout (Chugureti)",a:"Centro",v:["free","local","hidden"],d:15,s:"Fabrika courtyard hangout (Chugureti) — free “backpacker village” courtyard: murals, skate-y vibe, — free local gem",st:"Fabrika courtyard hangout (Chugureti) — free “backpacker village” courtyard: murals, skate-y vibe, pop-up events, and people to meet without buying much. Mentioned often by locals as an easy social hu",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"თბილისი",ns:"Joya oculta local — Fabrika courtyard hangout (Chugureti) —",nst:"Fabrika courtyard hangout (Chugureti) — free “backpacker village” courtyard: murals, skate-y vibe, pop-up events, and people to meet without buying mu",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Stamba “The Warehouse” courtyard + gallery peeking",a:"Centro",v:["free","local","hidden"],d:15,s:"Stamba “The Warehouse” courtyard + gallery peeking — sit outside for free, — free local gem",st:"Stamba “The Warehouse” courtyard + gallery peeking — sit outside for free, browse the on-site art gallery vibe, and treat it like a living-room hang. (Reddit: r/tbilisi hidden gems thread)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"თბილისი",ns:"Joya oculta local — Stamba “The Warehouse” courtyard +",nst:"Stamba “The Warehouse” courtyard + gallery peeking — sit outside for free, browse the on-site art gallery vibe, and treat it like a living-room hang. ",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
+const PHRASES = [
+  {native:"როგორ ხარ?",en:"How are you?"},
+  {native:"მადლობა",en:"Thank you"},
+  {native:"რამდენი ღირს?",en:"How much does it cost?"},
+  {native:"სად არის ტუალეტი?",en:"Where is the toilet?"},
+  {native:"ბილი, გთხოვთ",en:"The bill, please"},
+  {native:"ინგლისურად ლაპარაკობ?",en:"Do you speak English?"},
+  {native:"კარგი აპეტიტი!",en:"Enjoy your meal!"},
+  {native:"ნახვამდის",en:"Goodbye"},
+  {native:"ბოდიშ",en:"Sorry/Excuse me"},
+  {native:"ჯანმრთელობა!",en:"Cheers!"}
+];
+const AREAS = ["Abanotubani", "Abastumani", "Avlabari", "Betlemi", "Bolnisi", "Borjomi", "Botanical", "Chugureti", "David Gareja", "Dedaena", "Didube", "Didveli", "Downtown", "Fabrika", "Freedom Square", "Gonio", "Kakheti", "Kumistavi", "Lisi Lake", "Marjanishvili", "Mestia", "Metchi", "Mtatsminda", "Mtskheta", "Nadzaladevi", "Narikala", "Old Town", "Rike", "Saburtalo", "Saguramo", "Sameba", "Shuamta", "Sighnaghi", "Sololaki", "Stepantsminda", "Turtle Lake", "Uplistsikhe", "Ushguli", "Vake", "Varzia", "Vatzlovia", "Vera"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
 const M = [
   {id:1,title:"The Sololaki Deep Dive",desc:"Hit 5 hidden spots in Sololaki. Walk slow, look up, read everything.",places:[2, 6, 8, 12, 13],time:"125 min"},
   {id:2,title:"The Old Town Deep Dive",desc:"Hit 5 hidden spots in Old Town. Walk slow, look up, read everything.",places:[56, 57, 61, 65, 68],time:"125 min"},
@@ -181,37 +202,11 @@ const M = [
   {id:10,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[60, 62, 69, 91, 95, 103],time:"120 min"},
   {id:11,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
 ];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Abanotubani", "Abastumani", "Avlabari", "Betlemi", "Bolnisi", "Borjomi", "Botanical", "Chugureti", "David Gareja", "Dedaena", "Didube", "Didveli", "Downtown", "Fabrika", "Freedom Square", "Gonio", "Kakheti", "Kumistavi", "Lisi Lake", "Marjanishvili", "Mestia", "Metchi", "Mtatsminda", "Mtskheta", "Nadzaladevi", "Narikala", "Old Town", "Rike", "Saburtalo", "Saguramo", "Sameba", "Shuamta", "Sighnaghi", "Sololaki", "Stepantsminda", "Turtle Lake", "Uplistsikhe", "Ushguli", "Vake", "Varzia", "Vatzlovia", "Vera"];
-
-const PHRASES = [
-  {native:"როგორ ხარ?",en:"How are you?"},
-  {native:"მადლობა",en:"Thank you"},
-  {native:"რამდენი ღირს?",en:"How much does it cost?"},
-  {native:"სად არის ტუალეტი?",en:"Where is the toilet?"},
-  {native:"ბილი, გთხოვთ",en:"The bill, please"},
-  {native:"ინგლისურად ლაპარაკობ?",en:"Do you speak English?"},
-  {native:"კარგი აპეტიტი!",en:"Enjoy your meal!"},
-  {native:"ნახვამდის",en:"Goodbye"},
-  {native:"ბოდიშ",en:"Sorry/Excuse me"},
-  {native:"ჯანმრთელობა!",en:"Cheers!"}
-];
-
-const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Georgian";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
