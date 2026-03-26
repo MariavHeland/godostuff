@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Sintra...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Portuguese";
-
+<script>
 const P = [
   {id:1,n:"Quinta da Regaleira — Sintra Hills",a:"Sintra Hills",v:["hidden", "beautiful"],d:2,s:"Mansion with 500m tunnel maze underground",st:"Mystical estate with secret tunnels, hidden chapels, initiation wells, lakes. Wander grotto gardens for 2 hours. Medieval and masonic symbols carved everywhere. €10. Worth triple.",im:"1910: Built by millionaire occultist. 2024: Teenagers still get lost in tunnels.",t:"Go early, get map, get lost intentionally. Bring water. Muddy—wear shoes. 3-hour visit min.",c:["hidden", "architecture"],r:"g",nn:"Quinta da Regaleira — Colinas de Sintra",ns:"Mansão com tuneis subterrâneos labirintais",nst:"Propriedade mística com túneis ocultos, poços, lagos. Explore galerias 2 horas. Símbolos maçónicos. €10. Vale 30.",nt:"Vá cedo, mapa, perca-se propositalmente. Sapatos. 3 horas mínimo."},
   {id:2,n:"Pena Palace Trails — Peak (5km walk)",a:"Pena Peak",v:["history", "beautiful"],d:5,s:"Dazzling Romanticist palace-maze atop misty mountain",st:"€14 entry, but hiking free. Trail winds through forest to palace. Surreal architecture—Part Gothic, Part Islamic, Part Disney. Inside: 47 rooms, tile work insane, cloisters. One of Europe\'s best palaces.",im:"1840: King builds romantic fantasy. 2024: Fog rolls, it looks unreal.",t:"Hike free (90 min up, 60 min down). Palace tour extra €8. Go early. Fog adds magic.",c:["history_big", "high_spots"],r:"g",nn:"Trilhas Palácio Pena — Pico (5km caminhada)",ns:"Palácio romântico deslumbrante no topo de montanha nevoenta",nst:"€14 entrada, mas trilha gratuita. Floresta até palácio. Arquitetura surrealista. 47 quartos, azulejaria. Um dos melhores palácios.",nt:"Trilha gratuita (90 min acima). Palácio €8 extra. Vá cedo. Nevoeiro é mágico."},
@@ -167,29 +164,6 @@ const P = [
   {id:110,n:"Sintra Town Hall (Câmara Municipal) exterior (free",a:"Centro",v:["free","local","hidden"],d:15,s:"Sintra Town Hall (Câmara Municipal) exterior (free to admire; looks like a — free local gem",st:"Sintra Town Hall (Câmara Municipal) exterior (free to admire; looks like a mini fantasy palace). (Sintra-Portugal.com budget guide)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Sintra",ns:"Joya oculta local — Sintra Town Hall (Câmara Municipal)",nst:"Sintra Town Hall (Câmara Municipal) exterior (free to admire; looks like a mini fantasy palace). (Sintra-Portugal.com budget guide)",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Palácio de Seteais hotel grounds + triumphal arch ",a:"Centro",v:["free","local","hidden"],d:15,s:"Palácio de Seteais hotel grounds + triumphal arch viewpoint (free to non-guests — free local gem",st:"Palácio de Seteais hotel grounds + triumphal arch viewpoint (free to non-guests to visit the grounds; big romantic ‘movie set’ energy). (Sintra-Portugal.com budget guide, Sintra-Portugal.com hidden ge",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Sintra",ns:"Joya oculta local — Palácio de Seteais hotel grounds",nst:"Palácio de Seteais hotel grounds + triumphal arch viewpoint (free to non-guests to visit the grounds; big romantic ‘movie set’ energy). (Sintra-Portug",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Sintra Hills Deep Dive",desc:"Hit 5 hidden spots in Sintra Hills. Walk slow, look up, read everything.",places:[1, 11, 21, 31, 41],time:"125 min"},
-  {id:2,title:"The Pena Peak Deep Dive",desc:"Hit 5 hidden spots in Pena Peak. Walk slow, look up, read everything.",places:[2, 12, 22, 32, 42],time:"125 min"},
-  {id:3,title:"The Ridge Deep Dive",desc:"Hit 5 hidden spots in Ridge. Walk slow, look up, read everything.",places:[3, 13, 23, 33, 43],time:"125 min"},
-  {id:4,title:"The Monserrate Deep Dive",desc:"Hit 5 hidden spots in Monserrate. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
-  {id:5,title:"The Forest Deep Dive",desc:"Hit 5 hidden spots in Forest. Walk slow, look up, read everything.",places:[5, 15, 25, 35, 45],time:"125 min"},
-  {id:6,title:"The Valley Deep Dive",desc:"Hit 5 hidden spots in Valley. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
-  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 6, 12, 13, 16],time:"120 min"},
-  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[2, 3, 7, 12, 13, 17],time:"120 min"},
-  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"abandoned",name:"Abandoned & Forgotten",desc:"Places time left behind",emoji:"🏚️",color:"#78716c"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Cascais", "Colares", "Forest", "Ma\u00e7\u00e3s", "Monserrate", "Pena Peak", "Ridge", "Roca Cape", "Sintra Hills", "Valley"];
-
 const PHRASES = [
   {native:"Olá",en:"Hello"},
   {native:"Onde fica...?",en:"Where is...?"},
@@ -202,10 +176,31 @@ const PHRASES = [
   {native:"Palácio",en:"Palace"},
   {native:"Floresta",en:"Forest"}
 ];
-
+const AREAS = ["Cascais", "Colares", "Forest", "Ma\u00e7\u00e3s", "Monserrate", "Pena Peak", "Ridge", "Roca Cape", "Sintra Hills", "Valley"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"abandoned",name:"Abandoned & Forgotten",desc:"Places time left behind",emoji:"🏚️",color:"#78716c"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Sintra Hills Deep Dive",desc:"Hit 5 hidden spots in Sintra Hills. Walk slow, look up, read everything.",places:[1, 11, 21, 31, 41],time:"125 min"},
+  {id:2,title:"The Pena Peak Deep Dive",desc:"Hit 5 hidden spots in Pena Peak. Walk slow, look up, read everything.",places:[2, 12, 22, 32, 42],time:"125 min"},
+  {id:3,title:"The Ridge Deep Dive",desc:"Hit 5 hidden spots in Ridge. Walk slow, look up, read everything.",places:[3, 13, 23, 33, 43],time:"125 min"},
+  {id:4,title:"The Monserrate Deep Dive",desc:"Hit 5 hidden spots in Monserrate. Walk slow, look up, read everything.",places:[4, 14, 24, 34, 44],time:"125 min"},
+  {id:5,title:"The Forest Deep Dive",desc:"Hit 5 hidden spots in Forest. Walk slow, look up, read everything.",places:[5, 15, 25, 35, 45],time:"125 min"},
+  {id:6,title:"The Valley Deep Dive",desc:"Hit 5 hidden spots in Valley. Walk slow, look up, read everything.",places:[6, 16, 26, 36, 46],time:"125 min"},
+  {id:7,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 3, 6, 12, 13, 16],time:"120 min"},
+  {id:8,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[2, 3, 7, 12, 13, 17],time:"120 min"},
+  {id:9,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Portuguese";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
