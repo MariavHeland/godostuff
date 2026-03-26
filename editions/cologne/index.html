@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Cologne...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="German";
-
+<script>
 const P = [
   {id:1,n:"Ehrenfeld Street Art District (Massive Murals) — Ehrenfeld",a:"Ehrenfeld",v:["street_art", "weird"],d:1,s:"Industrial neighborhood covered in large-scale street art—galleries, studio spaces, the city\'s creative heart.",st:"Murals cover entire building sides. Scale is immense. Quality is high. The neighborhood openly creative. Galleries everywhere. It\'s gritty but becoming polished. Creativity is the point.",im:"It\'s 2000s. Young artists move into cheap neighborhoods. The city happens.",t:"Murals cover entire building sides. Scale is immense. Quality is high. The neighborhood openly creative. Galleries everywhere. It\'s gritty but becoming polished. Creativity is the point.\",im:\"It\'s 2000s. Young artists move into cheap neighborhoods. The city happens.\",t:\"Free walking. Go afternoon for light. Photography encouraged. Galleries often free (€5-10 suggested). Cafés throughout. This is authentic artist space.",c:["street_art", "art"],r:"g",nn:"Kölner Dom",ns:"Gotische Kathedrale, die zwei Weltkriege überstanden hat.",nst:"Der Dom ist Kölns Herz und Seele. Gothische Spitzbögen, farbiges Licht durch Fenster. Du kannst die Stufen hinaufklettern für die beste Aussicht auf den Rhein und die Stadt.",nt:"Domkloster 4. Eintritt €3,50 für Dom, €3,50 extra für Aufstieg. Beste Zeit: früh morgens. Bring festes Schuhwerk für die Stufen mit."},
   {id:2,n:"Belgisches Viertel (Café Culture) — Belgisches",a:"Belgisches",v:["local_only", "beautiful"],d:2,s:"Neighborhood of small streets, independent shops, cafés, galleries—the anti-commercial heart of Cologne.",st:"Streets are narrow. Shops tiny and specific. Cafés line corners. It\'s organized for living, not consuming. You see locals being normal. It feels like a village inside a city.",im:"It\'s 1970. Younger people move here because rent is cheap. They stay because it\'s community.",t:"Streets are narrow. Shops tiny and specific. Cafés line corners. It\'s organized for living, not consuming. You see locals being normal. It feels like a village inside a city.\",im:\"It\'s 1970. Younger people move here because rent is cheap. They stay because it\'s community.\",t:\"Walk freely. Cafés €3-8 for coffee. Shops independent and interesting. Go afternoon. Bring time. This neighborhood rewards wandering.",c:["local_only", "beautiful"],r:"g",nn:"Altstadt",ns:"Fachwerkhäuser und Kneipen, wo das echte Köln lebt.",nst:"Die Altstadt wurde im Krieg zerstört und mit historischer Genauigkeit wieder aufgebaut. Enge Gassen, rote Dächern, Restaurants überall. Bestelle ein Kölsch und du bist Teil Kölns.",nt:"Rund um die Großmarktstraße. Kostenlos spazieren. Kölsch kostet etwa €1,20-2,00. Probiere Halve Hahn (Roggenbrötchen mit Käse und Aufschnitt)."},
@@ -163,30 +160,6 @@ const P = [
   {id:106,n:"Kunsthofpassage Singing Drainpipes",a:"Ehrenfeld",v:["weird","art","hidden"],d:20,s:"Artist courtyard maze with surreal street art and eerie drainpipes",st:"Kunsthofpassage is a series of interconnected artist courtyards with painted walls, sculptures, and water features. The famous "singing drainpipes" create haunting sounds during rain. It\'s playful, weird, and completely free.",im:"Time-travel: Created by artists in the 1990s; constantly evolving.",t:"Free. Walk courtyards any time. Cafes/bars inside.",c:["street_art","weird"],r:"g",nn:"Kunsthofpassage",ns:"Laberinto artístico con drenajes cantores",nst:"Explora los patios llenos de arte surrealista.",nt:"Gratis. Acceso público."},
   {id:107,n:"Rhine Left Bank Promenade",a:"Waterfront",v:["beautiful","free","quiet"],d:15,s:"Peaceful riverside parks and walking paths on the west bank",st:"The left bank of the Rhine (west side) has been transformed into green spaces and promenades. Walk from the bridge district for calm riverside scenery with fewer tourists than the main embankment.",im:"Time-travel: Rebuilt after WWII bombing.",t:"Free. Multiple access points along the river.",c:["parks","romantic_water"],r:"g",nn:"Rhein Linkes Ufer Spaziergang",ns:"Paseo de la orilla izquierda del Rin",nst:"Camina el lado oeste tranquilo del Rin.",nt:"Gratis. Múltiples puntos de entrada."}
 ];
-
-const M = [
-  {id:1,title:"The Zone Deep Dive",desc:"Hit 5 hidden spots in Zone. Walk slow, look up, read everything.",places:[51, 52, 53, 54, 55],time:"125 min"},
-  {id:2,title:"The Altstadt Deep Dive",desc:"Hit 5 hidden spots in Altstadt. Walk slow, look up, read everything.",places:[5, 6, 7, 11, 22],time:"125 min"},
-  {id:3,title:"The Deutz Deep Dive",desc:"Hit 3 hidden spots in Deutz. Walk slow, look up, read everything.",places:[9, 10, 48],time:"75 min"},
-  {id:4,title:"The Cologne Deep Dive",desc:"Hit 3 hidden spots in Cologne. Walk slow, look up, read everything.",places:[30, 31, 40],time:"75 min"},
-  {id:5,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[5, 7, 11, 17, 18, 21],time:"120 min"},
-  {id:6,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[6, 9, 10, 22, 46],time:"100 min"},
-  {id:7,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[12, 29, 44, 49],time:"80 min"},
-  {id:8,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Aachen", "Agnesviertel", "Altstadt", "Belgisches", "Bergisch Gladbach", "Bonn", "Br\u00fchl", "Cologne", "Deutz", "Drachenfels", "Ehrenfeld", "Eigelstein", "Flora", "Kwartier", "Mediapark", "Melaten", "M\u00fclheim", "M\u00fcller", "Nippes", "Rhein", "Rheinauhafen", "Severinsviertel", "S\u00fcdstadt", "Various", "Zone", "Z\u00fclpicher"];
-
 const PHRASES = [
   {native:"Wo ist...?",en:"Where is...?"},
   {native:"Wie komme ich zu...?",en:"How do I get to...?"},
@@ -199,10 +172,32 @@ const PHRASES = [
   {native:"Die Rechnung, bitte",en:"The bill, please"},
   {native:"Guten Morgen",en:"Good morning"}
 ];
-
+const AREAS = ["Aachen", "Agnesviertel", "Altstadt", "Belgisches", "Bergisch Gladbach", "Bonn", "Br\u00fchl", "Cologne", "Deutz", "Drachenfels", "Ehrenfeld", "Eigelstein", "Flora", "Kwartier", "Mediapark", "Melaten", "M\u00fclheim", "M\u00fcller", "Nippes", "Rhein", "Rheinauhafen", "Severinsviertel", "S\u00fcdstadt", "Various", "Zone", "Z\u00fclpicher"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"scary",name:"Dark & Unsettling",desc:"Not for the faint-hearted",emoji:"🖤",color:"#1f2937"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Zone Deep Dive",desc:"Hit 5 hidden spots in Zone. Walk slow, look up, read everything.",places:[51, 52, 53, 54, 55],time:"125 min"},
+  {id:2,title:"The Altstadt Deep Dive",desc:"Hit 5 hidden spots in Altstadt. Walk slow, look up, read everything.",places:[5, 6, 7, 11, 22],time:"125 min"},
+  {id:3,title:"The Deutz Deep Dive",desc:"Hit 3 hidden spots in Deutz. Walk slow, look up, read everything.",places:[9, 10, 48],time:"75 min"},
+  {id:4,title:"The Cologne Deep Dive",desc:"Hit 3 hidden spots in Cologne. Walk slow, look up, read everything.",places:[30, 31, 40],time:"75 min"},
+  {id:5,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[5, 7, 11, 17, 18, 21],time:"120 min"},
+  {id:6,title:"Sky Tour",desc:"Every free viewpoint. See the whole city from above.",places:[6, 9, 10, 22, 46],time:"100 min"},
+  {id:7,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[12, 29, 44, 49],time:"80 min"},
+  {id:8,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="German";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
