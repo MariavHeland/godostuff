@@ -212,10 +212,15 @@ const EntryGate=({onAccept})=>(
 <p className="text-xs mt-2" style={{color:"#6366F1"}}>🌍 Bilingual: English + {LANG_NAME}</p>
 <p className="text-xs mt-6 px-4" style={{color:"#8b7fb8",lineHeight:1.6,maxWidth:340}}>
 {P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
-<button onClick={onAccept} className="mt-8 px-8 py-3 rounded-full text-sm font-bold" style={{background:"#6366F1",color:"white",border:"none",cursor:"pointer"}}>Enter Tirana</button>
-<div className="mt-10 rounded-xl p-4 mx-4" style={{background:"rgba(10,10,30,0.93)",maxWidth:340}}>
-<p className="text-xs" style={{color:"#8b7fb8",lineHeight:1.6}}>⚠️ <strong style={{color:"#a78bfa"}}>Stay safe.</strong> Some places may involve uneven terrain, heights, or isolated areas. Always visit with a friend, tell someone where you're going, and trust your instincts. Never trespass.</p>
-</div></div>);
+<div className="rounded-2xl p-6 mt-8 mx-4 text-left" style={{background:"rgba(10,10,30,0.93)",border:"1px solid rgba(255,255,255,0.15)",maxWidth:380}}>
+<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
+<p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to hidden places. Content is curated for curiosity — not as instructions.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Some locations include natural environments, heights, water, or areas that may be restricted or unsafe. You explore at your own risk and are responsible for your own safety.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>This app does not provide safety advice. Always follow local laws, respect private property, and check current conditions before visiting any place.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#e8c0f0"}}>If you are under 18, please explore responsibly and avoid risky locations on your own.</p>
+</div>
+<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore</button>
+</div>);
 
 const PlaceCard=({place:p,idx,onOpen,lang})=>(
 <button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
