@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Bruges...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Dutch";
-
+<script>
 const P = [
   {id:1,n:"Bruges Location 1 — Begijnhof",a:"Begijnhof",v:["romantic_water", "history"],d:1,s:"Authentic Bruges location with medieval charm.",st:"You\'re experiencing Flemish culture at location 1. Stone and water create magic.",im:"It\'s a timeless moment in a medieval painting.",t:"You\'re experiencing Flemish culture at location 1. Stone and water create magic.\",im:\"It\'s a timeless moment in a medieval painting.\",t:\"Best visited morning or evening. Many locations free. Photography essential.",c:["beautiful"],r:"g",nn:"Bruges Location 1 — Begijnhof",ns:"Een authentieke plek waar locals werkelijk thuiskomen.",nst:"Dit is waar authenticiteit volhoudt. Waar locals werkelijk komen. Waar geschiedenis nog steeds lucht geeft. Waar tradities zich mengen met moderniteit. Dit is waar het leven echt gebeurt.",nt:"Neem de tijd om rond te wandelen. Let op details. Spreek met locals als ze open staan. Respecteer de ruimten. Bezoek zonder je telefoon. De ochtend is beter dan de middag. Weekends veranderen de sfeer. Kom met water en goede schoenen."},
   {id:2,n:"Bruges Location 2 — Minnewater",a:"Minnewater",v:["hidden", "beautiful"],d:2,s:"Authentic Bruges location with medieval charm.",st:"You\'re experiencing Flemish culture at location 2. Stone and water create magic.",im:"It\'s a timeless moment in a medieval painting.",t:"You\'re experiencing Flemish culture at location 2. Stone and water create magic.\",im:\"It\'s a timeless moment in a medieval painting.\",t:\"Best visited morning or evening. Many locations free. Photography essential.",c:["history_big"],r:"g",nn:"Bruges Location 2 — Minnewater",ns:"Een authentieke plek waar locals werkelijk thuiskomen.",nst:"Dit is waar authenticiteit volhoudt. Waar locals werkelijk komen. Waar geschiedenis nog steeds lucht geeft. Waar tradities zich mengen met moderniteit. Dit is waar het leven echt gebeurt.",nt:"Neem de tijd om rond te wandelen. Let op details. Spreek met locals als ze open staan. Respecteer de ruimten. Bezoek zonder je telefoon. De ochtend is beter dan de middag. Weekends veranderen de sfeer. Kom met water en goede schoenen."},
@@ -167,27 +164,6 @@ const P = [
   {id:110,n:"Langestraat/Hoogstraat oddity-antique window-shopp",a:"Centro",v:["free","local","hidden"],d:15,s:"Langestraat/Hoogstraat oddity-antique window-shopping (free): browse antique/oddity shops in this less-touristy strip; i",st:"Langestraat/Hoogstraat oddity-antique window-shopping (free): browse antique/oddity shops in this less-touristy strip; it’s recommended specifically for “oddity” vibes and non-Markt Bruges street life",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Brugge",ns:"Joya oculta local — Langestraat/Hoogstraat oddity-antique window-shopping (free): browse",nst:"Langestraat/Hoogstraat oddity-antique window-shopping (free): browse antique/oddity shops in this less-touristy strip; it’s recommended specifically f",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Market Square Wednesday food-and-flowers market (f",a:"Centro",v:["free","local","hidden"],d:15,s:"Market Square Wednesday food-and-flowers market (free to roam): Wednesday 8:00–14:00 at Market — free local gem",st:"Market Square Wednesday food-and-flowers market (free to roam): Wednesday 8:00–14:00 at Market Square (food & flowers). (Visit Bruges – Markets)",im:"Time-travel: Historic significance or modern transformation.",t:"Free to visit/explore. Local tips apply.",c:["local_only","hidden"],r:"g",nn:"Brugge",ns:"Joya oculta local — Market Square Wednesday food-and-flowers market",nst:"Market Square Wednesday food-and-flowers market (free to roam): Wednesday 8:00–14:00 at Market Square (food & flowers). (Visit Bruges – Markets)",nt:"Acceso gratuito. Consejos locales aplican."}
 ];
-
-const M = [
-  {id:1,title:"The Begijnhof Deep Dive",desc:"Hit 5 hidden spots in Begijnhof. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
-  {id:2,title:"The Minnewater Deep Dive",desc:"Hit 5 hidden spots in Minnewater. Walk slow, look up, read everything.",places:[2, 7, 12, 17, 22],time:"125 min"},
-  {id:3,title:"The Burg Deep Dive",desc:"Hit 5 hidden spots in Burg. Walk slow, look up, read everything.",places:[3, 8, 13, 18, 23],time:"125 min"},
-  {id:4,title:"The Sint-Anna Deep Dive",desc:"Hit 5 hidden spots in Sint-Anna. Walk slow, look up, read everything.",places:[4, 9, 14, 19, 24],time:"125 min"},
-  {id:5,title:"The Markt Deep Dive",desc:"Hit 5 hidden spots in Markt. Walk slow, look up, read everything.",places:[5, 10, 15, 20, 25],time:"125 min"},
-  {id:6,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 7, 12, 17, 22, 27],time:"120 min"},
-  {id:7,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 9, 14, 19, 24, 29],time:"120 min"},
-  {id:8,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
-];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"courtyards",name:"Secret Courtyards",desc:"Walk through the doorways",emoji:"🚪",color:"#8b5cf6"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"}
-];
-
-const AREAS = ["Begijnhof", "Burg", "Markt", "Minnewater", "Sint-Anna"];
-
 const PHRASES = [
   {native:"Waar is...?",en:"Where is...?"},
   {native:"Hoeveel kost het?",en:"How much does it cost?"},
@@ -200,10 +176,29 @@ const PHRASES = [
   {native:"Aangenaam!",en:"Nice to meet you!"},
   {native:"Het is prachtig!",en:"It\'s beautiful!"}
 ];
-
+const AREAS = ["Begijnhof", "Burg", "Markt", "Minnewater", "Sint-Anna"];
 const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"courtyards",name:"Secret Courtyards",desc:"Walk through the doorways",emoji:"🚪",color:"#8b5cf6"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"}
+];
+const M = [
+  {id:1,title:"The Begijnhof Deep Dive",desc:"Hit 5 hidden spots in Begijnhof. Walk slow, look up, read everything.",places:[1, 6, 11, 16, 21],time:"125 min"},
+  {id:2,title:"The Minnewater Deep Dive",desc:"Hit 5 hidden spots in Minnewater. Walk slow, look up, read everything.",places:[2, 7, 12, 17, 22],time:"125 min"},
+  {id:3,title:"The Burg Deep Dive",desc:"Hit 5 hidden spots in Burg. Walk slow, look up, read everything.",places:[3, 8, 13, 18, 23],time:"125 min"},
+  {id:4,title:"The Sint-Anna Deep Dive",desc:"Hit 5 hidden spots in Sint-Anna. Walk slow, look up, read everything.",places:[4, 9, 14, 19, 24],time:"125 min"},
+  {id:5,title:"The Markt Deep Dive",desc:"Hit 5 hidden spots in Markt. Walk slow, look up, read everything.",places:[5, 10, 15, 20, 25],time:"125 min"},
+  {id:6,title:"History Walk",desc:"Walk through centuries in one afternoon.",places:[2, 7, 12, 17, 22, 27],time:"120 min"},
+  {id:7,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[4, 9, 14, 19, 24, 29],time:"120 min"},
+  {id:8,title:"The Full Send",desc:"Every single place. All 105. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],time:"multi-day"}
+];
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Dutch";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
