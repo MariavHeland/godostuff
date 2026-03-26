@@ -49,10 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <body>
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Copenhagen...</p></div>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useMemo}=React;
-const LANG_NAME="Danish";
-
+<script>
 const P = [
   {id:1,n:"Christiania Freetown Entry",a:"Christianshavn",v:["weird", "free", "local"],d:1,s:"An autonomous zone that shouldn\'t exist",st:"In 1971, squatters took an abandoned military base. Forty years later it\'s still here. Part bohemia, part drug market, part genuine community. Rules are weird but real. You\'re a tourist in someone\'s home.",im:"It\'s 1971. Hippies lock a gate. The state doesn\'t notice yet. By 1985, a village is built. By now, they\'ve won a strange peace.",t:"In 1971, squatters took an abandoned military base. Forty years later it\'s still here. Part bohemia, part drug market, part genuine community. Rules are weird but real. You\'re a tourist in someone\'s home.\",im:\"It\'s 1971. Hippies lock a gate. The state doesn\'t notice yet. By 1985, a village is built. By now, they\'ve won a strange peace.\",t:\"Prinsessegade 43, Christianshavn (walk from Christianshavn metro). Free entry (unofficial). Photography restricted in some areas. Don\'t photograph dealing. It\'s dangerous. Walk respectfully.",c:["local_only", "weird"],r:"y",nn:"København",ns:"Cykelenes by hvor sjælen er fri.",nst:"København er en by hvor cyklister dikterer tempoet, og bryggerierne definerer kulturen. Her blander københ avnerne traditionel hygge med moderne innovation. Hver kvarter har sin egen personlighed, fra hippe Vesterbro til kunstnerige Nørrebro. Fiskebilerne ved havnen fortæller historierne om en maritime arv, der mødes med samtid.",nt:"Tag bussen eller cyklen. Søg efter små værtshuse med øl på tøm. Respekter Christiania-reglerne. Badning i haven er helt legalt. Øl og kaffe driver dagene. Høvlighed betyder meget."},
   {id:2,n:"Islands Brygge Harbor Baths",a:"Islands Brygge",v:["free", "nature", "local"],d:2,s:"Jump into the harbor and it\'s free",st:"Danes built floating pools in the harbor. Jump in summer. It\'s cold. It\'s free. You\'re swimming where ships used to dock. This is Nordic practicality. This is freedom.",im:"It\'s July. 100 people float in the harbor. It\'s 15 degrees. They smile anyway.",t:"Danes built floating pools in the harbor. Jump in summer. It\'s cold. It\'s free. You\'re swimming where ships used to dock. This is Nordic practicality. This is freedom.\",im:\"It\'s July. 100 people float in the harbor. It\'s 15 degrees. They smile anyway.\",t:\"Islands Brygge Harbour Bath, Islands Brygge (Metro to Islands Brygge). Free. Bring a towel. Bring courage. Open May-September.",c:["free", "nature"],r:"g",nn:"København",ns:"Cykelenes by hvor sjælen er fri.",nst:"København er en by hvor cyklister dikterer tempoet, og bryggerierne definerer kulturen. Her blander københ avnerne traditionel hygge med moderne innovation. Hver kvarter har sin egen personlighed, fra hippe Vesterbro til kunstnerige Nørrebro. Fiskebilerne ved havnen fortæller historierne om en maritime arv, der mødes med samtid.",nt:"Tag bussen eller cyklen. Søg efter små værtshuse med øl på tøm. Respekter Christiania-reglerne. Badning i haven er helt legalt. Øl og kaffe driver dagene. Høvlighed betyder meget."},
@@ -162,7 +159,31 @@ const P = [
   {id:105,n:"Freetown Christiania",a:"Christianshavn",v:["weird","local","free"],d:15,s:"Anarchist squatter community in a former military base — wild and colorful freedom zone",st:"Christiania is a self-governed enclave where residents openly reject capitalism and authority. Murals cover every surface; smells are strong; the vibe is bohemian-chaos. It\'s not a museum but a living counter-culture.",im:"Time-travel: Founded in 1971 when hippies occupied the abandoned Christianhavn barracks.",t:"Free to walk. Tram 1/2/6 to Prinsessegade. Don\'t take photos of people. Be respectful.",c:["street_art","local_only"],r:"g",nn:"Fristad Christiania",ns:"Anarchistisk fristaden i tidligere militærkaserne",nst:"Besøg den selvstyrende samfund uden regler.",nt:"Gratis. Tram 1/2/6 til Prinsessegade. Respektfuldt adfærd nødvendigt."},
   {id:106,n:"Rosenborg Castle Gardens (Free Entry)",a:"Nørrebro",v:["beautiful","free","quiet"],d:12,s:"Renaissance castle surrounded by stunning gardens — locals\' favorite free green space",st:"The castle itself is paid, but the surrounding Kongens Have (King\'s Garden) is free and gorgeous. Centuries-old trees, manicured beds, and locals lounging with beer on a budget. Sunset turns it magical.",im:"Time-travel: Rosenborg was built in 1606 as a royal summer house.",t:"Free garden entry. Castle is paid. Nørreport station nearby. Sun best.",c:["parks","romantic_water"],r:"g",nn:"Rosenborg Havepark",ns:"Gratis adgang til Renaissance-slottets hager",nst:"Slap af under de gamle træer i kongehagen.",nt:"Gratis indgang. Nærby Nørreport station."}
 ];
-
+const PHRASES = [
+  {native:"Hej!",en:"Hello!"},
+  {native:"Tak skal du have",en:"Thank you"},
+  {native:"Hvor er toileterne?",en:"Where is the toilet?"},
+  {native:"Jeg hedder...",en:"My name is..."},
+  {native:"Hvor kan jeg få kaffe?",en:"Where can I get coffee?"},
+  {native:"Det er meget lecker",en:"This is very delicious"},
+  {native:"Hvad koster det?",en:"How much does it cost?"},
+  {native:"Jeg forstår ikke",en:"I don\'t understand"},
+  {native:"Hjælp!",en:"Help!"},
+  {native:"Bare det bedste",en:"Only the best"}
+];
+const AREAS = ["Amager", "Bispebjerg", "Christianshavn", "Frederiksberg", "Frederiksstaden", "Gentofte", "Helsing\u00f8r", "Hiller\u00f8d", "Holmen", "Humleb\u00e6k", "Indre By", "Ish\u00f8j", "Islands Brygge", "J\u00e6gersborg", "Kastrup", "Lyngby", "Nordhavn", "N\u00f8rrebro", "Refshale\u00f8en", "Roskilde", "Slotsholmen", "Tivoli", "Vesterbro", "\u00d8sterbro"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
 const M = [
   {id:1,title:"The Nørrebro Deep Dive",desc:"Hit 5 hidden spots in Nørrebro. Walk slow, look up, read everything.",places:[3, 4, 21, 22, 29],time:"125 min"},
   {id:2,title:"The Indre By Deep Dive",desc:"Hit 5 hidden spots in Indre By. Walk slow, look up, read everything.",places:[7, 8, 12, 13, 15],time:"125 min"},
@@ -176,37 +197,11 @@ const M = [
   {id:10,title:"Green Escape",desc:"Parks, gardens, and nature — hidden, free.",places:[57, 60, 62, 63, 65, 66],time:"120 min"},
   {id:11,title:"The Full Send",desc:"Every single place. All 104. Legend status.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104],time:"multi-day"}
 ];
-
-const COLLECTIONS = [
-  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
-  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
-  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
-  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
-  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
-  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
-  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
-  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
-  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
-];
-
-const AREAS = ["Amager", "Bispebjerg", "Christianshavn", "Frederiksberg", "Frederiksstaden", "Gentofte", "Helsing\u00f8r", "Hiller\u00f8d", "Holmen", "Humleb\u00e6k", "Indre By", "Ish\u00f8j", "Islands Brygge", "J\u00e6gersborg", "Kastrup", "Lyngby", "Nordhavn", "N\u00f8rrebro", "Refshale\u00f8en", "Roskilde", "Slotsholmen", "Tivoli", "Vesterbro", "\u00d8sterbro"];
-
-const PHRASES = [
-  {native:"Hej!",en:"Hello!"},
-  {native:"Tak skal du have",en:"Thank you"},
-  {native:"Hvor er toileterne?",en:"Where is the toilet?"},
-  {native:"Jeg hedder...",en:"My name is..."},
-  {native:"Hvor kan jeg få kaffe?",en:"Where can I get coffee?"},
-  {native:"Det er meget lecker",en:"This is very delicious"},
-  {native:"Hvad koster det?",en:"How much does it cost?"},
-  {native:"Jeg forstår ikke",en:"I don\'t understand"},
-  {native:"Hjælp!",en:"Help!"},
-  {native:"Bare det bedste",en:"Only the best"}
-];
-
-const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
-
 const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Danish";
 
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
