@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="New York City's hidden world. 30 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — New York City">
+<meta property="og:description" content="30 hidden, free, historically rich places in New York City.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — New York City</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#faf8f4;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes diceShake{0%,100%{transform:rotate(0deg) scale(1)}15%{transform:rotate(-18deg) scale(1.35)}30%{transform:rotate(16deg) scale(1.35)}45%{transform:rotate(-12deg) scale(1.25)}60%{transform:rotate(10deg) scale(1.2)}75%{transform:rotate(-6deg) scale(1.1)}}
+@keyframes diceSpin{0%{transform:rotateY(0deg) scale(1.1)}100%{transform:rotateY(360deg) scale(1.1)}}
+@keyframes slotFlicker{0%,100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0px)}50%{opacity:.55;transform:translateY(-6px) scale(.96);filter:blur(1.5px)}}
+@keyframes finalLand{0%{opacity:0;transform:scale(.75) translateY(28px)}65%{transform:scale(1.08) translateY(-4px)}85%{transform:scale(.97) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.dice-shake{animation:diceShake .7s ease forwards}
+.dice-spin{animation:diceSpin .18s linear infinite}
+.slot-flicker{animation:slotFlicker .12s ease infinite}
+.final-land{animation:finalLand .55s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes floatSuit{0%,100%{transform:translateY(0) rotate(0deg);opacity:.12}50%{transform:translateY(-18px) rotate(8deg);opacity:.22}}
+@keyframes floatSuit2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.08}50%{transform:translateY(14px) rotate(-6deg);opacity:.18}}
+@keyframes feltShimmer{0%,100%{opacity:0}50%{opacity:.07}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading New York City...</p></div>
+<div id="root"></div>
+<script>
+const P = [
+  {id:1,n:"Dead Horse Bay Brooklyn Beach",a:"Brooklyn",v:["weird", "hidden", "history"],d:12,s:"A beach made of Depression-era garbage and horse bones where horses were discarded before cars existed",st:"Dead Horse Bay is at the far end of Brooklyn, where factories once dumped waste including horse carcasses and broken pottery from the 1930s. The beach is covered in fragments: broken bottles, ceramics, and bones. It is a time capsule of urban waste. Archaeologists study it. Few tourists know it exists. It is beautiful and disturbing simultaneously.",im:"Fragments of colored glass lie on black sand next to pieces of ancient pottery while a woman carefully photographs pieces, reconstructing the past from garbage.",t:"Subway A train to Canarsie-Rockaway Parkway. Walk east 20 minutes. Beach free. Open anytime. Best low tide. Two hours.",c:["weird"],r:"g",nn:"Dead Horse Bay",ns:"Una playa hecha de basura y huesos de caballos",nst:"Dead Horse Bay está en el extremo lejano de Brooklyn, donde las fábricas descargaban desperdicios que incluían cadáveres de caballos y cerámica rota de los años 1930. La playa está cubierta de fragmentos: botellas rotas, cerámica y huesos.",nt:"Tren A hasta Canarsie-Rockaway Parkway. Camina al este 20 minutos. Playa gratis. Abierto cualquier hora."},
+  {id:2,n:"Unterberg Poetry Center YIVO Archive",a:"Lower East Side",v:["hidden", "history", "quiet"],d:8,s:"An archive of Yiddish civilization in an old building on the Lower East Side, free to visit",st:"YIVO is an archive of Yiddish language, literature, and culture. The Unterberg Poetry Center is a reading room containing thousands of documents, recordings, and texts in Yiddish. It is rarely visited. You can sit and listen to recordings of Yiddish poetry from the early 1900s. It is a museum of a lost world that was erased.",im:"A woman listens through headphones to a recording of a Yiddish poet reading in a voice from 1935, while dust motes float in afternoon light through tall windows.",t:"Subway F or M to Second Ave, exit 1. Walk north 3 blocks. Entry free. Open Monday-Thursday 10am-5pm. One to two hours.",c:["history_big"],r:"g",nn:"Centro de Poesía de Unterberg",ns:"Archivo de la civilización Yiddish",nst:"YIVO es un archivo de idioma, literatura y cultura Yiddish. El Centro de Poesía Unterberg es una sala de lectura con miles de documentos, grabaciones y textos en Yiddish.",nt:"Tren F o M a Second Ave. Camina norte 3 cuadras. Entrada gratis. Abierto lunes-jueves 10-17 horas."},
+  {id:3,n:"The High Line Before 8am",a:"Chelsea",v:["quiet", "beautiful", "free"],d:12,s:"An elevated park on a repurposed railway, completely empty before 8am, packed with tourists after",st:"The High Line is a 1.5-mile elevated park built on an old freight rail line. During the day it is crowded. Before 8am it is completely empty. You walk through the space alone: plants, views of the Hudson, galleries and restaurants still closed. The architecture and plants are visible without crowds. By 9am it fills with hundreds of people.",im:"A single person walks a completely empty elevated pathway lined with native plants and tall buildings, morning light creating long shadows.",t:"Subway A/C/E to 14th St, exit 1. High Line entrance nearby. Free. Open 7am-10pm. Go 6:30am-8am. One to two hours.",c:["parks"],r:"g",nn:"The High Line Antes de las 8am",ns:"Un parque elevado completamente vacío al amanecer",nst:"The High Line es un parque elevado de 1,5 millas construido en una vieja línea de ferrocarril de carga. Durante el día está lleno. Antes de las 8am está completamente vacío. Camina solo a través del espacio.",nt:"Tren A/C/E a 14th St. Entrada a High Line cerca. Gratis. Abierto 7-22 horas. Ve 6:30-8 horas."},
+  {id:4,n:"Green-Wood Cemetery Brooklyn",a:"Brooklyn",v:["history", "beautiful"],d:20,s:"A 478-acre Victorian cemetery where Boss Tweed and Basquiat are buried, beautiful and peaceful",st:"Green-Wood Cemetery is the largest cemetery in New York, 478 acres of rolling hills, monuments, and graves. Boss Tweed is buried here, Jean-Michel Basquiat is here, and thousands of notable New Yorkers. It is open to the public and is more like a museum of sculpture and landscape than a cemetery. Free to walk. Many come to run or sit quietly.",im:"A woman sits on a bench beside a Victorian monument while birds sing and the city skyline is visible in the distance, and stone angels watch over the graves.",t:"Subway N or R to 36th St, exit 1. Cemetery entrance is a block away. Free entry. Open 8am-5pm. Two to four hours depending on route.",c:["history_big"],r:"g",nn:"Cementerio Green-Wood",ns:"Un cementerio de 478 acres donde reposan figuras famosas",nst:"El Cementerio Green-Wood es el cementerio más grande de Nueva York, con 478 acres de colinas, monumentos y tumbas. Boss Tweed está enterrado aquí, Jean-Michel Basquiat también.",nt:"Tren N o R a 36th St. Entrada al cementerio a una cuadra. Entrada gratis. Abierto 8-17 horas."},
+  {id:5,n:"Newtown Creek Nature Walk Greenpoint",a:"Greenpoint",v:["hidden", "nature", "weird"],d:10,s:"A walk along the most polluted waterway in America that is being restored to wetlands and birds",st:"Newtown Creek was the most polluted body of water in the United States. Now it is being restored and a nature trail follows the creek. You see how nature returns to human wastelands. It is beautiful in an unexpected way: egrets, herons, marshes, and resilience. The industrial past is visible, the natural future is growing.",im:"A great blue heron stands motionless in a restored wetland while an old industrial building sits abandoned across the water and the creek moves slowly between them.",t:"Subway G to Greenpoint Ave, exit 1. Walk to creek area 10 minutes. Nature walk free. Open anytime. Two hours.",c:["nature"],r:"g",nn:"Paseo de la Naturaleza de Newtown Creek",ns:"Una caminata por la vía fluvial más contaminada que se restaura",nst:"Newtown Creek fue el cuerpo de agua más contaminado de Estados Unidos. Ahora se está restaurando y un sendero natural sigue el arroyo.",nt:"Tren G a Greenpoint Ave. Camina hacia el área del arroyo 10 minutos. Paseo de naturaleza gratis."},
+  {id:6,n:"Governors Island Ferry and Car-Free Island",a:"Governors Island",v:["free", "beautiful", "quiet"],d:15,s:"A car-free island in the harbor with free ferry access, great views of Manhattan and old fortresses",st:"Governors Island is reached by free ferry. The entire island is car-free. You walk, bike, or rent a cart. The island has historic fortresses, a nature preserve, open space, and views of Manhattan. Few New Yorkers know about it. It feels completely removed from the city while being 10 minutes from downtown.",im:"A cyclist rides on an empty path while the Manhattan skyline rises across the water and an old stone fortress sits quietly in the distance.",t:"Ferry from Battery Park (near Subway 4/5 to Bowling Green). Free ferry. Island open May-September 10am-6pm, limited hours other seasons. One to four hours.",c:["parks"],r:"g",nn:"Isla de Gobernadores",ns:"Una isla libre de autos con acceso gratuito en ferry",nst:"La Isla de Gobernadores es accesible por ferry gratuito. Toda la isla no tiene autos. Camina, monta bicicleta o renta un carrito.",nt:"Transatlántico desde Battery Park. Ferry gratuito. Isla abierta mayo-septiembre 10-18 horas."},
+  {id:7,n:"Inwood Hill Park Old Growth Forest",a:"Inwood",v:["nature", "hidden"],d:20,s:"Manhattan's last old-growth forest with Native American cave drawings, 218 acres at the island's tip",st:"Inwood Hill Park is Manhattan's northern tip, a forest of 218 acres. Most of Manhattan was clearcut 300 years ago. This forest remains. There are Native American cave drawings on stone. Hiking trails go through old forest with massive trees. It is the only place on Manhattan where you forget the city exists.",im:"An old oak tree stands with gnarled branches while a woman touches a stone marked with faded red paint made hundreds of years ago by Native Americans.",t:"Subway A to Inwood, exit 1. Walk west to park entrance 10 minutes. Free. Open dawn-dusk. Two to three hours.",c:["parks", "nature"],r:"g",nn:"Parque Inwood Hill",ns:"El último bosque original de Manhattan",nst:"Inwood Hill Park es la punta norte de Manhattan, un bosque de 218 acres. Hace 300 años la mayoría de Manhattan fue talado. Este bosque permanece.",nt:"Tren A a Inwood. Camina oeste a la entrada del parque 10 minutos. Gratis. Abierto amanecer-anochecer."},
+  {id:8,n:"The Ramble Central Park Bird Migration",a:"Midtown",v:["nature", "quiet", "beautiful"],d:12,s:"A 36-acre woodland in Central Park where bird migrations concentrate, full of birdwatchers in spring",st:"The Ramble is a wild woodland section of Central Park. During spring migration, thousands of birds pass through and concentrate in this area. Birdwatchers arrive before dawn. You see warblers, vireos, tanagers, and rare species. It is one of North America's premier birding locations. No knowledge of birds is required. The experience is magical.",im:"A woman holds binoculars while pointing upward at a flash of orange wings in the canopy, a warbler momentarily visible before disappearing into the branches.",t:"Subway A/B/C to 81st St, exit 1. Walk to Ramble entrance 5 minutes. Free. Open anytime. Best 5am-10am April-May. Two hours.",c:["parks", "nature"],r:"g",nn:"The Ramble",ns:"Un bosque de 36 acres donde se concentran migraciones de aves",nst:"The Ramble es una sección de bosque salvaje de Central Park. Durante la migración de primavera, miles de pájaros pasan y se concentran en este área.",nt:"Tren A/B/C a 81st St. Camina a la entrada de Ramble 5 minutos. Gratis. Abierto cualquier hora."},
+  {id:9,n:"Roosevelt Island Tramway and Island",a:"Roosevelt Island",v:["free", "quiet", "beautiful"],d:15,s:"A cable car over the East River to an island with ruins, parks, and views of Manhattan",st:"The Roosevelt Island Tramway is an aerial cable car that crosses the East River. Entry is free with a MetroCard. The tram itself is the main experience: views of the city, the river, and the island below. The island has parks, ruins of old hospital, and wide promenades. Few tourists. The vibe is that you have discovered a hidden place.",im:"A man rides the tram alone while the city rises on both sides and the East River moves beneath him, his face reflecting peace and the joy of simple height and views.",t:"Subway N/Q/R/W to Lexington Ave 59th St, exit 1. Tram visible. Tram free with MetroCard. Island open anytime. One to three hours.",c:["parks"],r:"g",nn:"Teleférico de la Isla Roosevelt",ns:"Un teleférico gratis con vistas de la ciudad",nst:"El Teleférico de la Isla Roosevelt es un teleférico aéreo que cruza el East River. La entrada es gratis con una MetroCard.",nt:"Tren N/Q/R/W a Lexington Ave 59th St. Teleférico visible. Teleférico gratis."},
+  {id:10,n:"Elevated Acre Rooftop Park at 55 Water Street",a:"Lower Manhattan",v:["hidden", "beautiful", "quiet"],d:8,s:"A secret rooftop public park hidden five stories up in a financial district building, free and empty",st:"Elevated Acre is a rooftop plaza on top of an office building in the Financial District. It is technically open to the public but almost nobody knows about it. You access it through the building. The plaza is quiet, planted with trees, and overlooks the downtown waterfront. Occasionally you find people eating lunch. Often you are alone.",im:"A woman sits alone on a bench on a rooftop plaza 50 feet above the street, while the city moves below her and she is completely removed from it.",t:"Subway 4/5 to Bowling Green, exit 1. Walk to 55 Water Street. Enter through main lobby. Rooftop free. Open 8am-5:30pm weekdays. 30 minutes to one hour.",c:["parks"],r:"g",nn:"Acre Elevado",ns:"Un parque en azotea oculto cinco pisos arriba",nst:"Elevated Acre es una plaza en azotea en la parte superior de un edificio de oficinas en el Distrito Financiero.",nt:"Tren 4/5 a Bowling Green. Camina a 55 Water Street. Entrada por vestíbulo principal. Azotea gratis."},
+  {id:11,n:"Greenpoint Terminal Warehouse Ruin Photography",a:"Greenpoint",v:["weird", "hidden"],d:8,s:"A massive abandoned warehouse visible from McGuinness Boulevard, a ruin that photographers documented",st:"The Greenpoint Terminal is a vast, decaying warehouse visible from McGuinness Boulevard. It has been abandoned for years. Photographers have documented it extensively. You cannot enter, but the exterior is remarkable: broken windows, faded paint, the scale of abandoned industry. It is a ruin on the edge of gentrification.",im:"A five-story warehouse with hundreds of broken windows stands empty while graffiti and peeling paint create layers of decay and street artists' marks.",t:"Subway G to Greenpoint Ave, exit 1. Walk south 10 minutes to McGuinness Boulevard. Viewable from street. Free. Best overcast days. 30 minutes.",c:["weird"],r:"g",nn:"Almacén Terminal Greenpoint",ns:"Un almacén abandonado masivo",nst:"El Terminal Greenpoint es un almacén vasto y en descomposición visible desde McGuinness Boulevard.",nt:"Tren G a Greenpoint Ave. Camina sur 10 minutos a McGuinness Boulevard. Visible desde la calle. Gratis."},
+  {id:12,n:"City Hall Station Closed Subway Station 1945",a:"Lower Manhattan",v:["hidden", "history"],d:5,s:"A legendary closed subway station visible from the 6 train, abandoned since 1945, viewable without trespassing",st:"City Hall Station is a beautiful Art Deco subway station closed in 1945. It is visible from the 6 train which passes through it. You can see the tiles, the platform, the chandeliers from the train without entering. It has been abandoned for 80 years. It is a ghost station frozen in time.",im:"From a moving train window, an abandoned platform with ornate chandeliers is briefly visible, the Art Deco tilework creating beauty in a place no one has visited in decades.",t:"Subway 6 train runs through it. Board at Brooklyn Bridge-City Hall, stay on train as it loops back. You will see the station for 20 seconds. Free.",c:["history_big"],r:"g",nn:"Estación de City Hall Cerrada",ns:"Una estación de metro cerrada y visible desde el tren",nst:"La Estación de City Hall es una hermosa estación de metro Art Deco cerrada en 1945. Es visible desde el tren 6 que la atraviesa.",nt:"Tren 6 corre a través de él. Sube en Brooklyn Bridge-City Hall. Verás la estación brevemente. Gratis."},
+  {id:13,n:"Socrates Sculpture Park Astoria Queens",a:"Astoria",v:["free", "beautiful", "art"],d:12,s:"A free waterfront sculpture park in Queens with large-scale art and Manhattan skyline views",st:"Socrates Sculpture Park is a waterfront park in Astoria, Queens. Large sculptures rotate through the space. It is completely free. The views of Manhattan across the East River are stunning. The sculptures are serious contemporary art, not park decoration. Few tourists venture to Queens. This is a gem.",im:"A massive sculpture of twisted metal and wood stands in an empty park while the Manhattan skyline rises across the water in the background.",t:"Subway N/W to Broadway, exit 1. Walk north 10 minutes to park. Free. Open sunrise-sunset. One to two hours.",c:["art"],r:"g",nn:"Parque de Escultura Sócrates",ns:"Un parque de escultura gratuito en la orilla del agua",nst:"El Parque de Escultura Sócrates es un parque frente al mar en Astoria, Queens. Las esculturas grandes rotan en el espacio.",nt:"Tren N/W a Broadway. Camina norte 10 minutos al parque. Gratis. Abierto amanecer-anochecer."},
+  {id:14,n:"The Noguchi Museum Long Island City",a:"Long Island City",v:["beautiful", "quiet", "art"],d:10,s:"The finest sculpture museum in New York with works by Isamu Noguchi, cheap entry and mostly empty",st:"The Noguchi Museum is dedicated to the work of sculptor Isamu Noguchi. The building and gardens display his sculptures: stone, wood, metal, and abstract forms. The museum is quiet and rarely crowded. It is one of the best museums in New York. Entry is only 10 dollars. Most New Yorkers have never been.",im:"A smooth stone sculpture sits in a garden courtyard while natural light illuminates its curves and a visitor sits silently on a bench studying its shape.",t:"Subway N/W to Long Island City, exit 1. Walk northeast 5 minutes. Entry 10 dollars. Open 10am-5pm Wednesday-Monday. Two hours.",c:["beautiful"],r:"y",nn:"Museo Noguchi",ns:"El mejor museo de escultura de Nueva York",nst:"El Museo Noguchi está dedicado al trabajo del escultor Isamu Noguchi. El edificio y los jardines muestran sus esculturas.",nt:"Tren N/W a Long Island City. Camina noreste 5 minutos. Entrada 10 dólares. Abierto 10-17 miércoles-lunes."},
+  {id:15,n:"Williamsburg Bridge Walk",a:"Williamsburg",v:["beautiful", "quiet"],d:12,s:"A walkway crossing the East River less famous than Brooklyn Bridge, with better views and fewer crowds",st:"The Williamsburg Bridge has a dedicated pedestrian walkway. It is less crowded than the Brooklyn Bridge. The views of the Manhattan skyline, the river, and Brooklyn waterfront are equal or better. You walk across, see the engineering, feel the height. The experience is more intimate than the tourist-packed Brooklyn Bridge.",im:"A woman walks the bridge while the span stretches ahead and the river moves below and the city rises on both sides, and she has the walkway almost to herself.",t:"Subway J/M/Z to Marcy Ave, exit 1. Walk to bridge entrance 5 minutes. Free. Open dawn-midnight. One to two hours.",c:["beautiful"],r:"g",nn:"Paseo del Puente Williamsburg",ns:"Un puente menos famoso que el Brooklyn Bridge, mejores vistas",nst:"El Puente Williamsburg tiene un paseo peatonal dedicado. Es menos concurrido que el Puente de Brooklyn.",nt:"Tren J/M/Z a Marcy Ave. Camina a la entrada del puente 5 minutos. Gratis. Abierto amanecer-medianoche."},
+  {id:16,n:"Mmuseumm Smallest Museum in Elevator Shaft",a:"Tribeca",v:["weird", "hidden"],d:3,s:"The world's smallest museum in a freight elevator shaft, permanent collection of tiny, strange objects",st:"Mmuseumm is literally a museum inside a freight elevator shaft. It is the size of a closet. The collection rotates but includes bizarre small items: a bottle of Saddam Hussein cologne, a toy soldier collection, strange artifacts. You look at the display for five minutes. It is conceptual art and genuine oddity combined.",im:"A woman stands before an elevator shaft converted to a display case, her eyes close to the glass while objects inside catch light at strange angles.",t:"Subway 1 to Franklin St, exit 1. Walk south on Greenwich Street. Mmuseumm is between Franklin and Leonard on street level. Free to view from street. Entrance sometimes locked.",c:["weird"],r:"g",nn:"Mmuseumm",ns:"El museo más pequeño del mundo en un pozo de ascensor",nst:"Mmuseumm es literalmente un museo dentro de un pozo de ascensor de carga. Es del tamaño de un armario.",nt:"Tren 1 a Franklin St. Camina sur en Greenwich Street. Mmuseumm está entre Franklin y Leonard."},
+  {id:17,n:"Canarsie Pier End of L Train",a:"Canarsie",v:["quiet", "beautiful"],d:12,s:"The end of the L train line at a quiet waterfront pier, industrial and peaceful",st:"The L train ends at Canarsie Pier. The area is residential, industrial, and quiet. The pier extends into Jamaica Bay. Fishermen stand on it year-round. The view is of water, marshes, and the city across the water. Few tourists come. It is the edge of New York where the city meets the bay.",im:"A man sits alone fishing while the sun lowers and the Brooklyn waterfront is visible across the water and his line drifts in the still water.",t:"Subway L to Canarsie-Rockaway Parkway, exit 1. Walk to pier 10 minutes. Free. Open anytime. Best sunset. One to two hours.",c:["parks"],r:"g",nn:"Muelle de Canarsie",ns:"El final del tren L en un muelle tranquilo",nst:"El tren L termina en el Muelle de Canarsie. El área es residencial, industrial y tranquila.",nt:"Tren L a Canarsie-Rockaway Parkway. Camina al muelle 10 minutos. Gratis. Abierto cualquier hora."},
+  {id:18,n:"Weeksville Heritage Center Crown Heights",a:"Crown Heights",v:["history", "free"],d:10,s:"The only surviving structures of the free Black community from 1838, preserved as a museum",st:"Weeksville was a free Black community established in 1838 in Brooklyn. By 1900 it was buried under later development. A few houses survive and are now a museum. The site tells the story of Black Brooklyn history before many neighborhoods existed. Entry is free. Few people visit. It is crucial history.",im:"An old wooden house from the 1800s sits preserved while exhibits inside tell the story of Black families who built a thriving community.",t:"Subway A/C to Nostrand Ave, exit 1. Walk to Weeksville 10 minutes. Free entry. Open 10am-5pm Thursday-Sunday. One to two hours.",c:["history_big"],r:"g",nn:"Centro de Patrimonio de Weeksville",ns:"Comunidad negra libre de 1838",nst:"Weeksville era una comunidad negra libre establecida en 1838 en Brooklyn. Por 1900 estaba enterrada bajo desarrollo posterior.",nt:"Tren A/C a Nostrand Ave. Camina a Weeksville 10 minutos. Entrada gratis. Abierto 10-17 jueves-domingo."},
+  {id:19,n:"Brooklyn Navy Yard Rooftop at BLDG 92",a:"Brooklyn Navy Yard",v:["history", "beautiful"],d:10,s:"A 300-year-old military shipyard now a museum with rooftop views of the Manhattan and Brooklyn waterfronts",st:"The Brooklyn Navy Yard was where warships were built for 300 years. BLDG 92 is a museum in one of the original buildings. The rooftop has views of both the Manhattan and Brooklyn skylines, the East River, and the yards themselves. The history is visible in the infrastructure: the dry docks, the rail lines, the scale.",im:"A person stands on a rooftop looking out across the navy yard waterfront while the Manhattan skyline rises behind them and old shipping equipment sits still below.",t:"Subway A/C to High St-Brooklyn Bridge Park, exit 1. Walk to Navy Yard entrance 10 minutes. Entry to BLDG 92 free. Open noon-6pm Friday-Sunday. One to two hours.",c:["history_big"],r:"g",nn:"Astillero Naval de Brooklyn",ns:"Astillero militar de 300 años ahora museo",nst:"El Astillero Naval de Brooklyn era donde se construían buques de guerra durante 300 años.",nt:"Tren A/C a High St-Brooklyn Bridge Park. Camina a la entrada del Navy Yard 10 minutos. Entrada a BLDG 92 gratis."},
+  {id:20,n:"Astoria Park Queens Under the Triborough Bridge",a:"Astoria",v:["free", "beautiful"],d:12,s:"A waterfront park in Queens under the Triborough Bridge with views of the bridge and Manhattan",st:"Astoria Park is on the waterfront in Queens, directly under the Triborough Bridge. The massive bridge looms above. Views are of the bridge structure, Manhattan across the water, and the East River. The park has an Olympic-size pool (seasonal). It is accessible and beautiful. Few tourists from Manhattan venture here.",im:"The massive bridge spans overhead while a woman lies on grass looking up at the metal structure and the sky beyond, the geometry of engineering visible above her.",t:"Subway N/W to Astoria Boulevard, exit 1. Walk south 5 minutes. Park free. Open anytime. One to two hours.",c:["parks"],r:"g",nn:"Parque Astoria",ns:"Parque frente al mar bajo el Puente Triborough",nst:"El Parque Astoria está frente al mar en Queens, directamente bajo el Puente Triborough.",nt:"Tren N/W a Astoria Boulevard. Camina sur 5 minutos. Parque gratis. Abierto cualquier hora."},
+  {id:21,n:"Washington Heights Dominican Neighborhood",a:"Washington Heights",v:["local", "free"],d:15,s:"The Dominican neighborhood of Manhattan where real neighborhood life continues, bodegas and restaurants",st:"Washington Heights is a Dominican neighborhood in upper Manhattan. The area is populated by Dominican families, restaurants, bodegas, and street vendors. It is completely unpretentious. You eat excellent food cheaply. It is where Manhattan actually functions as a neighborhood, not a tourist destination. Grocery stores, schools, and laundromats serve locals.",im:"A man stands outside a small bodega eating a platano while children run past and the smell of cilantro and garlic drifts from a restaurant kitchen.",t:"Subway A to 181st St, exit 1. Walk neighborhoods 10 Am. Completely free. Best morning and afternoon. Three to four hours.",c:["local_only"],r:"g",nn:"Barrio de Washington Heights",ns:"Barrio dominicano donde la vida sigue normalmente",nst:"Washington Heights es un barrio dominicano en Manhattan superior. El área está poblada por familias dominicanas, restaurantes y bodegas.",nt:"Tren A a 181st St. Camina por los barrios. Completamente gratis. Mejor mañana y tarde."},
+  {id:22,n:"The Cloisters Medieval Museum in Fort Tryon Park",a:"Washington Heights",v:["history", "beautiful", "art"],d:15,s:"A medieval art museum in a reconstructed cloister with free admission with MetroCard receipt",st:"The Cloisters is a museum of medieval art housed in a reconstructed medieval cloister. The building was assembled from real European monastery pieces. The grounds are Fort Tryon Park with views of the Hudson River. The art is world-class. Admission is free if you show a subway receipt from the last three hours.",im:"A woman stands in an open cloister courtyard surrounded by stone arches while medieval sculptures sit in alcoves and the Hudson River is visible beyond the garden.",t:"Subway A to 190th St, exit 1. Walk uphill 20 minutes to museum. Free with MetroCard receipt. Open 10am-5pm. Two to three hours.",c:["history_big"],r:"g",nn:"Los Claustros",ns:"Museo de arte medieval en un claustro reconstruido",nst:"Los Claustros es un museo de arte medieval alojado en un claustro medieval reconstruido.",nt:"Tren A a 190th St. Camina cuesta arriba 20 minutos al museo. Gratis con recibo de MetroCard."},
+  {id:23,n:"Bronx Terminal Market and Arthur Avenue Little Italy",a:"The Bronx",v:["local", "history"],d:12,s:"The real Italian neighborhood of the Bronx where old family businesses serve food as they have for 80 years",st:"Arthur Avenue in the Bronx is the real Little Italy. Unlike Manhattan's Manhattan version, this is still residential Italian. Delis, bakeries, restaurants, and shops have been operated by families since the 1930s-40s. You eat extraordinary Italian food for cheap. It is how New York functioned before gentrification.",im:"An elderly Italian man cuts prosciutto by hand in a shop that has been in his family 60 years while the smells of aged salami and fresh mozzarella fill the small space.",t:"Subway 2/5 to Pelham Parkway, exit 1. Walk to Arthur Avenue 5 minutes. Free to walk. Restaurants and shops 10am-6pm. Two to three hours.",c:["local_only"],r:"g",nn:"Avenida Arthur Bronx",ns:"El verdadero Little Italy donde viven italianos",nst:"La Avenida Arthur en el Bronx es el verdadero Little Italy. A diferencia de la versión turística de Manhattan, este todavía es residencial italiano.",nt:"Tren 2/5 a Pelham Parkway. Camina a la Avenida Arthur 5 minutos. Gratis. Restaurantes 10-18 horas."},
+  {id:24,n:"Woodlawn Cemetery The Bronx",a:"The Bronx",v:["history", "free", "quiet"],d:12,s:"A 400-acre cemetery where Duke Ellington, Herman Melville, and Miles Davis are buried",st:"Woodlawn Cemetery is a 400-acre Victorian cemetery in the Bronx. Duke Ellington, Miles Davis, and Herman Melville are buried here. It is open to the public, free, and peaceful. Maps show the locations of famous graves. It is a museum of American cultural history in stone. Few people visit. The vibe is quiet and contemplative.",im:"A woman stands before a grave of a jazz musician while stone sculptures and mausoleums surround her in an almost-empty cemetery.",t:"Subway 2/5 to Woodlawn, exit 1. Cemetery entrance at station. Free. Open 8:30am-4:30pm. Two to three hours.",c:["history_big"],r:"g",nn:"Cementerio Woodlawn",ns:"Cementerio donde descansan Miles Davis y Duke Ellington",nst:"El Cementerio Woodlawn es un cementerio victoriano de 400 acres en el Bronx.",nt:"Tren 2/5 a Woodlawn. Entrada al cementerio en la estación. Gratis. Abierto 8:30-16:30."},
+  {id:25,n:"Red Hook Brooklyn Waterfront and IKEA Ferry",a:"Red Hook",v:["beautiful", "free"],d:15,s:"An isolated Brooklyn waterfront where the IKEA ferry brings Swedish furniture, views of Statue of Liberty",st:"Red Hook is a waterfront neighborhood in Brooklyn that is isolated from the rest of the borough. It has views of the Statue of Liberty, shipping terminals, and old warehouses. The IKEA ferry docks here (free to ride, no furniture purchase necessary). The neighborhood is gentrifying slowly. The waterfront remains working and beautiful.",im:"A man stands on a pier looking toward the Statue of Liberty in the distance while a ferry passes and old shipping equipment sits unused nearby.",t:"Subway F to Smith-9th St, exit 1. Walk south to waterfront 15 minutes. Free to explore. IKEA ferry free. One to three hours.",c:["parks"],r:"g",nn:"Red Hook",ns:"Orilla del agua aislada de Brooklyn",nst:"Red Hook es un barrio frente al mar en Brooklyn que está aislado del resto del municipio.",nt:"Tren F a Smith-9th St. Camina sur hacia la orilla 15 minutos. Gratis explorar. Ferry IKEA gratis."},
+  {id:26,n:"Coney Island Off-Season November to March",a:"Coney Island",v:["quiet", "beautiful"],d:20,s:"The boardwalk and beach are peaceful and empty November-March, no summer crowds or noise",st:"Coney Island is crowded in summer. November through March it is quiet and mostly empty. The boardwalk is peaceful. The beach is deserted. The amusement park operates but is sparse. The atmosphere is nostalgic and contemplative. You see the bones of the place without summer tourism.",im:"A lone woman walks a completely empty boardwalk while the Atlantic Ocean moves in the distance and wind blows debris across the wooden planks.",t:"Subway F/Q to Coney Island-Stillwell Ave, exit 1. Boardwalk immediately accessible. Free. Open anytime. One to two hours.",c:["parks"],r:"g",nn:"Coney Island Fuera de Temporada",ns:"La playa vacía de noviembre a marzo",nst:"Coney Island está abarrotado en verano. De noviembre a marzo es tranquilo y mayormente vacío.",nt:"Tren F/Q a Coney Island-Stillwell Ave. Paseo marítimo accesible. Gratis. Abierto cualquier hora."},
+  {id:27,n:"Flushing Meadows Park 1964 World Fair Ruins",a:"Flushing",v:["weird", "free", "history"],d:15,s:"A park with 1964 World Fair ruins, the Unisphere, and Queens Museum, all free",st:"Flushing Meadows-Corona Park contains remains of the 1964 World's Fair. The Unisphere is the iconic sphere structure. Buildings from the fair remain, some abandoned. The Queens Museum is inside one of the pavilions (free admission). The park is vast, underfunded, and fascinating. Most people miss the history hiding in the ruins.",im:"The massive metal Unisphere stands in a park while crumbling 1960s buildings sit nearby, showing how fairs fade into ruin.",t:"Subway 7 to Mets-Willets Point, exit 1. Park entrance at stadium. Free to walk. Queens Museum free admission. Two to four hours.",c:["weird"],r:"g",nn:"Parque Flushing Meadows",ns:"Ruinas de la Feria Mundial de 1964",nst:"El Parque Flushing Meadows-Corona contiene restos de la Feria Mundial de 1964.",nt:"Tren 7 a Mets-Willets Point. Entrada al parque en el estadio. Gratis. Museo de Queens entrada gratis."},
+  {id:28,n:"Jackson Hole Diner Astoria Authentic Greek",a:"Astoria",v:["local", "free"],d:5,s:"An authentic Greek-American diner operating since 1970s, unchanged interior, affordable Greek food",st:"Jackson Hole is a Greek diner in Astoria that has operated since the 1970s. The interior is unchanged. Booths are vinyl. The menu is basic: eggs, toast, Greek specialties, cheap. The clientele is almost entirely Greek. It is a time capsule of what diners were.",im:"An elderly Greek man sits at the counter eating eggs while a younger waitress in an apron pours coffee and the diner hums with the sound of plates and conversation.",t:"Subway N/W to Astoria Boulevard, exit 1. Diner 5 minutes walk. Open breakfast and lunch. Coffee costs 2 dollars. 30 minutes to one hour.",c:["local_only"],r:"g",nn:"Jackson Hole Diner",ns:"Auténtico restaurante greco-americano",nst:"Jackson Hole es un restaurante greco-americano en Astoria que ha estado funcionando desde los años 70.",nt:"Tren N/W a Astoria Boulevard. Restaurante 5 minutos a pie. Abierto desayuno y almuerzo. Café 2 dólares."},
+  {id:29,n:"Bushwick Collective Street Art Museum",a:"Bushwick",v:["art", "free"],d:12,s:"The largest open-air street art museum in the world, entire blocks covered in murals, free to walk",st:"Bushwick Collective is a six-block area in Brooklyn completely covered in street art murals. Dozens of international artists paint the walls. New murals appear continuously. It is the largest open-air street art gallery in the world. Entry is free. Walking through is overwhelming: color, scale, and creativity at every angle.",im:"A woman photographs a five-story mural while walking slowly through a street lined with elaborate murals on every wall, every surface transformed to art.",t:"Subway L to Morgan Ave, exit 1. Walk to Bushwick Ave. Entire neighborhood is open-air murals. Free. Best any daylight. One to two hours.",c:["street_art"],r:"g",nn:"Colectivo Bushwick",ns:"Museo de arte callejero más grande del mundo",nst:"Bushwick Collective es un área de seis cuadras en Brooklyn completamente cubierta de murales de arte callejero.",nt:"Tren L a Morgan Ave. Camina a Bushwick Ave. Todo el barrio es murales al aire libre. Gratis."},
+  {id:30,n:"Rockaway Beach Free Ocean Beach at End of A Train",a:"Rockaway",v:["free", "beautiful", "nature"],d:20,s:"A real ocean beach at the end of the A subway line, free, under-touristed, with waves and sand",st:"Rockaway Beach is a real ocean beach in New York City, at the end of the A train. It has actual waves suitable for surfing. The beach is free. There are few tourists. Local surfers, families, and swimmers use it. It is a genuine beach experience within the city. Summer weekends are busy; weekdays are quiet.",im:"A surfer walks into the ocean with a board while waves form behind him and the beach stretches empty on either side.",t:"Subway A to Far Rockaway-Mott Ave, exit 1. Beach entrance at street. Free. Open dawn-dusk. Swimming season May-September. One to four hours.",c:["parks", "nature"],r:"g",nn:"Playa de Rockaway",ns:"Una playa de océano real al final del tren A",nst:"Rockaway Beach es una playa de océano real en la ciudad de Nueva York, al final del tren A.",nt:"Tren A a Far Rockaway-Mott Ave. Entrada a la playa en la calle. Gratis. Abierto amanecer-anochecer."}
+];
+const PHRASES = [{native:"Hola",en:"Hello"},{native:"Gracias",en:"Thank you"},{native:"Lo siento",en:"I am sorry"},{native:"Agua, por favor",en:"Water, please"},{native:"¿Cuánto cuesta?",en:"How much does it cost?"},{native:"¿Dónde está este lugar?",en:"Where is this place?"},{native:"¿Dónde está el baño?",en:"Where is the bathroom?"},{native:"¿Qué es esto?",en:"What is this?"},{native:"Está delicioso",en:"It is delicious"},{native:"Ayúdame",en:"Help me"},{native:"Buen día",en:"Have a good day"}];
+const AREAS = ["Astoria", "Brooklyn", "Brooklyn Navy Yard", "Bushwick", "Canarsie", "Chelsea", "Coney Island", "Crown Heights", "Flushing", "Governors Island", "Greenpoint", "Inwood", "Long Island City", "Lower East Side", "Lower Manhattan", "Midtown", "Red Hook", "Rockaway", "Roosevelt Island", "The Bronx", "Tribeca", "Washington Heights", "Williamsburg"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Hidden Manhattan: Brooklyn Bridge Park and Rooftop Secrets",desc:"Discover secret rooftop parks, closed stations visible from trains, and elevated spaces",places:[10, 12, 3],time:"6 hours"},
+  {id:2,title:"Brooklyn All Day: Green-Wood to Bushwick to Red Hook",desc:"Explore Brooklyn's diversity from historic cemetery to street art to waterfront warehouses",places:[4, 29, 25],time:"Full day"},
+  {id:3,title:"Outer Boroughs Circuit: Queens, Bronx, and Astoria",desc:"Venture to less-visited neighborhoods: museums, parks, cemeteries, and authentic neighborhoods",places:[14, 13, 23, 24],time:"Full day"},
+  {id:4,title:"Cemetery Walk and History: Green-Wood to Woodlawn",desc:"Visit New York's most beautiful cemeteries where the city's famous rest",places:[4, 24],time:"Full day"},
+  {id:5,title:"Nature in the City: Parks, Forests, and Water",desc:"Find green spaces and natural areas: Central Park Ramble, Inwood forest, Rockaway Beach",places:[7, 8, 30],time:"Full day"},
+  {id:6,title:"Local Only: Neighborhoods and Authentic Food",desc:"Skip tourism zones and experience real neighborhoods: Washington Heights, Arthur Avenue, Jackson Hole",places:[21, 23, 28],time:"Full day"},
+  {id:7,title:"Weird New York: Strange Museums and Ruins",desc:"Discover the weird side: Dead Horse Bay, Mmuseumm, abandoned warehouses, and odd collections",places:[1, 16, 11, 27],time:"Full day"},
+  {id:8,title:"Water Views and Islands: Ferries and Waterfront",desc:"Ride ferries, explore islands, and enjoy waterfront walks",places:[6, 9, 12],time:"Full day"},
+  {id:9,title:"Art and Culture: Museums and Street Art",desc:"Explore art from museums to street: Noguchi, Socrates Sculpture Park, Bushwick murals",places:[14, 13, 29],time:"Full day"},
+  {id:10,title:"The Full New York: All 30 Places",desc:"Complete New York: every borough, every neighborhood, every hidden corner and famous site",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],time:"10 days"}
+];
+const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Español";
+const CITY_EN="New York City";
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{Español}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(10,8,30,0.72) 0%,rgba(10,8,30,0.20) 45%,rgba(10,8,30,0.10) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-sm font-bold tracking-widest" style={{color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"3px"}}>Go Do Stuff</h1>
+<p className="text-6xl font-black mt-1 leading-none" style={{color:"white",textShadow:"0 2px 16px rgba(0,0,0,0.7)",letterSpacing:"-1px"}}>New York City Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0",lineHeight:1.5,textShadow:"0 1px 8px rgba(0,0,0,0.9)"}}>Activities are free.<br/><span style={{fontSize:"11px",opacity:0.7}}>Travel & food recommendations: low budget.</span></p>
+<p className="text-xs mt-2" style={{color:"#a5b4fc",textShadow:"0 1px 6px rgba(0,0,0,0.9)"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#c8c0e0",lineHeight:1.6,maxWidth:340,textShadow:"0 1px 8px rgba(0,0,0,0.95)"}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<div className="rounded-2xl p-6 mt-8 mx-4 text-left" style={{background:"rgba(10,10,30,0.72)",border:"1px solid rgba(255,255,255,0.15)",maxWidth:380}}>
+<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
+<p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to hidden places. Content is curated for curiosity — not as instructions.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>Explora Nueva York en español</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Some locations include natural environments, heights, water, or areas that may be restricted or unsafe. You explore at your own risk.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Always follow local laws, respect private property, and check current conditions before visiting any place.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#e8c0f0"}}>If you are under 18, please explore responsibly.</p>
+</div>
+<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore<br/><span style={{fontSize:"12px",opacity:0.85}}>Entiendo — déjame explorar en mi idioma</span></button>
+</div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p>
+<a href={`https://maps.google.com/?q=${encodeURIComponent(p.n+', '+CITY_EN)}`} target="_blank" rel="noopener noreferrer"
+  className="mt-3 flex items-center gap-2 text-sm font-bold"
+  style={{color:"#166534",textDecoration:"none",display:"inline-flex",marginTop:"10px"}}>
+  🗺 Get directions
+</a>
+</div>}
+{p.ef&&<p className="text-xs mt-3 pt-3" style={{color:"#555",lineHeight:1.7,borderTop:"1px solid #dcfce7"}}>🍔 {p.ef}</p>}
+{p.sf&&<p className="text-xs mt-2" style={{color:"#555",lineHeight:1.7}}>🏠 {p.sf}</p>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);const[spinning,setSpinning]=useState(false);const[spinPlace,setSpinPlace]=useState(null);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
+if(showPicker){const rp=spinPlace||P[0];const _bgs=["https://mariavheland.github.io/godostuff/dice/bg1.jpg","https://mariavheland.github.io/godostuff/dice/bg2.jpg","https://mariavheland.github.io/godostuff/dice/bg3.jpg"];const _bg=_bgs[Math.floor(Math.random()*_bgs.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backgroundImage:`url(${_bg})`,backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.55)",pointerEvents:"none"}}/>
+<span style={{position:"absolute",top:"8%",left:"6%",fontSize:48,color:"#c8102e",animation:"floatSuit 6.2s ease-in-out infinite",pointerEvents:"none"}}>♥</span>
+<span style={{position:"absolute",top:"12%",right:"8%",fontSize:40,color:"#1a1a1a",animation:"floatSuit2 5.8s ease-in-out infinite .8s",pointerEvents:"none"}}>♠</span>
+<span style={{position:"absolute",bottom:"18%",left:"5%",fontSize:36,color:"#c8102e",animation:"floatSuit 7.1s ease-in-out infinite 1.5s",pointerEvents:"none"}}>♦</span>
+<span style={{position:"absolute",bottom:"15%",right:"6%",fontSize:44,color:"rgba(255,255,255,.18)",animation:"floatSuit2 6.5s ease-in-out infinite 2.2s",pointerEvents:"none"}}>♣</span>
+<div style={{position:"absolute",inset:16,border:"1px solid rgba(212,175,55,.18)",borderRadius:24,pointerEvents:"none"}}/>
+<p className={spinning?"text-5xl mb-6 dice-spin":"text-5xl mb-6 final-land"} style={{lineHeight:1}}>🎲</p>
+{!spinPlace&&<p style={{color:"rgba(212,175,55,.6)",fontSize:14,letterSpacing:"2px",textTransform:"uppercase"}}>rolling…</p>}
+{spinPlace&&<div className={spinning?"slot-flicker text-center":"final-land text-center"} style={{maxWidth:320,position:"relative",zIndex:1}}>
+<div style={{background:"rgba(0,0,0,.35)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(212,175,55,.25)",padding:"20px 24px"}}>
+<h2 className="text-2xl font-black" style={{color:"#fff",letterSpacing:"-.5px",lineHeight:1.15}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-xs font-bold mt-2 uppercase" style={{color:"#d4af37",letterSpacing:"2px"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3" style={{color:"rgba(255,255,255,.75)",lineHeight:1.65}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+</div></div>}
+<div className="flex gap-3 mt-8" style={{position:"relative",zIndex:1}}>
+<button onClick={()=>{setShowPicker(false);setSpinPlace(null);setSpinning(false);}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>✕ Close</button>
+{!spinning&&spinPlace&&<button onClick={()=>{setSelected(rp);setShowPicker(false);setSpinPlace(null);}} className="px-6 py-2 rounded-full text-sm font-black" style={{background:"linear-gradient(135deg,#d4af37,#f0c040)",color:"#0e3a1e",border:"none",cursor:"pointer"}}>Let's go →</button>}
+{!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>🎲 Again</button>}
+</div></div>}
+
+return <div style={{minHeight:"100vh",backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>New York City Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={startSpin} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — New York City Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script>
+</body>
+</html>
