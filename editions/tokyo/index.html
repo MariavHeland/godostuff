@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Tokyo's hidden world. 30 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Tokyo">
+<meta property="og:description" content="30 hidden, free, historically rich places in Tokyo.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Tokyo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#faf8f4;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes diceShake{0%,100%{transform:rotate(0deg) scale(1)}15%{transform:rotate(-18deg) scale(1.35)}30%{transform:rotate(16deg) scale(1.35)}45%{transform:rotate(-12deg) scale(1.25)}60%{transform:rotate(10deg) scale(1.2)}75%{transform:rotate(-6deg) scale(1.1)}}
+@keyframes diceSpin{0%{transform:rotateY(0deg) scale(1.1)}100%{transform:rotateY(360deg) scale(1.1)}}
+@keyframes slotFlicker{0%,100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0px)}50%{opacity:.55;transform:translateY(-6px) scale(.96);filter:blur(1.5px)}}
+@keyframes finalLand{0%{opacity:0;transform:scale(.75) translateY(28px)}65%{transform:scale(1.08) translateY(-4px)}85%{transform:scale(.97) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.dice-shake{animation:diceShake .7s ease forwards}
+.dice-spin{animation:diceSpin .18s linear infinite}
+.slot-flicker{animation:slotFlicker .12s ease infinite}
+.final-land{animation:finalLand .55s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes floatSuit{0%,100%{transform:translateY(0) rotate(0deg);opacity:.12}50%{transform:translateY(-18px) rotate(8deg);opacity:.22}}
+@keyframes floatSuit2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.08}50%{transform:translateY(14px) rotate(-6deg);opacity:.18}}
+@keyframes feltShimmer{0%,100%{opacity:0}50%{opacity:.07}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Tokyo...</p></div>
+<div id="root"></div>
+<script>
+const P = [
+  {id:1,n:"Yanaka — the Tokyo that survived",a:"Yanaka",v:["hidden", "history", "local"],d:15,s:"An entire old neighbourhood that escaped the bombs and the bulldozers",st:"Most of old Tokyo was bombed flat in 1945. Yanaka was spared. The narrow lanes, wooden shophouses, and crumbling temples remain almost unchanged. Tokyoites come here to remember what the city looked like before the war. Cats sleep on stone walls. Incense drifts from family temples. It feels like 1935.",im:"It's March 1945. The fire raids are coming. Yanaka survives by luck — the wind shifts. The wooden town stands while everything around it burns. Today you walk those same streets.",t:"Walk from Nippori station (JR Yamanote line). Free to explore. The shotengai runs 170m. The cemetery has 7,000 graves. Go early morning or late afternoon.",c:["history_big", "local_only"],r:"g",nn:"谷中 — 生き残った東京",ns:"爆撃を生き延びた古い下町",nst:"谷中は1945年の空襲をかろうじて免れた。木造の長屋、狭い路地、古寺が当時のまま残る。猫が石垣で眠る。",nt:"日暮里駅から徒歩。谷中銀座商店街を散策。早朝か夕方がおすすめ。"},
+  {id:2,n:"Shimokitazawa — the neighbourhood that refused to change",a:"Shimokitazawa",v:["local", "weird", "hidden"],d:20,s:"Live music, vintage shops, no chain stores — the anti-Shibuya",st:"Tokyo's favourite secret neighbourhood fought off a proposed highway through its heart for 40 years and won. The streets are too narrow for cars, the venues too small for corporations. Every block has a live music venue, a secondhand record shop, a curry restaurant. It shouldn't work. It does.",im:"It's 2005. The expressway planners arrive with blueprints. The residents form a human chain. The plans go back into the drawer. By 2022 they're gone. The neighbourhood celebrates.",t:"Odakyu or Keio Inokashira line to Shimokitazawa station. Walk everywhere — it's tiny. Evening is the real time — music starts at 7pm.",c:["local_only"],r:"g",nn:"下北沢 — 変わることを拒んだ街",ns:"ライブ音楽、古着屋、チェーン店なし",nst:"下北沢は40年間、幹線道路建設に抵抗し続けた。道路は狭すぎて車が入れない。ライブハウス、古着屋、カレー屋が混在する。",nt:"小田急線または京王井の頭線で下北沢駅へ。夜7時からライブが始まる。"},
+  {id:3,n:"Shinjuku Golden Gai — 200 bars, 6 alleys",a:"Shinjuku",v:["local", "weird", "night"],d:10,s:"A postwar black market that became the world's most improbable bar district",st:"Six alleys, 200 tiny bars, each one holding 8 people maximum. Golden Gai survived postwar poverty, 1980s redevelopment plans, and gentrification by simply refusing to participate. Bars are so small that regulars sit touching strangers. Some are themed — all-Jimi-Hendrix, all-horror-films.",im:"It's 1958. The black market stalls are becoming bars. Ex-soldiers, writers, and sex workers drink together in rooms the size of a wardrobe. Seventy years later, the rooms are still the same size.",t:"Walk 5 min from Shinjuku station east exit. Open from around 7pm. Some bars have covers (500-1000 yen). Most welcome foreigners. Point at what your neighbour is drinking.",c:["local_only"],r:"y",nn:"新宿ゴールデン街 — 6つの路地、200軒のバー",ns:"戦後の闇市が世界最小のバー街に",nst:"6本の路地、200軒の極小バー。ゴールデン街はバブルも再開発も跳ね返してきた。",nt:"新宿駅東口から徒歩5分。夜7時以降オープン。カバーチャージ500〜1000円の店が多い。"},
+  {id:4,n:"Nezu Shrine — Fushimi Inari without the crowds",a:"Nezu",v:["beautiful", "hidden", "quiet"],d:20,s:"Hundreds of vermillion torii gates in the middle of Tokyo — almost nobody knows it exists",st:"The famous torii tunnel at Fushimi Inari in Kyoto has millions of visitors. Nezu Shrine in Tokyo has the same thing — hundreds of bright red gates climbing a hillside through azalea gardens — and almost no queue. Founded 1705, hidden in a residential neighbourhood between Yanaka and Sendagi.",im:"It's April. The azaleas are in bloom. The red gates frame pink flowers. A local woman in everyday clothes walks through slowly, touching each gate. You're the only foreigner here.",t:"10 min walk from Nezu or Sendagi station (Chiyoda line). Free to enter grounds. Azalea festival in April. Open dawn to dusk.",c:["beautiful", "parks"],r:"g",nn:"根津神社 — 東京の穴場の朱鳥居",ns:"数百の鳥居、観光客なし",nst:"根津神社は稲荷山と同じような朱色の鳥居が連なるが、観光客はほとんど来ない。1705年創建。4月はつつじまつり。",nt:"千代田線根津駅または千駄木駅から徒歩10分。境内無料。"},
+  {id:5,n:"Tsukiji Outer Market — the market that refused to die",a:"Tsukiji",v:["local", "hidden"],d:15,s:"The wholesale market moved; the street stalls stayed and they're better than ever",st:"Everyone said Tsukiji was finished when the tuna auctions moved to Toyosu in 2018. The outer market — 400 stalls of seafood vendors, tamagoyaki specialists, dried goods, knife shops — not only survived but thrived. Chefs still arrive at 5am. The best tuna bowl in Tokyo costs 1,500 yen and you eat it standing up.",im:"It's 5am. A chef from a Michelin-starred restaurant is arguing with a fishmonger over the price of bluefin. The fishmonger loses. The chef leaves happy. This has happened every morning since 1935.",t:"Walk 10 min from Tsukiji station (Hibiya line). Best before 10am when stalls sell out. Tamagoyaki: 200-400 yen. Tuna bowl: 1,000-2,000 yen.",c:["local_only"],r:"g",nn:"築地場外市場 — 死を拒んだ市場",ns:"豊洲に移転後も外市場は生き残った",nst:"2018年に豊洲に移転しても、場外市場の400軒の店は残った。午前5時から開く。鮪の漬け丼1500円。立ち食い。",nt:"日比谷線築地駅から徒歩10分。午前10時前が最高。"},
+  {id:6,n:"Tokyo Metropolitan Government Building Observatory",a:"Shinjuku",v:["high_spots", "free", "beautiful"],d:10,s:"Free 202-metre observatory — better views than Skytree and no queue",st:"The Skytree charges 3,100 yen and has a 90-minute queue on weekends. The Tokyo Metropolitan Government Building has two free observatories at 202 metres, open until 11pm on most evenings. On a clear day you can see Mt. Fuji. The building by Kenzo Tange looks like a Gothic cathedral crossed with a mainframe computer.",im:"It's 1991. The building opens, the tallest in Tokyo. Architects called it monstrous. Tokyoites called it amazing. Today it's free to everyone and Fuji appears on clear winter evenings like a ghost.",t:"2 min walk from Tochomae station (Oedo line) or 10 min from Shinjuku station. Free entry. North Tower open until 11pm most nights. No booking needed.",c:["high_spots"],r:"g",nn:"東京都庁展望室 — 無料の絶景",ns:"202メートル、無料、スカイツリーより空いている",nst:"スカイツリーは3100円かかるが、都庁展望室は無料。高さ202メートル。晴れた日は富士山が見える。",nt:"大江戸線都庁前駅から徒歩2分。無料。北展望室は比較的空いている。"},
+  {id:7,n:"Hamarikyu Gardens — feudal garden between the skyscrapers",a:"Shiodome",v:["beautiful", "history", "nature"],d:15,s:"A 300-year-old tidal garden that once belonged to the Tokugawa shogunate",st:"Hamarikyu was the private duck-hunting grounds of the Tokugawa shoguns. After the Meiji revolution it became a detached imperial palace garden. Today it sits impossibly between the glass towers of Shiodome and the Sumida River — tidal ponds, a teahouse over the water, 300-year-old pine trees.",im:"It's 1709. The sixth shogun stands at the water's edge, waiting for ducks. The sea comes and goes with the tides. The same ponds still fill with saltwater twice a day. The shogun is gone. The tides remain.",t:"Walk from Shiodome station or take a boat from Asakusa (scenic, recommended). Entry 300 yen. Teahouse serves matcha for 500 yen. Best in autumn.",c:["parks", "history_big"],r:"y",nn:"浜離宮恩賜庭園 — 摩天楼の中の将軍庭園",ns:"徳川将軍の鴨場、今は公園",nst:"浜離宮は徳川将軍の鴨場だった。明治後は離宮、戦後は公園に。汐留のビル群に囲まれ、今も潮の満ち引きで池が変わる。",nt:"汐留駅から徒歩。入場300円。浅草からの水上バスがおすすめ。"},
+  {id:8,n:"Bunkyō Civic Center Observatory — the free secret view",a:"Bunkyō",v:["high_spots", "hidden", "free"],d:20,s:"A free 25th-floor observatory inside a council building that nobody visits",st:"The Tokyo Metropolitan Government Building observatory is famous. The Bunkyō Civic Center's 25th floor observatory is unknown — free, almost always empty, with a spectacular 360-degree view including Skytree, Fuji on clear days, and the Shinjuku skyline. It's inside a local government building. You just walk in.",im:"A local retired man sits at the window every Tuesday morning with a coffee. He's been coming for years. He knows every building by sight. He nods at you like you're in on the secret.",t:"Walk 5 min from Myogadani station (Marunouchi line). Open Mon-Fri 8:30am-10pm, weekends 9am-9pm. Free. Take the elevator to 25F.",c:["high_spots"],r:"g",nn:"文京シビックセンター展望ラウンジ — 無料の秘密の眺め",ns:"役所の25階、無料、ほぼ誰も知らない",nst:"文京シビックセンター25階の展望ラウンジは無料で、ほぼ人が来ない。スカイツリー、富士山、新宿のビル群が見える。",nt:"丸ノ内線茗荷谷駅から徒歩5分。無料。月〜金8:30〜22:00、土日9:00〜21:00。"},
+  {id:9,n:"Koenji — punk rock Tokyo's secondhand headquarters",a:"Koenji",v:["local", "weird"],d:25,s:"The neighbourhood that kept Tokyo weird — vintage, punk, and resolutely unchained",st:"While Harajuku became a fashion brand and Shimokitazawa went slightly upscale, Koenji stayed defiantly itself. The shopping street has 70 plus secondhand clothing shops, record stores selling 100-yen vinyl, and punk venues in basements. The Awa Odori festival every August turns the whole neighbourhood into a dance party.",im:"It's 1977. A 19-year-old punk from the countryside arrives in Tokyo with barely any money. He finds a room in Koenji for 15,000 yen a month. He starts a band. Forty years later he still lives here.",t:"JR Chuo line to Koenji station. Walk south for the vintage shops, north for the bars. Sunday flea market first Sunday of the month at Koenji Park.",c:["local_only"],r:"g",nn:"高円寺 — パンクロックの古着天国",ns:"ヴィンテージ、パンク、チェーン店なし",nst:"高円寺は古着屋、レコード店、パンクのライブハウスで溢れる。サブカルの聖地として今も輝いている。",nt:"JR中央線高円寺駅下車。日曜の蚤の市（月1回）は必見。"},
+  {id:10,n:"Asakusa at dawn — before 7am",a:"Asakusa",v:["beautiful", "history", "quiet"],d:20,s:"Japan's most visited temple, seen exactly as the monks see it every morning",st:"Senso-ji gets 30 million visitors a year. Before 7am it has almost none. The market stalls are shuttered. The incense smoke rises in straight columns. Monks do their rounds. Pigeons outnumber people. The Nakamise shopping street is silent. This is the version of Asakusa that actually exists.",im:"It's 645 AD. A fisherman pulls a small golden statue from the Sumida River. He enshrines it. Fourteen centuries later, the same statue is still inside the main hall. No one has ever seen it.",t:"Take the first train to Asakusa (Ginza line opens 5:02am from Shibuya). Arrive before 7am. The temple grounds are always open. Nakamise opens at 10am — avoid it.",c:["history_big", "beautiful"],r:"g",nn:"浅草 夜明け前 — 午前7時より前",ns:"3000万人が来る寺、誰もいない時間",nst:"浅草寺は年間3000万人が訪れる。でも早朝7時前は無人。お坊さんがお勤めをし、鳩だけがいる。",nt:"銀座線で浅草へ（始発5:02発）。午前7時前に到着。仲見世は午前10時開店。"},
+  {id:11,n:"Meguro River — cherry blossom canal walk",a:"Nakameguro",v:["beautiful", "nature", "romantic_water"],d:25,s:"4km of cherry trees overhanging a canal — Tokyo's most beautiful spring walk",st:"For two weeks every late March and early April, the Meguro River transforms. 800 cherry trees on both banks arch over the narrow canal, creating a tunnel of blossoms. At night the trees are lit from below. The 4km walk passes coffee shops, boutiques, and restaurants with outdoor seating over the water.",im:"It's April 2nd, 2019. 150,000 people walk the canal in one day. Everyone is looking up. Nobody is looking at their phone. It lasts exactly 11 days before the petals fall.",t:"Start at Nakameguro station (Tokyu Toyoko / Tokyo Metro Hibiya line). Walk upstream. Peak bloom: late March to early April. Evening lighting free.",c:["romantic_water", "beautiful", "parks"],r:"g",nn:"目黒川 — 桜の散歩道",ns:"桜の木のトンネルが4kmつづく",nst:"目黒川沿いには800本の桜が咲き誇る。3月末〜4月初旬、夜はライトアップ。ベストシーズンはわずか10日間。",nt:"東急東横線・東京メトロ日比谷線中目黒駅から徒歩すぐ。"},
+  {id:12,n:"Togoshi Ginza — longest shopping street in Japan",a:"Togoshi",v:["local", "hidden"],d:35,s:"1.3km of small family-run shops that the tourist guides forgot to mention",st:"Togoshi Ginza is 1.3 kilometres of covered and open-air shopping street — Japan's longest — running through a residential neighbourhood that sees almost no tourists. 400 plus small shops: fishmongers, ramen shops, old ladies selling pickles, a barber who charges 800 yen. This is Tokyo in the register it prefers to keep private.",im:"A 70-year-old fishmonger named Tanaka-san has run his stall here since 1982. His father ran it before him. His grandson helps on weekends. He knows this and it makes him happy.",t:"Tokyu Oimachi line to Togoshi Koen station. The street is free to walk. Best before noon when shops are busiest.",c:["local_only"],r:"g",nn:"戸越銀座 — 日本一長い商店街",ns:"観光客が忘れた1.3kmのアーケード",nst:"戸越銀座は日本最長1.3kmの商店街。400軒以上の個人商店。観光客はほぼ来ない。",nt:"東急大井町線戸越公園駅から徒歩すぐ。午前中が賑わう。"},
+  {id:13,n:"Kagurazaka — Tokyo's French quarter with a geisha past",a:"Kagurazaka",v:["beautiful", "history", "hidden"],d:15,s:"A French-Japanese neighbourhood built on a cobblestone geisha district",st:"Kagurazaka was one of Tokyo's main geisha districts until WWII. Then French residents settled here after the war, attracted by the European scale of the streets. Now it's a neighbourhood that can't quite decide what it is: French bistros next to traditional ryokan, cobblestone lanes where geisha still occasionally appear on festival days.",im:"It's 1930. A geisha named Kikuyu walks these same cobblestones to her engagement. Her wooden geta click on the stone. Today the stones are still there. Her profession is almost gone.",t:"Iidabashi or Kagurazaka station (Tozai or Namboku line). Walk the alleyways behind the main street — especially Hyogo Yokocho. Free to walk.",c:["history_big", "beautiful"],r:"g",nn:"神楽坂 — ゲイシャ路地とフランス文化の融合",ns:"石畳の芸者街、今はフレンチ・カフェ",nst:"神楽坂は戦前の花街。戦後にフランス人が住み着いた。石畳の路地に芸者の面影が残る。",nt:"東西線・南北線神楽坂駅または飯田橋駅から徒歩。無料。"},
+  {id:14,n:"Todoroki Valley — a river gorge inside Tokyo",a:"Todoroki",v:["nature", "hidden", "quiet"],d:35,s:"A 1km river gorge with bamboo forest, a shrine, and waterfalls — inside Tokyo city limits",st:"Todoroki Valley is a 1km wooded gorge along the Yazaki River, cutting through suburban Setagaya. Bamboo forest. A Shinto shrine at the far end. A small waterfall. No buildings visible from inside the gorge. It's one of the few places in Tokyo that feels genuinely removed from the city.",im:"A man in a business suit sits on a bench at the shrine end of the valley at 8am, eating a sandwich before work. He comes every Thursday. The gorge is his secret.",t:"Tokyu Oimachi line to Todoroki station. Walk south 5 minutes. Free. Slippery in rain — wear good shoes.",c:["nature", "parks"],r:"g",nn:"等々力渓谷 — 東京の中の川の峡谷",ns:"竹林と滝がある1kmの渓谷",nst:"等々力渓谷は都心から35分の場所にある渓谷。竹林、不動の滝、等々力不動尊。ビルが見えない。",nt:"東急大井町線等々力駅から徒歩5分。無料。雨の日は足元注意。"},
+  {id:15,n:"Jimbocho — Tokyo's second-hand book district",a:"Jimbocho",v:["hidden", "local", "history"],d:15,s:"170 antiquarian bookshops on one street — the largest concentration on earth",st:"Jimbocho has been the centre of Tokyo's book trade since the 19th century. Today it has around 170 bookshops — new, used, and specialist — concentrated on a single boulevard. Sports books, cooking, military history, manga, rare maps, film posters, woodblock prints. You can buy a first edition Mishima for 800 yen.",im:"An elderly professor spends every Saturday here. He has been coming since 1962. He always buys something. He doesn't always read it. He likes the smell of old books and the weight of paper.",t:"Jimbocho station (Toei Shinjuku or Hanzomon or Mita line). Walk north along Yasukuni-dori. Open mostly Tue-Sun.",c:["local_only"],r:"g",nn:"神保町 — 世界最大の古書店街",ns:"170軒の古書店が一本の通りに",nst:"神保町は19世紀から続く本の街。約170軒の古書店と新書店が集まる。三島由紀夫の初版が800円で買える。",nt:"新宿線・半蔵門線・三田線神保町駅から徒歩すぐ。火〜日曜が多い。"},
+  {id:16,n:"Meiji Shrine forest — 100,000 trees planted by citizens in 1920",a:"Harajuku",v:["nature", "quiet", "beautiful"],d:15,s:"A man-made forest of 100,000 donated trees that has become a genuine climax forest",st:"The forest surrounding Meiji Shrine was entirely planted when the shrine was built in 1920 — every tree donated by citizens from across Japan. 100,000 trees of 365 species, designed to be self-sustaining without human maintenance. A century later it has become a genuine ancient forest in the middle of Tokyo.",im:"It's 1920. Across Japan, people donate saplings. A farmer from Hokkaido sends a spruce. A child from Okinawa sends a fig. 100,000 trees arrive. Workers plant them all. The forest manages itself ever since.",t:"Walk from Harajuku station (JR Yamanote) or Meiji-jingumae station. Grounds free, Inner Shrine 1,000 yen. Open dawn to dusk.",c:["nature", "parks", "history_big"],r:"g",nn:"明治神宮の杜 — 東京の中心に100,000本の木",ns:"市民が寄付した10万本の木で作られた森",nst:"明治神宮の森は1920年に全国から寄付された10万本の木で作られた。100年後に本物の原生林になった。",nt:"JR山手線原宿駅または東京メトロ明治神宮前駅から徒歩すぐ。境内は無料。"},
+  {id:17,n:"Yanaka Cemetery — 7,000 graves and a cat colony",a:"Yanaka",v:["history", "hidden", "nature"],d:15,s:"A Victorian cemetery that has become Tokyo's most democratic public park",st:"Yanaka Cemetery opened in 1874 and has become something else entirely — a neighbourhood park where locals walk dogs, children play, and cats patrol the graves of samurai, artists, and the last Tokugawa shogun. General Nogi is buried here. So is the painter Yokoyama Taikan. So are 7,000 ordinary people from Meiji-era Tokyo.",im:"It's 1916. General Nogi and his wife died by ritual suicide when the Meiji Emperor died, following him in death as samurai tradition demanded. Their graves are here. Visitors still leave sake.",t:"Walk from Nippori or Yanaka station. Free, always open. Cherry blossom walk in spring is remarkable.",c:["famous_dead", "parks"],r:"g",nn:"谷中霊園 — 7000の墓と猫のコロニー",ns:"サムライ、芸術家、猫が共存する墓地",nst:"谷中霊園は1874年開園。徳川最後の将軍、乃木将軍、横山大観らが眠る。猫が数十匹生息する。",nt:"日暮里駅または千代田線千駄木駅から徒歩。無料、常時開放。"},
+  {id:18,n:"Toden Arakawa line — Tokyo's last surviving tram",a:"Arakawa",v:["weird", "history", "local"],d:30,s:"A 12km tram line that survived when all 40 others were demolished in the 1960s",st:"Tokyo once had 41 tram lines criss-crossing the city. They were all dismantled between 1960 and 1972. All except one: the Toden Arakawa line, which runs 12.2km through the residential northeast of the city. The tram passes through people's backyards, along shopping streets, and past temples. Seniors ride it daily.",im:"It's 1972. The last regular Tokyo tram makes its final run. Passengers weep. The Arakawa line is next on the list. A neighbourhood association protests. The plan is quietly shelved. The tram still runs.",t:"Board at Waseda, Minowabashi, or any stop. Day pass 400 yen, single fare 170 yen. Runs from 5am to midnight.",c:["history_big", "local_only"],r:"y",nn:"都電荒川線 — 東京最後の路面電車",ns:"1913年から走り続ける路面電車",nst:"東京には41本の路面電車があった。1960年代にすべて廃止されたが、都電荒川線だけが残った。",nt:"早稲田または三ノ輪橋発着。1日乗車券400円、初乗り170円。"},
+  {id:19,n:"Monzen-Nakacho — the old ferry town",a:"Monzen-Nakacho",v:["local", "history", "hidden"],d:20,s:"Where the Sumida River ferry passengers used to drink — and still do",st:"Before the bridges, you crossed the Sumida River by ferry. The landing at Eitai-bashi was in Monzen-Nakacho, which filled with izakayas, temples, and shrine festivals to serve the passengers. The bridges came, the ferries went, but the izakayas stayed. Salarymen drink standing from 4pm and temple festivals happen on weekday evenings.",im:"It's 1850. Hundreds of people wait for the ferry. The izakaya serves warm sake. The ferryman's daughter brings fish. The bridge won't come for 60 more years.",t:"Tokyo Metro Tozai line or Oedo line to Monzen-Nakacho. Main drag starts north of the station. Izakayas open from 3-4pm.",c:["local_only", "history_big"],r:"g",nn:"門前仲町 — 渡し場跡の下町居酒屋街",ns:"江戸時代の渡し場が今も居酒屋街として残る",nst:"渡し船の乗客を相手に居酒屋が並んだ門前仲町。橋ができても居酒屋は残った。午後4時から立ち飲みが始まる。",nt:"東西線または大江戸線門前仲町駅下車。午後3時から居酒屋が開く。"},
+  {id:20,n:"Nihonbashi Bridge — kilometre zero of Japan",a:"Nihonbashi",v:["history", "hidden"],d:10,s:"The original centre of Japan — all distances in the country measured from this bridge",st:"Every road distance in Japan was measured from Nihonbashi — the Japan Bridge — from the Edo period until today. The current stone bridge dates from 1911. A fish market occupied this spot for 300 years before moving to Tsukiji. The expressway was built directly over the bridge in 1964 for the Olympics.",im:"It's 1603. Tokugawa Ieyasu declares Edo the capital. He builds a bridge and announces: all distances in Japan start here. The country agrees. 420 years later, the same spot is still officially the centre.",t:"Walk from Mitsukoshimae station (Ginza/Hanzomon line). Look up — the expressway runs directly over the bridge. The bronze kirin statues on the railings are original 1911 metalwork.",c:["history_big"],r:"g",nn:"日本橋 — 日本の道路元標",ns:"全国の道路距離の起点になった橋",nst:"日本橋はすべての道路距離の起点。現在の石橋は1911年製。橋の真上に首都高が通っている。",nt:"銀座線・半蔵門線三越前駅から徒歩すぐ。"},
+  {id:21,n:"Ochanomizu — the guitar street",a:"Ochanomizu",v:["weird", "local"],d:15,s:"One block where 30 music shops compete for the same customers — you can play anything",st:"On a single block near the Kanda River, 30 plus music shops sell guitars, basses, drums, and pianos — competing openly, sometimes with the same stock at different prices. It started after WWII when American soldiers sold their instruments. Now it's a pilgrimage site. You can play any guitar in any shop without buying.",im:"It's 1952. An American soldier sells his Fender Stratocaster for yen to pay his bar bill. A 17-year-old Japanese kid buys it. He's never played before. He teaches himself from the sound.",t:"Walk from Ochanomizu station (JR Chuo or Marunouchi line). Free to browse and play. No obligation to buy.",c:["local_only", "weird"],r:"g",nn:"お茶の水 — 楽器街",ns:"30軒以上の楽器店が1ブロックに集結",nst:"お茶の水の神田川沿い1ブロックに30軒以上の楽器店。どの店でもギターを弾かせてくれる。",nt:"JR中央線・丸ノ内線御茶ノ水駅から徒歩すぐ。どの店でも自由に試奏可能。"},
+  {id:22,n:"Ryogoku — sumo town where wrestlers walk the streets",a:"Ryogoku",v:["history", "local", "weird"],d:20,s:"Where sumo wrestlers live, eat, and train — and where you can watch practice for free",st:"Ryogoku is the centre of Japanese sumo. The Kokugikan arena is here, as are most of the major sumo stables. Wrestlers walk the streets in yukata and wooden sandals. Some stables allow morning practice viewing for free if you contact them in advance. The chanko-nabe stew eaten by wrestlers is available at 20 restaurants.",im:"It's 6am. Inside a stable on a quiet side street, a 160kg wrestler has been training for 3 hours. He hasn't eaten. Sumo wrestlers only eat twice a day — never breakfast. This is how it has been for 300 years.",t:"JR Sobu line to Ryogoku. Free strolling. Stable practice viewing: contact stables in advance. January, May, September are tournament months.",c:["local_only", "history_big"],r:"g",nn:"両国 — 相撲の街",ns:"力士が歩く街、無料の朝稽古",nst:"両国は日本相撲の中心地。国技館があり、多くの部屋が集まる。力士が浴衣で街を歩く。",nt:"JR総武線両国駅から徒歩すぐ。1月・5月・9月は本場所。"},
+  {id:23,n:"Fukagawa Edo Museum — living inside 1840s Tokyo",a:"Kiyosumi",v:["history", "free_museum"],d:25,s:"A full-scale recreation of an Edo-period neighbourhood, indoors, with sounds and light",st:"The Fukagawa Edo Museum reconstructs an entire block of 1840s Tokyo at full scale inside a warehouse: streets, tenement houses, a rice merchant, a pawnshop, a vegetable stall. The lighting changes throughout the day to simulate dawn, noon, and evening. You can enter the houses and handle the objects.",im:"It's Edo, 1843. The light through the paper screens is soft. You can hear river sounds, a distant temple bell. The models feel so complete that the absence of people is almost surprising.",t:"Kiyosumi-shirakawa station (Hanzomon/Oedo line). Entry 400 yen. Open 9:30am-5pm. Closed 2nd and 4th Mondays.",c:["history_big", "free_museum"],r:"y",nn:"深川江戸資料館 — 江戸時代の下町再現",ns:"1840年代の下町を実物大で再現した博物館",nst:"福川江戸資料館は1840年代の江戸の町を実物大で再現。長屋、米屋、質屋が並び、時刻で照明が変わる。",nt:"半蔵門線・大江戸線清澄白河駅から徒歩10分。入場400円。9:30〜17:00。"},
+  {id:24,n:"Nishi-Ogikubo — Tokyo's best antique quarter",a:"Nishi-Ogikubo",v:["hidden", "local", "weird"],d:30,s:"30 antique shops in a quiet residential area — the finest vintage concentration in Tokyo",st:"Nishi-Ogikubo has the highest density of antique and secondhand furniture shops in Tokyo — 30 plus shops within a 10-minute walk of the station, selling everything from Meiji-era furniture to 1970s Japanese industrial design to tanuki ceramics. Unlike Shimokitazawa, it's purely about the shops.",im:"A Czech architect spends three days here every visit to Tokyo. She ships boxes of 1960s Japanese furniture to Prague. It fills her apartment. She cannot stop.",t:"JR Chuo line or Sobu line to Nishi-Ogikubo. Walk south of the station. Shops open 11am-7pm, often closed Thursdays.",c:["local_only"],r:"g",nn:"西荻窪 — 東京最高の骨董街",ns:"30軒以上の骨董・古家具店が集まる",nst:"西荻窪は東京最高密度の骨董街。明治家具から昭和インダストリアルまで。",nt:"JR中央線西荻窪駅から徒歩。南口方面。木曜休みの店が多い。"},
+  {id:25,n:"Chidorigafuchi moat — best free cherry blossom view in Tokyo",a:"Kudanshita",v:["beautiful", "nature", "romantic_water"],d:15,s:"A 700m moat walk under cherry trees with rowboats available for 800 yen",st:"Chidorigafuchi is part of the Imperial Palace outer moat. The 700m path is lined with old Yoshino cherry trees that arch over the water. At peak bloom, the effect is a tunnel of pink petals reflected in dark green water. Consistently ranked the best free cherry blossom spot in Tokyo.",im:"It's April 4th. The petals are at 100% and beginning to fall. A family from Yokohama has arrived by the first train. They have rented a rowboat. The grandfather takes the oars. The petals land on his arms.",t:"Walk from Kudanshita station (Hanzomon/Shinjuku/Tozai) 5 min. Free to walk the path. Rowboats 800 yen per person (cash, queue in season). Peak bloom late March to early April.",c:["beautiful", "romantic_water", "parks"],r:"g",nn:"千鳥ヶ淵 — 東京最高の無料花見",ns:"お濠沿いに桜のトンネル、ボート付き",nst:"千鳥ヶ淵は皇居外濠の一部。700mの遊歩道に吉野桜が並ぶ。ピーク時は桜のトンネルが緑の水面に映る。ボート800円。",nt:"半蔵門線・新宿線・東西線九段下駅から徒歩5分。歩道は無料。ボートは800円。"},
+  {id:26,n:"Inokashira Park — the lake with a jealous goddess",a:"Kichijoji",v:["nature", "weird", "local"],d:30,s:"A beautiful park with a shrine that supposedly curses couples who visit it together",st:"Inokashira Park has the most famous legend in Tokyo: the Benzaiten shrine on the island in the lake is said to make couples who pray there together split up, because the goddess is jealous of human love. Whether or not you believe it, the park is genuinely lovely — old cherry trees, rowboats, a small zoo, and weekend jazz.",im:"A couple stands at the shrine in 1987. They break up three months later. This is evidence, says their friend. The statistician says: 90% of couples from university break up anyway. The legend persists.",t:"Walk from Kichijoji station (JR Chuo line / Inokashira line). Park free. Rowboats 700 yen for 30 min. Open dawn to dusk.",c:["weird", "parks", "nature"],r:"g",nn:"井の頭公園 — 呪いの弁天様と桜の池",ns:"カップルを別れさせると言われる弁天社",nst:"井の頭公園の弁天社は「ここでカップルが参拝すると別れる」という伝説がある。でも公園自体は桜が美しく、ボートもある。",nt:"JR中央線・京王井の頭線吉祥寺駅から徒歩5分。公園無料。ボート700円（30分）。"},
+  {id:27,n:"Rikugien Garden — Edo's perfect landscape poem",a:"Komagome",v:["beautiful", "nature", "history"],d:25,s:"A garden designed as 88 scenes from classical poetry — one of the most complete Edo gardens surviving",st:"Rikugien was created in 1702 by designing the entire landscape as a visual representation of 88 scenes from classical Japanese and Chinese poetry. Every hill, stone, and island refers to a poem. Every view was planned. The autumn illumination when the maples turn red is one of the finest sights in Tokyo.",im:"It's 1702. The senior councillor is explaining to the gardeners which stone represents the moon in which poem. They have been working for 7 years. The garden will be complete in one more year.",t:"JR Yamanote line to Komagome station, walk 7 min. Entry 300 yen. Open 9am-5pm. Autumn illumination evenings: extended hours, extra 300 yen.",c:["parks", "beautiful", "history_big"],r:"y",nn:"六義園 — 江戸の完璧な庭園",ns:"88の詩の場面を庭に表した名園",nst:"六義園は1702年に88の和歌・漢詩を景観として表現した庭園。秋の紅葉ライトアップは東京最高峰の美しさ。",nt:"JR山手線駒込駅から徒歩7分。入場300円。9:00〜17:00。秋のライトアップは別途300円。"},
+  {id:28,n:"Tsukuda Island — oldest fishing village in Tokyo",a:"Tsukuda",v:["history", "hidden", "beautiful"],d:20,s:"A tiny island in the Sumida River settled by fishermen in 1644 — still here",st:"Tsukuda Island was settled by fishermen from Osaka brought by Tokugawa Ieyasu to supply the palace with fresh fish. The island retains its original layout — narrow lanes, a small shrine, traditional wooden architecture. The tsukudani simmered seafood shops have been here for generations.",im:"It's 1644. Thirty fishing families from Osaka arrive by boat. They are given an island in the river and permission to fish. Their descendants live here still, on the same island, in sight of the same river.",t:"Walk 15 min from Tsukijishijo station (Oedo line). The island bridge on the south side is Tsukuda-bashi. Tsukudani shops open 9am-5pm.",c:["history_big", "local_only"],r:"g",nn:"佃島 — 東京最古の漁師町",ns:"1644年から漁師が住む隅田川の小島",nst:"佃島は徳川家康が大阪から呼んだ漁師たちが1644年に住み始めた島。狭い路地、佃煮の老舗が今も残る。",nt:"大江戸線築地市場駅から徒歩15分。南側の佃橋を渡って島に入る。佃煮の店は9:00〜17:00。"},
+  {id:29,n:"Kiyosumi Garden — stepping stone islands from 1878",a:"Kiyosumi",v:["beautiful", "nature", "history"],d:25,s:"A Meiji-era garden with 51 stone islands brought from across Japan by Mitsubishi ships",st:"Kiyosumi Garden was built by the Iwasaki family, founders of Mitsubishi, on former Edo river merchant land. The famous feature is 51 large stones brought from all over Japan by Mitsubishi's fleet ships returning from ports — placed as stepping islands across the central pond. Cranes nest here.",im:"It's 1877. A Mitsubishi cargo ship docks in Yokohama. In the hold: three massive stones from a Shikoku quarry ordered specifically for the stepping path in this garden. They're still there.",t:"Kiyosumi-Shirakawa station (Hanzomon/Oedo line). Entry 150 yen. Open 9am-5pm. Closed Mondays. The stone path across the pond is the main attraction.",c:["parks", "beautiful", "history_big"],r:"y",nn:"清澄庭園 — 明治の池泳ぐ鶴と飛び石",ns:"三菱が全国から運んだ石が池を渡る",nst:"清澄庭園は三菱創業者岩崎弥太郎が造った名園。51個の大石は三菱の船が全国の港から運んだ。",nt:"半蔵門線・大江戸線清澄白河駅から徒歩3分。入場150円。9:00〜17:00（月曜休）。"},
+  {id:30,n:"Nakameguro canal by night",a:"Nakameguro",v:["beautiful", "romantic_water", "night"],d:25,s:"A canal that transforms from brunch street to something magical after dark",st:"During the day Nakameguro canal is boutiques, coffee, and 20-somethings. After 8pm it becomes something else — the yellow lights from restaurants reflect in the black water, couples walk slowly, and the only sound is water and conversation. On warm evenings you can sit on the stone steps above the water.",im:"It's 10pm on a warm October night. A couple sit on the stone steps eating yakitori from a paper bag. The canal is completely still. The city has gone somewhere else.",t:"Nakameguro station (Tokyu Toyoko / Hibiya line). Walk either direction along the canal. Free, open always.",c:["romantic_water", "beautiful"],r:"g",nn:"中目黒 運河 夜 — 東京で一番ロマンティックな水辺",ns:"昼は人気のカフェ、夜は別世界",nst:"中目黒の目黒川は昼間は人気のカフェ街。夜8時以降、ライトが水面に映り、静かで美しくなる。",nt:"東急東横線・東京メトロ日比谷線中目黒駅からすぐ。無料、常時開放。"}
+];
+const PHRASES = [{native:"すみません",en:"Excuse me / Sorry"},{native:"ありがとうございます",en:"Thank you very much"},{native:"いくらですか？",en:"How much is it?"},{native:"どこですか？",en:"Where is it?"},{native:"トイレはどこですか？",en:"Where is the toilet?"},{native:"おすすめは何ですか？",en:"What do you recommend?"},{native:"ひとつください",en:"One please"},{native:"おかいけい",en:"Bill please"},{native:"むりょう？",en:"Is it free?"},{native:"しゃしんをとってもいいですか？",en:"May I take a photo?"}];
+const AREAS = ["Arakawa", "Asakusa", "Bunkyō", "Harajuku", "Jimbocho", "Kagurazaka", "Kichijoji", "Kiyosumi", "Koenji", "Komagome", "Kudanshita", "Monzen-Nakacho", "Nakameguro", "Nezu", "Nihonbashi", "Nishi-Ogikubo", "Ochanomizu", "Ryogoku", "Shimokitazawa", "Shinjuku", "Shiodome", "Todoroki", "Togoshi", "Tsukiji", "Tsukuda", "Yanaka"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"Old Tokyo Survival Walk",desc:"Walk through the Tokyo that escaped the bombs and bulldozers.",places:[1, 17, 10, 13, 12],time:"4 hours"},
+  {id:2,title:"The Free Views Circuit",desc:"See all of Tokyo from above, spending nothing.",places:[6, 8, 25],time:"3 hours"},
+  {id:3,title:"Hidden Neighbourhoods",desc:"Shimokitazawa, Koenji, and Kagurazaka in one afternoon.",places:[2, 9, 13],time:"half day"},
+  {id:4,title:"Water Tokyo",desc:"Canals, rivers, ponds \u2014 the city built on water.",places:[7, 11, 30, 25, 28],time:"5 hours"},
+  {id:5,title:"Shrines and Forests",desc:"The spiritual Tokyo most visitors never find.",places:[4, 16, 26, 27],time:"4 hours"},
+  {id:6,title:"Market and Temple Morning",desc:"Tsukiji at dawn, Asakusa before the tourists.",places:[5, 10],time:"5am-10am"},
+  {id:7,title:"The Sumo World",desc:"Ryogoku neighbourhood, morning practice, the Kokugikan exterior.",places:[22],time:"morning"},
+  {id:8,title:"Garden Circuit",desc:"Three of Tokyo's finest gardens \u2014 ancient, feudal, Meiji.",places:[7, 27, 29],time:"full day"},
+  {id:9,title:"Deep Shinjuku",desc:"Golden Gai, the observatory, the empty financial district.",places:[3, 6],time:"evening"},
+  {id:10,title:"The Full Tokyo",desc:"All 30 places. The complete city. For the obsessed.",places:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],time:"multi-day"}
+];
+const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="日本語";
+const CITY_EN="Tokyo";
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(10,8,30,0.72) 0%,rgba(10,8,30,0.20) 45%,rgba(10,8,30,0.10) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-sm font-bold tracking-widest" style={{color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"3px"}}>Go Do Stuff</h1>
+<p className="text-6xl font-black mt-1 leading-none" style={{color:"white",textShadow:"0 2px 16px rgba(0,0,0,0.7)",letterSpacing:"-1px"}}>Tokyo Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0",lineHeight:1.5,textShadow:"0 1px 8px rgba(0,0,0,0.9)"}}>Activities are free.<br/><span style={{fontSize:"11px",opacity:0.7}}>Travel & food recommendations: low budget.</span></p>
+<p className="text-xs mt-2" style={{color:"#a5b4fc",textShadow:"0 1px 6px rgba(0,0,0,0.9)"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#c8c0e0",lineHeight:1.6,maxWidth:340,textShadow:"0 1px 8px rgba(0,0,0,0.95)"}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<div className="rounded-2xl p-6 mt-8 mx-4 text-left" style={{background:"rgba(10,10,30,0.72)",border:"1px solid rgba(255,255,255,0.15)",maxWidth:380}}>
+<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
+<p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to hidden places. Content is curated for curiosity — not as instructions.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>このアプリは隠れた場所への創造的なガイドです。内容は好奇心のために厳選されており、指示ではありません。</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Some locations include natural environments, heights, water, or areas that may be restricted or unsafe. You explore at your own risk.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Always follow local laws, respect private property, and check current conditions before visiting any place.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#e8c0f0"}}>If you are under 18, please explore responsibly.</p>
+</div>
+<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore<br/><span style={{fontSize:"12px",opacity:0.85}}>理解しました — 探検しましょう</span></button>
+</div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p>
+<a href={`https://maps.google.com/?q=${encodeURIComponent(p.n+', '+CITY_EN)}`} target="_blank" rel="noopener noreferrer"
+  className="mt-3 flex items-center gap-2 text-sm font-bold"
+  style={{color:"#166534",textDecoration:"none",display:"inline-flex",marginTop:"10px"}}>
+  🗺 Get directions
+</a>
+</div>}
+{p.ef&&<p className="text-xs mt-3 pt-3" style={{color:"#555",lineHeight:1.7,borderTop:"1px solid #dcfce7"}}>🍔 {p.ef}</p>}
+{p.sf&&<p className="text-xs mt-2" style={{color:"#555",lineHeight:1.7}}>🏠 {p.sf}</p>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);const[spinning,setSpinning]=useState(false);const[spinPlace,setSpinPlace]=useState(null);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
+if(showPicker){const rp=spinPlace||P[0];const _bgs=["https://mariavheland.github.io/godostuff/dice/bg1.jpg","https://mariavheland.github.io/godostuff/dice/bg2.jpg","https://mariavheland.github.io/godostuff/dice/bg3.jpg"];const _bg=_bgs[Math.floor(Math.random()*_bgs.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backgroundImage:`url(${_bg})`,backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.55)",pointerEvents:"none"}}/>
+<span style={{position:"absolute",top:"8%",left:"6%",fontSize:48,color:"#c8102e",animation:"floatSuit 6.2s ease-in-out infinite",pointerEvents:"none"}}>♥</span>
+<span style={{position:"absolute",top:"12%",right:"8%",fontSize:40,color:"#1a1a1a",animation:"floatSuit2 5.8s ease-in-out infinite .8s",pointerEvents:"none"}}>♠</span>
+<span style={{position:"absolute",bottom:"18%",left:"5%",fontSize:36,color:"#c8102e",animation:"floatSuit 7.1s ease-in-out infinite 1.5s",pointerEvents:"none"}}>♦</span>
+<span style={{position:"absolute",bottom:"15%",right:"6%",fontSize:44,color:"rgba(255,255,255,.18)",animation:"floatSuit2 6.5s ease-in-out infinite 2.2s",pointerEvents:"none"}}>♣</span>
+<div style={{position:"absolute",inset:16,border:"1px solid rgba(212,175,55,.18)",borderRadius:24,pointerEvents:"none"}}/>
+<p className={spinning?"text-5xl mb-6 dice-spin":"text-5xl mb-6 final-land"} style={{lineHeight:1}}>🎲</p>
+{!spinPlace&&<p style={{color:"rgba(212,175,55,.6)",fontSize:14,letterSpacing:"2px",textTransform:"uppercase"}}>rolling…</p>}
+{spinPlace&&<div className={spinning?"slot-flicker text-center":"final-land text-center"} style={{maxWidth:320,position:"relative",zIndex:1}}>
+<div style={{background:"rgba(0,0,0,.35)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(212,175,55,.25)",padding:"20px 24px"}}>
+<h2 className="text-2xl font-black" style={{color:"#fff",letterSpacing:"-.5px",lineHeight:1.15}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-xs font-bold mt-2 uppercase" style={{color:"#d4af37",letterSpacing:"2px"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3" style={{color:"rgba(255,255,255,.75)",lineHeight:1.65}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+</div></div>}
+<div className="flex gap-3 mt-8" style={{position:"relative",zIndex:1}}>
+<button onClick={()=>{setShowPicker(false);setSpinPlace(null);setSpinning(false);}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>✕ Close</button>
+{!spinning&&spinPlace&&<button onClick={()=>{setSelected(rp);setShowPicker(false);setSpinPlace(null);}} className="px-6 py-2 rounded-full text-sm font-black" style={{background:"linear-gradient(135deg,#d4af37,#f0c040)",color:"#0e3a1e",border:"none",cursor:"pointer"}}>Let's go →</button>}
+{!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>🎲 Again</button>}
+</div></div>}
+
+return <div style={{minHeight:"100vh",backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Tokyo Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={startSpin} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Tokyo Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script>
+</body>
+</html>
