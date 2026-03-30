@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Osaka's hidden world. 30 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Osaka">
+<meta property="og:description" content="30 hidden, free, historically rich places in Osaka.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Osaka</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#faf8f4;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes diceShake{0%,100%{transform:rotate(0deg) scale(1)}15%{transform:rotate(-18deg) scale(1.35)}30%{transform:rotate(16deg) scale(1.35)}45%{transform:rotate(-12deg) scale(1.25)}60%{transform:rotate(10deg) scale(1.2)}75%{transform:rotate(-6deg) scale(1.1)}}
+@keyframes diceSpin{0%{transform:rotateY(0deg) scale(1.1)}100%{transform:rotateY(360deg) scale(1.1)}}
+@keyframes slotFlicker{0%,100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0px)}50%{opacity:.55;transform:translateY(-6px) scale(.96);filter:blur(1.5px)}}
+@keyframes finalLand{0%{opacity:0;transform:scale(.75) translateY(28px)}65%{transform:scale(1.08) translateY(-4px)}85%{transform:scale(.97) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.dice-shake{animation:diceShake .7s ease forwards}
+.dice-spin{animation:diceSpin .18s linear infinite}
+.slot-flicker{animation:slotFlicker .12s ease infinite}
+.final-land{animation:finalLand .55s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes floatSuit{0%,100%{transform:translateY(0) rotate(0deg);opacity:.12}50%{transform:translateY(-18px) rotate(8deg);opacity:.22}}
+@keyframes floatSuit2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.08}50%{transform:translateY(14px) rotate(-6deg);opacity:.18}}
+@keyframes feltShimmer{0%,100%{opacity:0}50%{opacity:.07}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Osaka...</p></div>
+<div id="root"></div>
+<script>
+const P = [
+  {id:1,n:"Dotonbori Canal at 6am",a:"Dotonbori",v:["hidden", "beautiful"],d:20,s:"The famous canal before the neon district awakens, water still and empty",st:"Walking the canal alone, seeing the city before its mask goes on",im:"Empty streets, canal reflecting sky, neon signs shutting off one by one",t:"Start at the north bridge, walk the full length, photograph without crowds",c:["beautiful"],r:"g",nn:"道頓堀川",ns:"人がいない早朝の水路",nst:"一人で歩き、ネオン看板が消える",nt:"北の橋から始め、静かに歩いてください"},
+  {id:2,n:"Shinsekai Retro District",a:"Shinsekai",v:["weird", "local", "night"],d:45,s:"1950s era neighborhood with pachinko parlors, fugu restaurants, and worn neon",st:"Eating okonomiyaki at tiny stalls, watching pachinko players, soaking in retro Japan",im:"Flickering pachinko lights, the smell of frying batter, old wooden shop fronts",t:"Go at night, eat at the standing bars, bring cash for pachinko if interested",c:["local_only"],r:"g",nn:"新世界",ns:"昭和の雰囲気が残っている地域",nst:"古い屋台で食べ、パチンコを眺める",nt:"夜に訪問し、現金を用意してください"},
+  {id:3,n:"Tsuruhashi Covered Market",a:"Tsuruhashi",v:["local", "free"],d:60,s:"The longest covered shopping street, 680 meters of local life",st:"Browsing stalls, eating street food, watching grandmothers shop",im:"Yellow plastic covers overhead, vendor voices echoing, the smell of fish and spices",t:"Go early morning, bring a backpack, shop where locals shop",c:["local_only"],r:"g",nn:"鶴橋商店街",ns:"日本で最も長い屋根付き商店街",nst:"屋台を見て、地元の食べ物を食べる",nt:"早朝に訪問し、バックパックを持参してください"},
+  {id:4,n:"Nakanoshima Island Museum",a:"Nakanoshima",v:["free", "beautiful"],d:30,s:"Island between two rivers with free museums, parks, and river views",st:"Walking the island in morning light, visiting the free science museum",im:"River on both sides, green parks, modern buildings reflecting water",t:"Bring a picnic, spend hours, visit multiple free exhibits",c:["free_museum"],r:"g",nn:"中之島",ns:"二つの川に挟まれた島",nst:"朝の光の中で島を歩く",nt:"ピクニックを持参し、時間を過ごしてください"},
+  {id:5,n:"Tenjinbashi-suji Covered Street",a:"Tenjinbashi",v:["local", "hidden"],d:40,s:"Longest covered shopping street in Japan at 680 meters, mostly locals",st:"Walking the entire length, eating at small restaurants, discovering shops",im:"Metal covered ceiling stretching forever, shop lights flickering on, local voices",t:"Shop early, eat at local places, respect the neighborhood",c:["local_only"],r:"g",nn:"天神橋筋商店街",ns:"680メートルの長い商店街",nst:"全長を歩き、地元のレストランで食べる",nt:"早朝に訪問し、地元の人々を尊重してください"},
+  {id:6,n:"Hozenji Yokocho Alley",a:"Dotonbori",v:["beautiful", "history"],d:15,s:"Narrow historic alley with traditional restaurants and lanterns reflecting in water",st:"Walking the lantern-lit alley, sitting in izakayas, drinking late into the night",im:"Lanterns mirrored in still water, wooden shop fronts glowing, quiet voices",t:"Visit after 8pm, reserve restaurants ahead, bring cash",c:["romantic_water"],r:"y",nn:"法善寺横丁",ns:"伝統的なレストランがある狭い路地",nst:"ランタンの光の中を歩く",nt:"夜に訪問し、レストランを予約してください"},
+  {id:7,n:"Kuromon Market",a:"Dotonbori",v:["local", "free"],d:45,s:"The kitchen of Osaka, a sprawling market where locals buy seafood and produce",st:"Browsing fresh sashimi, buying snacks, watching expert vendors",im:"Ice piled high, fish glistening, vendor hands moving expertly, the smell of the sea",t:"Go early morning, bring cash, sample whatever is offered",c:["local_only"],r:"g",nn:"黒門市場",ns:"大阪の台所",nst:"市場を探索し、地元の人々を観察する",nt:"早朝に訪問し、現金を持参してください"},
+  {id:8,n:"Sumiyoshi Taisha Ancient Shrine",a:"Tennoji",v:["history", "quiet"],d:30,s:"The oldest Shinto shrine, founded 1800 years ago, almost no tourists",st:"Walking the sacred grounds, seeing ancient architecture preserved",im:"Wooden shrine structures, the smell of old wood, complete solitude",t:"Arrive early, walk the entire grounds, sit by the shrine",c:["history_big"],r:"g",nn:"住吉大社",ns:"1800年前に創建された日本最古の神社",nst:"神聖な土地を歩く",nt:"早朝に到着し、全体を探索してください"},
+  {id:9,n:"Harukas 300 Tower",a:"Abeno",v:["high_spots"],d:30,s:"Tallest building in Japan, observation deck showing the entire Kansai region",st:"Taking the elevator to the sky, seeing Osaka spread below in all directions",im:"The city shrinking below, mountains in distance, sunset turning sky pink",t:"Visit afternoon to sunset, buy tickets online, stay for evening lights",c:["high_spots"],r:"y",nn:"あべのハルカス",ns:"日本で最も高い建物",nst:"展望デッキから全景を見る",nt:"午後から夜間に訪問してください"},
+  {id:10,n:"Osaka Castle Underground Moat",a:"Chuo",v:["history", "free"],d:25,s:"The ancient moat surrounding Osaka Castle, now a park path with free walking",st:"Walking the entire moat perimeter, seeing the castle walls from below",im:"Stone walls rising above the path, water reflecting the keep, cherry blossoms in season",t:"Walk the whole perimeter, visit in spring for blossoms, bring water",c:["history_big"],r:"g",nn:"大阪城の堀",ns:"無料で歩ける古い堀",nst:"堀全体を歩く",nt:"季節によって異なる景色を楽しんでください"},
+  {id:11,n:"Minoh Waterfall Day Trip",a:"Minoh",v:["nature", "hidden"],d:120,s:"Mountain waterfall 30 minutes from the city, with hiking and autumn leaves",st:"Taking the train, hiking the path, bathing in the waterfall mist",im:"Water cascading white, autumn leaves framing the fall, cool mountain air",t:"Go in autumn, bring hiking boots, eat at the mountain restaurants",c:["nature"],r:"y",nn:"箕面大滝",ns:"市から30分の山の滝",nst:"ハイキングして滝を見る",nt:"秋に訪問し、ハイキングブーツを持参してください"},
+  {id:12,n:"Namba Parks Rooftop Garden",a:"Namba",v:["free", "beautiful"],d:20,s:"Free public rooftop garden seven stories up, overlooking the city",st:"Taking the escalator to the sky, sitting in the garden, watching sunset",im:"Green plants and water features against the city skyline, sunset spreading color",t:"Visit late afternoon, bring a friend, sit for the sunset",c:["parks"],r:"g",nn:"なんばパークス屋上庭園",ns:"無料の屋上庭園",nst:"庭園に座り、街を眺める",nt:"午後遅くに訪問し、景色を楽しんでください"},
+  {id:13,n:"Kamagasaki Day Laborer District",a:"Kamagasaki",v:["weird", "local"],d:45,s:"The real working-class Osaka, a laborer district that locals rarely visit",st:"Walking the streets respectfully, eating at tiny no-name restaurants, observing",im:"Weathered faces, cheap bars, the sound of manual work and survival",t:"Go with a guide if possible, be respectful, eat where workers eat",c:["local_only"],r:"g",nn:"釜ヶ崎",ns:"日本の実際の労働者地区",nst:"尊重しながら地区を歩く",nt:"ガイドと共に訪問し、尊重を持ってください"},
+  {id:14,n:"Shitennoji Temple Flea Market",a:"Tennoji",v:["free", "local"],d:45,s:"Ancient temple with a legendary flea market every 21st and 22nd of the month",st:"Hunting for vintage items, meeting collectors, haggling prices",im:"Rows of vintage goods, people kneeling to inspect items, the smell of old things",t:"Go on market days only, bring cash, arrive early for best items",c:["local_only"],r:"g",nn:"四天王寺骨董市",ns:"毎月のフリーマーケット",nst:"ビンテージ品を探す",nt:"市場の日に訪問し、現金を持参してください"},
+  {id:15,n:"Fukushima Neighborhood",a:"Fukushima",v:["local", "quiet"],d:30,s:"Residential neighborhood north of the city center with local restaurants",st:"Walking quiet streets, eating at neighborhood okonomiyaki joints",im:"Residential quietness, locals passing on bicycles, small shops closed by 8pm",t:"Visit early evening, eat like a local, explore side streets",c:["local_only"],r:"g",nn:"福島地区",ns:"地元のレストランがある住宅地",nst:"静かな通りを歩く",nt:"夜間に訪問し、地元のように食べてください"},
+  {id:16,n:"Kitashinchi District",a:"Kitashinchi",v:["night", "beautiful"],d:45,s:"Traditional geisha district with geishas passing at 6pm heading to work",st:"Sitting in izakayas, watching the district come alive, conversations flowing",im:"Wooden geisha houses, lanterns lighting up, women in silk moving through streets",t:"Do not photograph geishas, eat in cheap izakayas, arrive by 5:30pm",c:["local_only"],r:"y",nn:"北新地",ns:"伝統的な芸者地区",nst:"芸者が仕事に向かう様子を見る",nt:"芸者を撮影せず、5時30分に到着してください"},
+  {id:17,n:"Nakanoshima Central Library",a:"Nakanoshima",v:["free", "quiet"],d:30,s:"Stunning modern library on the island, open to the public, completely free",st:"Spending hours reading by the windows, observing the river below",im:"Glass and light, river views, rows of books, the smell of paper",t:"Bring a book or read their collection, stay for hours",c:["free_museum"],r:"g",nn:"大阪中央図書館",ns:"島にある無料の図書館",nst:"窓から川を眺めながら読む",nt:"本を持参するか、コレクションを読んでください"},
+  {id:18,n:"Shinsaibashi Shopping Street",a:"Shinsaibashi",v:["local"],d:45,s:"Famous shopping street where locals and tourists mix, department stores and small shops",st:"Wandering the street, stopping at shops that catch the eye",im:"Crowds of people, shop windows gleaming, the energy of commerce",t:"Go during the day, wear comfortable shoes, bring a card for shopping",c:["local_only"],r:"y",nn:"心斎橋",ns:"地元の人と観光客が混ざる通り",nst:"通りを歩きながら買い物をする",nt:"快適な靴を履いてください"},
+  {id:19,n:"Chushojima Island",a:"Chushojima",v:["hidden", "beautiful"],d:60,s:"Tiny island in the bay with a walking path, free to visit, no tourists",st:"Taking the ferry, walking the island perimeter, seeing Osaka from the water",im:"Water surrounding the path, Osaka skyline from the island, complete quietness",t:"Take the ferry early, walk the whole island, bring water",c:["nature"],r:"g",nn:"中之島",ns:"湾の中の小さな島",nst:"島を一周歩く",nt:"早朝に渡船で行き、全体を歩いてください"},
+  {id:20,n:"Shinsekai Food Alley",a:"Shinsekai",v:["local", "free"],d:30,s:"Narrow food alley packed with tiny restaurants serving okonomiyaki and takoyaki",st:"Eating at standing counters, watching chefs work, trying different stalls",im:"Steam rising from griddles, the smell of cooking batter, hands moving expertly",t:"Go hungry, eat at multiple places, pay per plate",c:["local_only"],r:"g",nn:"新世界食い倒れ通り",ns:"食べ物の屋台がいっぱいの路地",nst:"立ち食い居酒屋で食べる",nt:"お腹を空かせて、複数の店を試してください"},
+  {id:21,n:"Osaka Castle",a:"Chuo",v:["history", "beautiful"],d:60,s:"The iconic castle rebuilt in 1931, surrounded by parks and history",st:"Climbing to the observation deck, walking the castle grounds",im:"The castle rising against the sky, gardens full of cherry blossoms, views spreading far",t:"Visit spring or autumn, climb the keep, walk the entire park",c:["history_big"],r:"y",nn:"大阪城",ns:"大阪を象徴する城",nst:"天守から景色を見る",nt:"春または秋に訪問し、全体を歩いてください"},
+  {id:22,n:"Tsutenkaku Tower Vintage",a:"Shinseaki",v:["weird", "history"],d:20,s:"Vintage 1912 tower (reconstructed), symbol of Osaka retro culture",st:"Climbing to the observation platform, feeling the history",im:"Iron girders and old technology, views of the retro district below",t:"Climb the tower, visit the restaurant, take photos",c:["history_big"],r:"y",nn:"通天閣",ns:"大阪のレトロな象徴",nst:"塔に登る",nt:"レストランを訪問してください"},
+  {id:23,n:"Nishinakajima Park",a:"Kita",v:["parks", "quiet"],d:30,s:"Large park with waterfront, walking paths, and local families on weekends",st:"Walking the paths, sitting by the water, watching sunset",im:"Green spaces, water reflecting sky, people stretching and walking",t:"Go on a weekend for atmosphere, bring a picnic",c:["parks"],r:"g",nn:"西中島公園",ns:"ウォーターフロント公園",nst:"公園を歩く",nt:"ピクニックを持参してください"},
+  {id:24,n:"Kofuku-ji Temple Small Osaka",a:"Tennoji",v:["history", "quiet"],d:25,s:"Small ancient temple in the city, overlooked by most tourists",st:"Exploring the grounds, sitting in the temple garden",im:"Stone statues weathered by centuries, moss covering old stone, silence",t:"Visit early morning, sit and meditate, explore the cemetery",c:["history_big"],r:"g",nn:"興福寺",ns:"市内の小さな古い寺院",nst:"庭園に座る",nt:"早朝に訪問し、瞑想してください"},
+  {id:25,n:"Umeda Sky Building",a:"Umeda",v:["high_spots", "beautiful"],d:30,s:"Floating garden observatory 170 meters high, futuristic architecture",st:"Taking the open-air escalators to the top, walking the garden",im:"The city spreading below, sky above, wind in your hair, suspended in air",t:"Visit at sunset, take photos, buy tickets at the door",c:["high_spots"],r:"y",nn:"梅田スカイビル",ns:"170メートルの展望台",nst:"浮遊する庭園を歩く",nt:"夕暮時に訪問してください"},
+  {id:26,n:"Dotonbori at Night",a:"Dotonbori",v:["night", "weird"],d:45,s:"The famous neon district in full chaos, crowds and sensory overload",st:"Walking through the crowds, eating takoyaki, photographing the neon",im:"Neon reflecting on water, crowds moving, the smell of food, voices everywhere",t:"Go after 8pm, bring cash, wear comfortable shoes",c:["night"],r:"g",nn:"道頓堀夜間",ns:"ネオン看板と人混み",nst:"夜間に通りを歩く",nt:"夜8時以降に訪問し、現金を持参してください"},
+  {id:27,n:"Namba Station Discovery",a:"Namba",v:["local", "free"],d:30,s:"Massive railway station where 70 million people pass yearly",st:"Exploring the station, watching people, discovering hidden shops",im:"Crowds moving in all directions, trains arriving and departing, organized chaos",t:"Watch the rush hours, explore every level, discover shops",c:["local_only"],r:"g",nn:"難波駅",ns:"毎年7000万人が通過する駅",nst:"駅を探索する",nt:"ラッシュアワーを観察してください"},
+  {id:28,n:"Abeno Harukas Food Court",a:"Abeno",v:["local", "free"],d:25,s:"Food court in the basement of Harukas with 20 different Osaka specialties",st:"Sampling different dishes, eating like a local, trying everything",im:"Rows of small restaurant counters, the smell of cooking, people eating quickly",t:"Go during lunch, try 3-4 different dishes, bring cash",c:["local_only"],r:"g",nn:"あべのハルカスフードコート",ns:"大阪の名物が集まるフードコート",nst:"異なる料理を試す",nt:"ランチ時に訪問し、複数の料理を試してください"},
+  {id:29,n:"Tennoji Zoo Early Morning",a:"Tennoji",v:["free", "local"],d:45,s:"Free entrance in the early morning for locals before 9am on certain days",st:"Watching animals wake up, meeting local families",im:"Animals stretching, morning light, few people watching",t:"Check free hours ahead, bring a camera, spend 2 hours",c:["parks"],r:"g",nn:"天王寺動物園",ns:"早朝無料の動物園",nst:"朝に動物を見る",nt:"事前に無料時間を確認してください"},
+  {id:30,n:"Shinsekai Standing Sushi",a:"Shinsekai",v:["local", "weird"],d:20,s:"Tiny standing sushi bar where you eat standing up, sushi falling on a conveyor",st:"Standing at the bar, grabbing fresh sushi, drinking beer with locals",im:"Sushi plates circulating, hands reaching, laughter and conversation",t:"Go late evening, stand up, eat quickly, chat with neighbors",c:["local_only"],r:"y",nn:"新世界立ち寿司",ns:"立ったまま食べる小さな寿司店",nst:"立ちながら寿司を食べる",nt:"夜遅くに訪問し、地元の人々と会話してください"}
+];
+const PHRASES = [{native:"おはようございます",en:"good morning"},{native:"ありがとうございました",en:"thank you very much"},{native:"すみませんね",en:"excuse me please"},{native:"いくらですか",en:"how much is this"},{native:"トイレはどこですか",en:"where is the restroom"},{native:"おいしい",en:"delicious"},{native:"もう一杯",en:"one more drink"},{native:"ビールください",en:"beer please"},{native:"わかりました",en:"I understand"},{native:"また明日",en:"see you tomorrow"},{native:"頑張ってください",en:"do your best"},{native:"大丈夫です",en:"it is okay"}];
+const AREAS = ["Abeno", "Chuo", "Chushojima", "Dotonbori", "Fukushima", "Kamagasaki", "Kita", "Kitashinchi", "Minoh", "Nakanoshima", "Namba", "Shinsaibashi", "Shinseaki", "Shinsekai", "Tenjinbashi", "Tennoji", "Tsuruhashi", "Umeda"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"Street Food Walk",desc:"Taste Osaka through its food. Okonomiyaki in Shinseaki, takoyaki from Dotonbori stalls, fresh seafood from Kuromon Market, fugu if brave.",places:[2, 7, 20, 28, 30],time:"4 hours"},
+  {id:2,title:"Old Osaka Discovery",desc:"Experience retro Osaka that time forgot. Shinseaki pachinko and fugu, Tsuruhashi market chaos, Sumiyoshi ancient shrine, then Shitennoji temple flea market.",places:[2, 3, 8, 14, 22],time:"6 hours"},
+  {id:3,title:"River Islands Escape",desc:"Explore Osaka from the water. Walk Nakanoshima island and its free museums, visit Chushojima in the bay, enjoy the rooftop garden at Namba Parks.",places:[4, 12, 17, 19],time:"4 hours"},
+  {id:4,title:"Hidden Neighbourhoods",desc:"Discover the real Osaka away from tourists. Fukushima residential streets, Kamagasaki day laborer district, Kitashinchi geisha district at 6pm.",places:[13, 15, 16],time:"4 hours"},
+  {id:5,title:"Dotonbori Day and Night",desc:"Experience the famous district both ways. Empty canal at 6am, Hozenji alley exploration, then return at night for neon chaos and crowds.",places:[1, 6, 26],time:"6 hours"},
+  {id:6,title:"Osaka Heights",desc:"See the city from above. Harukas 300 tower at sunset, Umeda Sky Building floating garden, views spreading in all directions.",places:[9, 25],time:"3 hours"},
+  {id:7,title:"Nature Day Trip",desc:"Escape to mountains. Take the train to Minoh Waterfall, hike the forest path, eat at mountain restaurants, return to the city by sunset.",places:[11],time:"5 hours"},
+  {id:8,title:"Markets and Shopping",desc:"Walk the markets of Osaka. Tsuruhashi covered street, Kuromon Market for seafood, Lagunilla flea market, Abeno food court.",places:[3, 7, 14, 28],time:"5 hours"},
+  {id:9,title:"Historic Osaka",desc:"Explore the past of the city. Osaka Castle and its moat, Sumiyoshi Taisha ancient shrine, Kofuku-ji small temple, Tsutenkaku vintage tower.",places:[8, 10, 21, 22, 24],time:"6 hours"},
+  {id:10,title:"The Full Osaka Experience",desc:"Three days exploring everything. Markets, neighborhoods, neon, food, history, islands, mountains. The complete Osaka picture.",places:[1, 2, 3, 4, 7, 8, 11, 12, 14, 16, 20, 21, 26],time:"18 hours"}
+];
+const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="日本語";
+const CITY_EN="Osaka";
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(10,8,30,0.72) 0%,rgba(10,8,30,0.20) 45%,rgba(10,8,30,0.10) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-sm font-bold tracking-widest" style={{color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"3px"}}>Go Do Stuff</h1>
+<p className="text-6xl font-black mt-1 leading-none" style={{color:"white",textShadow:"0 2px 16px rgba(0,0,0,0.7)",letterSpacing:"-1px"}}>Osaka Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0",lineHeight:1.5,textShadow:"0 1px 8px rgba(0,0,0,0.9)"}}>Activities are free.<br/><span style={{fontSize:"11px",opacity:0.7}}>Travel & food recommendations: low budget.</span></p>
+<p className="text-xs mt-2" style={{color:"#a5b4fc",textShadow:"0 1px 6px rgba(0,0,0,0.9)"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#c8c0e0",lineHeight:1.6,maxWidth:340,textShadow:"0 1px 8px rgba(0,0,0,0.95)"}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<div className="rounded-2xl p-6 mt-8 mx-4 text-left" style={{background:"rgba(10,10,30,0.72)",border:"1px solid rgba(255,255,255,0.15)",maxWidth:380}}>
+<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
+<p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to hidden places. Content is curated for curiosity — not as instructions.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>大阪を安全に楽しむため、すべての通知と警告に従ってください。</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Some locations include natural environments, heights, water, or areas that may be restricted or unsafe. You explore at your own risk.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Always follow local laws, respect private property, and check current conditions before visiting any place.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#e8c0f0"}}>If you are under 18, please explore responsibly.</p>
+</div>
+<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore<br/><span style={{fontSize:"12px",opacity:0.85}}>了解しました</span></button>
+</div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p>
+<a href={`https://maps.google.com/?q=${encodeURIComponent(p.n+', '+CITY_EN)}`} target="_blank" rel="noopener noreferrer"
+  className="mt-3 flex items-center gap-2 text-sm font-bold"
+  style={{color:"#166534",textDecoration:"none",display:"inline-flex",marginTop:"10px"}}>
+  🗺 Get directions
+</a>
+</div>}
+{p.ef&&<p className="text-xs mt-3 pt-3" style={{color:"#555",lineHeight:1.7,borderTop:"1px solid #dcfce7"}}>🍔 {p.ef}</p>}
+{p.sf&&<p className="text-xs mt-2" style={{color:"#555",lineHeight:1.7}}>🏠 {p.sf}</p>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);const[spinning,setSpinning]=useState(false);const[spinPlace,setSpinPlace]=useState(null);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
+if(showPicker){const rp=spinPlace||P[0];const _bgs=["https://mariavheland.github.io/godostuff/dice/bg1.jpg","https://mariavheland.github.io/godostuff/dice/bg2.jpg","https://mariavheland.github.io/godostuff/dice/bg3.jpg"];const _bg=_bgs[Math.floor(Math.random()*_bgs.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backgroundImage:`url(${_bg})`,backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.55)",pointerEvents:"none"}}/>
+<span style={{position:"absolute",top:"8%",left:"6%",fontSize:48,color:"#c8102e",animation:"floatSuit 6.2s ease-in-out infinite",pointerEvents:"none"}}>♥</span>
+<span style={{position:"absolute",top:"12%",right:"8%",fontSize:40,color:"#1a1a1a",animation:"floatSuit2 5.8s ease-in-out infinite .8s",pointerEvents:"none"}}>♠</span>
+<span style={{position:"absolute",bottom:"18%",left:"5%",fontSize:36,color:"#c8102e",animation:"floatSuit 7.1s ease-in-out infinite 1.5s",pointerEvents:"none"}}>♦</span>
+<span style={{position:"absolute",bottom:"15%",right:"6%",fontSize:44,color:"rgba(255,255,255,.18)",animation:"floatSuit2 6.5s ease-in-out infinite 2.2s",pointerEvents:"none"}}>♣</span>
+<div style={{position:"absolute",inset:16,border:"1px solid rgba(212,175,55,.18)",borderRadius:24,pointerEvents:"none"}}/>
+<p className={spinning?"text-5xl mb-6 dice-spin":"text-5xl mb-6 final-land"} style={{lineHeight:1}}>🎲</p>
+{!spinPlace&&<p style={{color:"rgba(212,175,55,.6)",fontSize:14,letterSpacing:"2px",textTransform:"uppercase"}}>rolling…</p>}
+{spinPlace&&<div className={spinning?"slot-flicker text-center":"final-land text-center"} style={{maxWidth:320,position:"relative",zIndex:1}}>
+<div style={{background:"rgba(0,0,0,.35)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(212,175,55,.25)",padding:"20px 24px"}}>
+<h2 className="text-2xl font-black" style={{color:"#fff",letterSpacing:"-.5px",lineHeight:1.15}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-xs font-bold mt-2 uppercase" style={{color:"#d4af37",letterSpacing:"2px"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3" style={{color:"rgba(255,255,255,.75)",lineHeight:1.65}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+</div></div>}
+<div className="flex gap-3 mt-8" style={{position:"relative",zIndex:1}}>
+<button onClick={()=>{setShowPicker(false);setSpinPlace(null);setSpinning(false);}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>✕ Close</button>
+{!spinning&&spinPlace&&<button onClick={()=>{setSelected(rp);setShowPicker(false);setSpinPlace(null);}} className="px-6 py-2 rounded-full text-sm font-black" style={{background:"linear-gradient(135deg,#d4af37,#f0c040)",color:"#0e3a1e",border:"none",cursor:"pointer"}}>Let's go →</button>}
+{!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>🎲 Again</button>}
+</div></div>}
+
+return <div style={{minHeight:"100vh",backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Osaka Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={startSpin} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Osaka Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script>
+</body>
+</html>
