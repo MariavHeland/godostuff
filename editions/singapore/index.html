@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Singapore's hidden world. 30 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Singapore">
+<meta property="og:description" content="30 hidden, free, historically rich places in Singapore.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Singapore</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#faf8f4;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes diceShake{0%,100%{transform:rotate(0deg) scale(1)}15%{transform:rotate(-18deg) scale(1.35)}30%{transform:rotate(16deg) scale(1.35)}45%{transform:rotate(-12deg) scale(1.25)}60%{transform:rotate(10deg) scale(1.2)}75%{transform:rotate(-6deg) scale(1.1)}}
+@keyframes diceSpin{0%{transform:rotateY(0deg) scale(1.1)}100%{transform:rotateY(360deg) scale(1.1)}}
+@keyframes slotFlicker{0%,100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0px)}50%{opacity:.55;transform:translateY(-6px) scale(.96);filter:blur(1.5px)}}
+@keyframes finalLand{0%{opacity:0;transform:scale(.75) translateY(28px)}65%{transform:scale(1.08) translateY(-4px)}85%{transform:scale(.97) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.dice-shake{animation:diceShake .7s ease forwards}
+.dice-spin{animation:diceSpin .18s linear infinite}
+.slot-flicker{animation:slotFlicker .12s ease infinite}
+.final-land{animation:finalLand .55s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes floatSuit{0%,100%{transform:translateY(0) rotate(0deg);opacity:.12}50%{transform:translateY(-18px) rotate(8deg);opacity:.22}}
+@keyframes floatSuit2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.08}50%{transform:translateY(14px) rotate(-6deg);opacity:.18}}
+@keyframes feltShimmer{0%,100%{opacity:0}50%{opacity:.07}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Singapore...</p></div>
+<div id="root"></div>
+<script>
+const P = [
+  {id:1,n:"Tiong Bahru Morning Walk",a:"Tiong Bahru",v:["beautiful", "local"],d:45,s:"The most charming 1930s housing estate, art deco architecture, quiet mornings",st:"Walking the streets at 7am, photographing empty courtyards, discovering tiny shops",im:"Soft morning light on faded brick, empty streets, old bicycles leaning against walls",t:"Arrive early, bring a camera, walk slowly, sit at a kopi shop",c:["architecture"],r:"g",nn:"直落亚逸",ns:"新加坡最迷人的1930年代住宅区",nst:"早上7点在街上漫步",nt:"早到，带上相机，慢慢走，在咖啡店坐下"},
+  {id:2,n:"Little India Tekka Market at Dawn",a:"Little India",v:["local", "hidden"],d:30,s:"Fresh produce market where Indian residents buy spices, vegetables, flowers at 5am",st:"Walking through narrow stalls, watching vendors arrange flowers and spices",im:"Bright colors exploding, the smell of turmeric and cardamom, voices calling prices",t:"Go at 5:30am, bring cash, ask vendors about ingredients",c:["local_only"],r:"g",nn:"小印度得叻市场",ns:"印度居民购买香料的市场",nst:"黎明时在市场里走动",nt:"凌晨5点30分到达，带上现金"},
+  {id:3,n:"Geylang Durian Street Night",a:"Geylang",v:["weird", "local", "night"],d:30,s:"Famous durian stall street with neon signs, selling the king of fruits at night",st:"Buying durian from local stall owners, eating on plastic chairs, tasting varieties",im:"Neon pink and yellow signs, durian shells piling up, the intense smell",t:"Go after 10pm, bring cash, try multiple varieties, sit and chat",c:["night"],r:"y",nn:"芽笼榴莲街",ns:"著名的榴莲摊贩街",nst:"晚上购买榴莲",nt:"晚上10点后到达，尝试多种品种"},
+  {id:4,n:"Joo Chiat Peranakan Shophouses",a:"Joo Chiat",v:["beautiful", "history"],d:40,s:"Colorful Peranakan shophouses with ornate tiles, traditional architecture preserved",st:"Walking the street, photographing the shophouses, visiting small antique shops",im:"Pastel blues, greens, pinks, ornate tiles catching light, quiet street",t:"Go early morning, photograph details, visit antique shops inside buildings",c:["architecture"],r:"g",nn:"如切老街",ns:"色彩缤纷的娘惹店铺",nst:"走在街上，摄影精致的建筑",nt:"早到，拜访古董店"},
+  {id:5,n:"Labrador Nature Reserve Gun Battery",a:"Labrador",v:["history", "hidden", "free"],d:45,s:"Free nature reserve with WWII gun battery tunnels, hiking trails, no tourists",st:"Exploring the tunnels, walking the coast, finding quiet corners",im:"Dark tunnel walls, views of the strait, birds calling, complete solitude",t:"Bring a torch, wear hiking shoes, explore the entire reserve",c:["nature"],r:"g",nn:"拉布拉多自然保护区",ns:"有二战枪炮的免费保护区",nst:"探索隧道，走沿海步道",nt:"带上手电筒，穿着登山鞋"},
+  {id:6,n:"Henderson Waves Bridge",a:"Buona Vista",v:["beautiful", "free"],d:30,s:"Highest pedestrian bridge in Singapore, undulating waves of wood and steel",st:"Walking the entire bridge at sunset, views spreading in all directions",im:"Red wood glowing at sunset, sky turning colors, the city far below",t:"Visit at sunset, bring a camera, walk slowly",c:["high_spots"],r:"g",nn:"亨德森林波桥",ns:"新加坡最高的行人桥",nst:"在日落时走过整座桥",nt:"日落时访问，带上相机"},
+  {id:7,n:"Kampong Glam Sultan Mosque",a:"Kampong Glam",v:["beautiful", "history"],d:25,s:"Golden-domed mosque in the historic Malay area, free to visit",st:"Removing shoes, entering the courtyard, feeling the spiritual space",im:"Golden dome reflecting sun, white walls glowing, peaceful courtyard",t:"Visit outside prayer times, dress respectfully, sit in the courtyard",c:["history_big"],r:"g",nn:"苏丹回教堂",ns:"历史悠久的马来社区的清真寺",nst:"进入庭院，体验精神空间",nt:"在祈祷时间外访问，尊重着装"},
+  {id:8,n:"MacRitchie Reservoir Jungle Walk",a:"Toa Payoh",v:["nature", "free"],d:60,s:"Forest canopy walk and reservoir, one of the best-kept secrets in Singapore kept secrets, completely free",st:"Walking the 250-meter canopy walk through the trees, then hiking the perimeter",im:"Leaves and branches all around, tropical bird calls, water shimmering",t:"Go early morning, bring water, take the full loop walk",c:["nature"],r:"g",nn:"麦里芝蓄水池",ns:"林间步道和蓄水池",nst:"走过250米的林冠步道",nt:"早到，带水，走完整个循环"},
+  {id:9,n:"Pulau Ubin Kampong Village",a:"Changi",v:["hidden", "local", "nature"],d:120,s:"Last traditional village in Singapore on an island, boat from Changi, no cars",st:"Taking the bumboat, cycling or walking the island, meeting villagers",im:"Wooden houses on stilts, chickens roaming, children playing, birds everywhere",t:"Rent a bike, bring cash for food, stay the entire day",c:["local_only"],r:"y",nn:"乌敏岛",ns:"新加坡最后一个传统村庄",nst:"乘坐小船去岛上",nt:"租一辆自行车，花整天时间"},
+  {id:10,n:"Bukit Timah Nature Reserve",a:"Bukit Timah",v:["nature", "free"],d:60,s:"Original jungle from Singapore, 50 hectares of primary forest, completely free",st:"Hiking to the summit, watching monkeys and birds, experiencing untouched forest",im:"Dense green canopy, the smell of earth, wildlife sounds everywhere",t:"Start early, bring water, watch for monkeys on the trail",c:["nature"],r:"g",nn:"武吉知马自然保护区",ns:"新加坡原始森林",nst:"登上山顶，观察猴子和鸟类",nt:"带足水，注意猴子"},
+  {id:11,n:"Toa Payoh HDB Estate Urban Planning",a:"Toa Payoh",v:["weird", "local"],d:45,s:"The first public housing estate built in 1965, shows urban planning story",st:"Walking the grounds, seeing how 40000 people live in planned harmony",im:"Uniform apartment blocks, basketball courts, void decks full of life",t:"Walk the internal paths, visit the hawker center, observe community",c:["local_only"],r:"g",nn:"大巴窑组屋区",ns:"1965年建造的新加坡第一个公共住房区",nst:"走在地面上，看4万人如何生活",nt:"走内部步道，观察社区"},
+  {id:12,n:"Geylang Serai Market",a:"Geylang",v:["local", "free"],d:30,s:"Malay market with food, fabrics, traditional goods, busy and authentic",st:"Browsing stalls, eating at food stalls, meeting traders",im:"Rows of fabric bolts, food smells mixing, voices calling, vibrant colors",t:"Go on Friday evening or Saturday, bring cash, taste everything",c:["local_only"],r:"g",nn:"芽笼士乃市场",ns:"马来市场，食品和织物",nst:"浏览摊位，在食品摊吃饭",nt:"周五或周六到达，品尝一切"},
+  {id:13,n:"Maxwell and Old Airport Road Hawker Centers",a:"Bukit Merah",v:["local", "free"],d:45,s:"Two legendary 24-hour hawker centers where locals eat at 3am",st:"Ordering at multiple stalls, tasting the best of Singapore street food",im:"Plastic stools, steam rising, crowds eating quickly, the energy of cheap food",t:"Go late night, bring cash, order multiple dishes per person",c:["local_only"],r:"g",nn:"麦士威和旧机场路熟食中心",ns:"传奇的24小时小贩中心",nst:"在多个摊位点餐",nt:"晚去，多人点多道菜"},
+  {id:14,n:"Haw Par Villa Theme Park Free",a:"River Valley",v:["weird", "free"],d:60,s:"Bizarre Chinese mythology theme park, completely surreal, free admission",st:"Walking through grotesque statues and scenes from folklore",im:"Creatures frozen in stone, bright paint peeling, the uncanny valley feeling",t:"Go in the afternoon, bring a camera, allow 90 minutes",c:["parks"],r:"g",nn:"虎豹别墅",ns:"奇特的中国神话主题公园",nst:"在怪异的雕像和民俗场景中漫步",nt:"下午去，带相机，留90分钟"},
+  {id:15,n:"Fort Canning Tunnels",a:"River Valley",v:["history", "hidden"],d:30,s:"Secret WWII tunnels where soldiers planned, now open for tours",st:"Walking the tunnels, hearing the history, imagining operations rooms",im:"Dark tunnel walls, old maps on display, echoing footsteps",t:"Take a guided tour, wear comfortable shoes, allow 90 minutes",c:["history_big"],r:"y",nn:"高庄堡垒隧道",ns:"二战士兵规划作战的秘密隧道",nst:"走过隧道，听历史",nt:"参加导览团，舒适的鞋子"},
+  {id:16,n:"Sungei Buloh Wetland Reserve Birdwatching",a:"Kranji",v:["nature", "free"],d:60,s:"Wetland reserve with migratory birds, completely free, best at dawn",st:"Watching for eagles and herons, identifying bird species, sitting in silence",im:"Water rippling, birds calling, morning mist, binoculars revealing details",t:"Go at dawn, bring binoculars, wear neutral colors",c:["nature"],r:"g",nn:"双溪布洛湿地保护区",ns:"有候鸟的湿地保护区",nst:"观看老鹰和苍鹭",nt:"黎明去，带双筒望远镜"},
+  {id:17,n:"Southern Ridges Forest Trail",a:"Labrador",v:["nature", "free"],d:90,s:"Free forest walk connecting Henderson Waves, Nee Soon Swamp, Mount Faber",st:"Walking the entire trail, pausing at viewpoints, watching the forest change",im:"Green canopy overhead, light filtering through leaves, views opening suddenly",t:"Start early, bring lots of water, allow 2-3 hours",c:["nature"],r:"g",nn:"南脊自然步道",ns:"连接亨德森等地的免费森林步道",nst:"走整条步道，在景点暂停",nt:"早到，带很多水"},
+  {id:18,n:"East Coast Park Early Morning",a:"East Coast",v:["local", "quiet"],d:45,s:"Beachfront park where only locals exercise at dawn, no tourists",st:"Walking with the joggers, swimming in the sea, watching sunrise",im:"Pink sky over water, people moving slowly, the sound of waves",t:"Arrive by 6am, bring a towel, swim if desired",c:["parks"],r:"g",nn:"东海岸公园",ns:"早上只有当地人的海滨公园",nst:"与跑步者一起走，游泳",nt:"凌晨6点到达，带毛巾"},
+  {id:19,n:"Chinatown Shophouses Discovery",a:"Chinatown",v:["history", "beautiful"],d:35,s:"Historic shophouses with Chinese architectural details preserved",st:"Walking side streets, finding herbal medicine shops, antique dealers",im:"Red lanterns, narrow shopfronts, signs in traditional characters",t:"Get a detailed map, walk every side street, visit small shops",c:["architecture"],r:"g",nn:"牛车水店铺",ns:"保存中国建筑细节的历史店铺",nst:"走小街，找中药店",nt:"带详细地图，走所有街道"},
+  {id:20,n:"Clarke Quay Night Market",a:"River Valley",v:["night", "local"],d:45,s:"Riverside night market with food vendors and local crowds, very authentic",st:"Walking through stalls, eating street food, watching people",im:"Red lanterns reflecting on water, smoke rising from stalls, crowds mingling",t:"Go after 9pm, bring cash, expect crowds",c:["night"],r:"g",nn:"克拉码头夜市",ns:"河畔的夜市",nst:"走过摊位，吃街头食物",nt:"晚上9点后去，现金，预期人群"},
+  {id:21,n:"Sentosa Island Day Trip",a:"Sentosa",v:["nature", "beautiful"],d:180,s:"Island with beaches, gardens, cable car, and museums, escape from the city",st:"Taking the cable car, exploring gardens, swimming, exploring museums",im:"Island beaches, tropical gardens, cable car gliding over water",t:"Spend the entire day, bring bathing suit, budget money for attractions",c:["parks"],r:"y",nn:"圣淘沙岛",ns:"有海滩和花园的岛屿",nst:"乘坐缆车，探索花园",nt:"花整天时间，带泳衣"},
+  {id:22,n:"Marina Bay Floating Platform",a:"Marina Bay",v:["beautiful", "high_spots"],d:20,s:"The free floating platform in Marina Bay, views of the bay and city",st:"Walking out to the platform, sitting and watching the water",im:"Water on all sides, sky reflecting in water, the bay spreading wide",t:"Go at sunset or night, bring a camera, sit for an hour",c:["high_spots"],r:"g",nn:"滨海湾浮动平台",ns:"湾上的免费浮动平台",nst:"走到平台上，观看水",nt:"日落或夜间去，带相机"},
+  {id:23,n:"Botanical Gardens Morning Tai Chi",a:"Tanglin",v:["quiet", "beautiful"],d:45,s:"Free botanical gardens with locals practicing tai chi at dawn",st:"Joining the tai chi group, learning movements, watching sunrise in the garden",im:"Morning mist in the gardens, people moving slowly, green everywhere",t:"Arrive before 7am, watch and learn, walk the entire garden",c:["parks"],r:"g",nn:"植物园",ns:"早上有太极的免费植物园",nst:"加入太极小组，学习动作",nt:"早上7点前到达，走遍整个花园"},
+  {id:24,n:"Sri Vadapateeshwarar Temple",a:"Little India",v:["history", "beautiful"],d:20,s:"Colorful Hindu temple with carved gopuram, spiritual center of Little India",st:"Removing shoes, entering the temple, feeling the devotion around you",im:"Bright painted sculptures, the smell of flowers and incense, devotional sounds",t:"Visit outside prayer times, dress respectfully, observe quietly",c:["history_big"],r:"g",nn:"施里瓦达帕蒂什瓦拉庙",ns:"小印度的色彩缤纷的印度教庙宇",nst:"进入庙宇，感受虔诚",nt:"在祈祷时间外访问，尊重着装"},
+  {id:25,n:"National Museum Singapore",a:"Queenstown",v:["history", "free"],d:90,s:"The story of Singapore from ancient times to today, impressive building and exhibits",st:"Spending 2 hours exploring the galleries, understanding the city journey",im:"Historical artifacts, multimedia displays, the the grand of building halls",t:"Go early, take the audio guide, spend 2 hours minimum",c:["free_museum"],r:"g",nn:"新加坡国家博物馆",ns:"从古代到今天的新加坡故事",nst:"花时间探索画廊",nt:"早到，听音频指南"},
+  {id:26,n:"Thian Hock Keng Temple",a:"Chinatown",v:["history", "beautiful"],d:25,s:"Oldest Chinese temple in Singapore, built 1842, still active worship",st:"Entering quietly, observing worshippers, studying the architecture",im:"Carved wood beams, red lanterns, incense smoke, devotional activities",t:"Visit outside services, remove shoes in inner sanctum, observe respectfully",c:["history_big"],r:"g",nn:"天福宫",ns:"新加坡最古老的中国寺庙",nst:"静静地进入，观察礼拜者",nt:"在服务外拜访，尊重观察"},
+  {id:27,n:"Changi Prison Museum",a:"Changi",v:["history", "weird"],d:60,s:"Museum in former WWII Japanese POW camp, heavy historical weight",st:"Walking through the museum, reading survivor stories, understanding the war",im:"Stone walls, historical photographs, the weight of history pressing down",t:"Allow 90 minutes, read the stories carefully, sit and reflect",c:["history_big"],r:"g",nn:"樟宜监狱博物馆",ns:"二战日军战俘营的博物馆",nst:"走过博物馆，阅读幸存者故事",nt:"花90分钟，仔细阅读，反思"},
+  {id:28,n:"Changi Point Jetty Fishing Boats",a:"Changi",v:["local", "hidden"],d:30,s:"Working fishing jetty with traditional boats, local fishermen still working",st:"Watching boats unload, talking to fishermen, photographing the vessels",im:"Wooden boats, nets drying, the smell of fish, fishermen working",t:"Go early morning, bring cash for tips, be respectful of workers",c:["local_only"],r:"g",nn:"樟宜码头渔船",ns:"工作的渔业码头",nst:"观看船只卸货，与渔民交谈",nt:"早上去，尊重工人"},
+  {id:29,n:"Temasek Avenue Night Food Scene",a:"Downtown",v:["night", "local"],d:30,s:"Downtown area comes alive at night with hidden food courts and crowds",st:"Discovering small food courts, eating with office workers on break",im:"Neon signs, people eating quickly, the energy of the city at night",t:"Go after 9pm, bring cash, explore side streets",c:["local_only"],r:"g",nn:"淡滨尼大道夜间食物",ns:"晚上充满活力的食物场景",nst:"发现小食堂，与办公室工作人员一起吃饭",nt:"晚上9点后去，探索小街"},
+  {id:30,n:"Singapore Flyer Dawn Experience",a:"Marina Bay",v:["beautiful"],d:45,s:"The huge observation wheel, best experienced at dawn when city wakes",st:"Riding the wheel as the sun rises, watching the city transform below",im:"City lights fading, dawn colors spreading, the wheel turning slowly",t:"Book the earliest slot, bring a camera, enjoy the quiet crowds",c:["high_spots"],r:"y",nn:"新加坡摩天轮",ns:"黎明时的巨大观察轮",nst:"当太阳升起时乘坐轮子",nt:"预订最早的时间段，带相机"}
+];
+const PHRASES = [{native:"早上好",en:"good morning"},{native:"谢谢你很多",en:"thank you very much"},{native:"对不起",en:"excuse me"},{native:"多少钱",en:"how much is this"},{native:"洗手间在哪里",en:"where is the bathroom"},{native:"很好吃",en:"very delicious"},{native:"再来一碗",en:"another bowl please"},{native:"谢谢",en:"thank you"},{native:"我明白了",en:"I understand"},{native:"没关系",en:"it is okay"},{native:"再见",en:"goodbye"},{native:"早安",en:"good morning"}];
+const AREAS = ["Bukit Merah", "Bukit Timah", "Buona Vista", "Changi", "Chinatown", "Downtown", "East Coast", "Geylang", "Joo Chiat", "Kampong Glam", "Kranji", "Labrador", "Little India", "Marina Bay", "Queenstown", "River Valley", "Sentosa", "Tanglin", "Tiong Bahru", "Toa Payoh"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"Hidden Neighbourhoods",desc:"Discover Singapore away from tourists. Tiong Bahru at dawn, Joo Chiat shophouses, Kampong Glam mosque, Toa Payoh HDB estate urban planning story.",places:[1, 4, 7, 11],time:"4 hours"},
+  {id:2,title:"Nature Singapore",desc:"Experience the natural of Singapore side. MacRitchie Reservoir jungle walk, Bukit Timah forest summit, Southern Ridges trail, Sungei Buloh birdwatching.",places:[8, 10, 16, 17],time:"6 hours"},
+  {id:3,title:"Real Food: Markets and Hawker Centers",desc:"Taste Singapore through local food. Little India market at dawn, Tekka, Geylang market, Maxwell hawker center, Old Airport Road at 3am.",places:[2, 12, 13],time:"5 hours"},
+  {id:4,title:"Colonial History Walk",desc:"Explore the past of Singapore. National Museum, Thian Hock Keng temple, Fort Canning tunnels, Changi Prison Museum, Sri Vadapateeshwarar temple.",places:[15, 24, 25, 26, 27],time:"6 hours"},
+  {id:5,title:"Island Escapes",desc:"Leave the city. Pulau Ubin traditional village day trip, Sentosa beaches and gardens, or take the cable car to views.",places:[9, 21],time:"8 hours"},
+  {id:6,title:"Night Singapore",desc:"Experience the city after dark. Geylang durian street neon, Clarke Quay riverside market, downtown food courts, night markets, Temasek Avenue energy.",places:[3, 20, 29],time:"4 hours"},
+  {id:7,title:"Heights and Viewpoints",desc:"See Singapore from above. Henderson Waves at sunset, Singapore Flyer at dawn, Marina Bay floating platform, Harukas views.",places:[6, 22, 30],time:"3 hours"},
+  {id:8,title:"Neighborhoods by Light",desc:"Experience different districts. Tiong Bahru morning, Chinatown side streets, Little India temple spirituality, East Coast Park local life.",places:[1, 4, 18, 19, 24],time:"5 hours"},
+  {id:9,title:"Fishing Villages and Working Waterfronts",desc:"See the working of Singapore side. Changi fishing jetty, Pulau Ubin village, East Coast Park locals, traditional boats and life.",places:[9, 18, 28],time:"4 hours"},
+  {id:10,title:"The Full Singapore Experience",desc:"Three days exploring every angle. Nature, food, history, neighborhoods, islands, heights, markets, temples, and night life.",places:[1, 2, 4, 8, 10, 12, 13, 15, 16, 18, 19, 20, 24, 25, 26, 30],time:"20 hours"}
+];
+const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="中文";
+const CITY_EN="Singapore";
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{中文}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(10,8,30,0.72) 0%,rgba(10,8,30,0.20) 45%,rgba(10,8,30,0.10) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-sm font-bold tracking-widest" style={{color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"3px"}}>Go Do Stuff</h1>
+<p className="text-6xl font-black mt-1 leading-none" style={{color:"white",textShadow:"0 2px 16px rgba(0,0,0,0.7)",letterSpacing:"-1px"}}>Singapore Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0",lineHeight:1.5,textShadow:"0 1px 8px rgba(0,0,0,0.9)"}}>Activities are free.<br/><span style={{fontSize:"11px",opacity:0.7}}>Travel & food recommendations: low budget.</span></p>
+<p className="text-xs mt-2" style={{color:"#a5b4fc",textShadow:"0 1px 6px rgba(0,0,0,0.9)"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#c8c0e0",lineHeight:1.6,maxWidth:340,textShadow:"0 1px 8px rgba(0,0,0,0.95)"}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<div className="rounded-2xl p-6 mt-8 mx-4 text-left" style={{background:"rgba(10,10,30,0.72)",border:"1px solid rgba(255,255,255,0.15)",maxWidth:380}}>
+<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
+<p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to hidden places. Content is curated for curiosity — not as instructions.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>为了安全享受新加坡，请遵守所有通知和警告。</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Some locations include natural environments, heights, water, or areas that may be restricted or unsafe. You explore at your own risk.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Always follow local laws, respect private property, and check current conditions before visiting any place.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#e8c0f0"}}>If you are under 18, please explore responsibly.</p>
+</div>
+<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore<br/><span style={{fontSize:"12px",opacity:0.85}}>我明白了</span></button>
+</div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p>
+<a href={`https://maps.google.com/?q=${encodeURIComponent(p.n+', '+CITY_EN)}`} target="_blank" rel="noopener noreferrer"
+  className="mt-3 flex items-center gap-2 text-sm font-bold"
+  style={{color:"#166534",textDecoration:"none",display:"inline-flex",marginTop:"10px"}}>
+  🗺 Get directions
+</a>
+</div>}
+{p.ef&&<p className="text-xs mt-3 pt-3" style={{color:"#555",lineHeight:1.7,borderTop:"1px solid #dcfce7"}}>🍔 {p.ef}</p>}
+{p.sf&&<p className="text-xs mt-2" style={{color:"#555",lineHeight:1.7}}>🏠 {p.sf}</p>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);const[spinning,setSpinning]=useState(false);const[spinPlace,setSpinPlace]=useState(null);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
+if(showPicker){const rp=spinPlace||P[0];const _bgs=["https://mariavheland.github.io/godostuff/dice/bg1.jpg","https://mariavheland.github.io/godostuff/dice/bg2.jpg","https://mariavheland.github.io/godostuff/dice/bg3.jpg"];const _bg=_bgs[Math.floor(Math.random()*_bgs.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backgroundImage:`url(${_bg})`,backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.55)",pointerEvents:"none"}}/>
+<span style={{position:"absolute",top:"8%",left:"6%",fontSize:48,color:"#c8102e",animation:"floatSuit 6.2s ease-in-out infinite",pointerEvents:"none"}}>♥</span>
+<span style={{position:"absolute",top:"12%",right:"8%",fontSize:40,color:"#1a1a1a",animation:"floatSuit2 5.8s ease-in-out infinite .8s",pointerEvents:"none"}}>♠</span>
+<span style={{position:"absolute",bottom:"18%",left:"5%",fontSize:36,color:"#c8102e",animation:"floatSuit 7.1s ease-in-out infinite 1.5s",pointerEvents:"none"}}>♦</span>
+<span style={{position:"absolute",bottom:"15%",right:"6%",fontSize:44,color:"rgba(255,255,255,.18)",animation:"floatSuit2 6.5s ease-in-out infinite 2.2s",pointerEvents:"none"}}>♣</span>
+<div style={{position:"absolute",inset:16,border:"1px solid rgba(212,175,55,.18)",borderRadius:24,pointerEvents:"none"}}/>
+<p className={spinning?"text-5xl mb-6 dice-spin":"text-5xl mb-6 final-land"} style={{lineHeight:1}}>🎲</p>
+{!spinPlace&&<p style={{color:"rgba(212,175,55,.6)",fontSize:14,letterSpacing:"2px",textTransform:"uppercase"}}>rolling…</p>}
+{spinPlace&&<div className={spinning?"slot-flicker text-center":"final-land text-center"} style={{maxWidth:320,position:"relative",zIndex:1}}>
+<div style={{background:"rgba(0,0,0,.35)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(212,175,55,.25)",padding:"20px 24px"}}>
+<h2 className="text-2xl font-black" style={{color:"#fff",letterSpacing:"-.5px",lineHeight:1.15}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-xs font-bold mt-2 uppercase" style={{color:"#d4af37",letterSpacing:"2px"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3" style={{color:"rgba(255,255,255,.75)",lineHeight:1.65}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+</div></div>}
+<div className="flex gap-3 mt-8" style={{position:"relative",zIndex:1}}>
+<button onClick={()=>{setShowPicker(false);setSpinPlace(null);setSpinning(false);}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>✕ Close</button>
+{!spinning&&spinPlace&&<button onClick={()=>{setSelected(rp);setShowPicker(false);setSpinPlace(null);}} className="px-6 py-2 rounded-full text-sm font-black" style={{background:"linear-gradient(135deg,#d4af37,#f0c040)",color:"#0e3a1e",border:"none",cursor:"pointer"}}>Let's go →</button>}
+{!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>🎲 Again</button>}
+</div></div>}
+
+return <div style={{minHeight:"100vh",backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Singapore Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={startSpin} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Singapore Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script>
+</body>
+</html>
