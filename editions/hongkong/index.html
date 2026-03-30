@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Hong Kong's hidden world. 30 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Hong Kong">
+<meta property="og:description" content="30 hidden, free, historically rich places in Hong Kong.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Hong Kong</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#faf8f4;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes diceShake{0%,100%{transform:rotate(0deg) scale(1)}15%{transform:rotate(-18deg) scale(1.35)}30%{transform:rotate(16deg) scale(1.35)}45%{transform:rotate(-12deg) scale(1.25)}60%{transform:rotate(10deg) scale(1.2)}75%{transform:rotate(-6deg) scale(1.1)}}
+@keyframes diceSpin{0%{transform:rotateY(0deg) scale(1.1)}100%{transform:rotateY(360deg) scale(1.1)}}
+@keyframes slotFlicker{0%,100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0px)}50%{opacity:.55;transform:translateY(-6px) scale(.96);filter:blur(1.5px)}}
+@keyframes finalLand{0%{opacity:0;transform:scale(.75) translateY(28px)}65%{transform:scale(1.08) translateY(-4px)}85%{transform:scale(.97) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.dice-shake{animation:diceShake .7s ease forwards}
+.dice-spin{animation:diceSpin .18s linear infinite}
+.slot-flicker{animation:slotFlicker .12s ease infinite}
+.final-land{animation:finalLand .55s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes floatSuit{0%,100%{transform:translateY(0) rotate(0deg);opacity:.12}50%{transform:translateY(-18px) rotate(8deg);opacity:.22}}
+@keyframes floatSuit2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.08}50%{transform:translateY(14px) rotate(-6deg);opacity:.18}}
+@keyframes feltShimmer{0%,100%{opacity:0}50%{opacity:.07}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Hong Kong...</p></div>
+<div id="root"></div>
+<script>
+const P = [
+  {id:1,n:"Sham Shui Po Electronics Market",a:"Sham Shui Po",v:["weird", "local"],d:45,s:"Chaotic electronics and fabric market, the real Kowloon chaos, no tourists",st:"Browsing electronics stalls, watching vendors negotiate, discovering hidden shops",im:"Piles of electronics, cables everywhere, people haggling, neon shop signs",t:"Go early morning, bring a backpack, haggle everything",c:["local_only"],r:"g",nn:"深水埗",ns:"混乱的电子和织物市场",nst:"浏览电子摊位，观看供应商谈判",nt:"早上去，砍价所有东西"},
+  {id:2,n:"Yau Ma Tei Temple Street Night Market",a:"Yau Ma Tei",v:["night", "local"],d:45,s:"Famous night market with food, clothes, antiques, temple at one end",st:"Walking the entire street, eating street food, buying souvenirs",im:"Vendor stalls glowing with lights, crowds flowing, the smell of cooking",t:"Go after 8pm, bring cash, expect large crowds",c:["night"],r:"g",nn:"油麻地庙街夜市",ns:"著名的夜市",nst:"走遍整条街，吃街头食物",nt:"晚上8点后去，带现金"},
+  {id:3,n:"Lei Cheng Uk Han Tomb Free",a:"Sham Shui Po",v:["history", "free", "weird"],d:20,s:"2000-year-old Han Dynasty tomb under an apartment building, free entrance",st:"Descending into the ancient tomb, seeing the chamber and artifacts",im:"Stone walls 2000 years old, ancient pottery displayed, the weight of time",t:"Visit during opening hours, wear warm clothing underground, take photos",c:["history_big"],r:"g",nn:"李郑屋古墓",ns:"公寓楼下的2000年前的汉代墓葬",nst:"下到古墓里",nt:"在营业时间参观，带相机"},
+  {id:4,n:"Sheung Wan Funeral Street and Dried Goods",a:"Sheung Wan",v:["weird", "local"],d:30,s:"Street of funeral shops and dried seafood, unique Hong Kong culture",st:"Walking past funeral paper shops and dried seafood stalls, observing",im:"Gold and red decorations, dried fish hanging, incense smoke",t:"Walk respectfully, do not photograph funeral shops, observe the trade",c:["local_only"],r:"g",nn:"上环殡仪街",ns:"殡仪店和干海产街",nst:"尊重地走过殡仪店",nt:"不要拍照殡仪店，观察交易"},
+  {id:5,n:"Kennedy Town Tram Terminus Neighbourhood",a:"Kennedy Town",v:["local", "beautiful"],d:40,s:"West Hong Kong village where the tram ends, residential and charming",st:"Walking the tram line to its end, exploring the waterfront neighbourhood",im:"Old trams arriving, the smell of salt water, quieter pace than the city",t:"Take the tram to the end, walk around, eat at local cafes",c:["local_only"],r:"g",nn:"坚尼地城",ns:"电车终点的乡村",nst:"沿着电车线走到最后",nt:"乘坐电车到终点，在当地咖啡厅吃饭"},
+  {id:6,n:"Apliu Street Flea Market",a:"Sham Shui Po",v:["weird", "local", "free"],d:45,s:"Chaotic flea market with vintage items, broken electronics, tools, chaos",st:"Hunting through piles for treasure, haggling with vendors",im:"Piles of junk and treasures, vendors calling out, the energy of the hunt",t:"Go early morning, bring a backpack, prepare for chaos",c:["local_only"],r:"g",nn:"鸦栏街跳蚤市场",ns:"混乱的跳蚤市场",nst:"在堆中寻找珍宝",nt:"早上去，带背包"},
+  {id:7,n:"Nan Lian Garden Free",a:"Diamond Hill",v:["beautiful", "free"],d:45,s:"Free Tang Dynasty style garden, peaceful mountain sanctuary, no crowds",st:"Walking paths through the garden, sitting by the water, meditating",im:"Pavilions reflecting in still water, mountain backdrop, complete peace",t:"Arrive early, sit for an hour, walk the entire garden",c:["beautiful"],r:"g",nn:"南莲园池",ns:"免费的唐朝风格花园",nst:"走过花园的小径，坐在水边",nt:"早到，花时间走遍花园"},
+  {id:8,n:"Lion Rock Hike Free Views",a:"New Territories",v:["nature", "free"],d:90,s:"Mountain hike to the iconic peak, free access, views of all Hong Kong",st:"Climbing to the summit, watching the city spread below on all sides",im:"The city from high up, mountains in distance, the island and harbour",t:"Start early, bring water, wear hiking shoes",c:["high_spots"],r:"g",nn:"狮子山",ns:"标志性山峰的登山",nst:"爬到顶峰",nt:"早到，带足水，穿登山鞋"},
+  {id:9,n:"Cheung Chau Island No Cars",a:"Cheung Chau",v:["hidden", "beautiful"],d:120,s:"Car-free island with beaches, local culture, fishing village character",st:"Taking the ferry, cycling or walking the island, swimming, eating local food",im:"Boats in the harbor, local shops, children playing in streets, fishermen working",t:"Take a daytrip, bring swimwear, try the fresh seafood restaurants",c:["local_only"],r:"y",nn:"长洲岛",ns:"无汽车的岛屿",nst:"乘坐渡船，骑自行车或走岛上",nt:"带泳衣，尝试新鲜海鲜"},
+  {id:10,n:"Lamma Island Walking Trail",a:"Lamma Island",v:["nature", "hidden"],d:120,s:"Island with hiking trails connecting villages, seafood and nature",st:"Walking from one village to another, swimming at beach, eating seafood",im:"Forest trails opening to sea views, fresh seafood drying, boats in harbor",t:"Take the ferry, walk the full trail, eat at waterfront restaurants",c:["nature"],r:"y",nn:"南丫岛",ns:"有登山步道连接村庄的岛屿",nst:"从一个村庄走到另一个村庄",nt:"乘坐渡船，走整条步道"},
+  {id:11,n:"Sai Kung Waterfront and Country Park",a:"Sai Kung",v:["nature", "local"],d:120,s:"Seaside town with sampan boats, country park trails, local seafood restaurants",st:"Renting a sampan with locals, exploring hidden beaches, eating fresh fish",im:"Fishing boats with colorful sails, hidden coves, mountains dropping to sea",t:"Take a minibus, rent boats with others, eat at the famous restaurants",c:["nature"],r:"y",nn:"西贡",ns:"有三文鱼和国家公园的海滨城镇",nst:"与当地人租赁三文鱼",nt:"坐小巴，与其他人租赁船只"},
+  {id:12,n:"Wong Tai Sin Temple",a:"Wong Tai Sin",v:["history", "beautiful"],d:30,s:"Busy Taoist temple with red and gold decorations, spiritual atmosphere",st:"Observing worshippers, consulting fortune sticks, exploring the temple",im:"Red and gold everywhere, incense smoke, devoted faces, spiritual energy",t:"Visit mornings for fewer crowds, respect the rituals, observe quietly",c:["history_big"],r:"g",nn:"黄大仙庙",ns:"繁忙的道教寺庙",nst:"观察礼拜者，咨询抽签",nt:"早上访问，尊重仪式，静静观察"},
+  {id:13,n:"Chi Lin Nunnery Tang Dynasty Wooden",a:"Chi Lin",v:["history", "beautiful"],d:45,s:"Tang Dynasty wooden buildings, nunnery still active, free entrance",st:"Walking the wooden structures, observing nuns at prayer, sitting in gardens",im:"Dark wood carved intricately, gardens with bonsai, the smell of incense",t:"Visit mid-afternoon, dress respectfully, sit in silence",c:["history_big"],r:"g",nn:"志莲净苑",ns:"唐朝风格的木制建筑",nst:"走过木制建筑，观察修女祈祷",nt:"下午中旬访问，尊重着装"},
+  {id:14,n:"Ping Shan Heritage Trail New Territories",a:"Ping Shan",v:["history", "hidden"],d:90,s:"700-year-old clan village with ancestral halls, temples, heritage buildings",st:"Following the heritage trail, learning about a clan that spans 700 year history",im:"Ancient stone buildings, clan halls with ancestor tablets, quiet village paths",t:"Get the heritage trail map, visit all halls, allow 2-3 hours",c:["history_big"],r:"g",nn:"屏山文物径",ns:"700年的宗族村庄",nst:"跟随遗产步道",nt:"获得遗产步道地图，花2-3小时"},
+  {id:15,n:"Sam Tung Uk Museum Free Hakka Village",a:"Tsuen Wan",v:["history", "free"],d:25,s:"Free museum in preserved Hakka village house, understanding rural life",st:"Exploring the house, learning about Hakka culture and village life",im:"Traditional layout, old furniture and tools, the feeling of centuries",t:"Visit in the afternoon, read the displays carefully, sit in the courtyard",c:["history_big"],r:"g",nn:"三栋屋博物馆",ns:"保存的客家村屋博物馆",nst:"探索房屋，学习客家文化",nt:"下午访问，仔细阅读展品"},
+  {id:16,n:"Mai Po Nature Reserve Wetlands",a:"Mai Po",v:["nature", "free"],d:45,s:"Wetland reserve with migratory birds, free birdwatching, binoculars reveal life",st:"Watching for rare birds, identifying species, sitting in blinds",im:"Birds everywhere, water rippling, the quiet of the reserve",t:"Bring binoculars, dress in neutral colors, visit at dawn",c:["nature"],r:"g",nn:"米埔自然保护区",ns:"有候鸟的湿地保护区",nst:"观看罕见的鸟类",nt:"带双筒望远镜，黎明访问"},
+  {id:17,n:"Star Ferry Sunrise Crossing",a:"Central",v:["beautiful", "local"],d:20,s:"Historic ferry crossing Victoria Harbour, ride it at sunrise for magic",st:"Taking the ferry at 6am, watching Hong Kong light up from the water",im:"Ferry cutting through water, skyline turning colors, morning light spreading",t:"Buy a ticket, stand outside, watch both sides of the harbour",c:["romantic_water"],r:"g",nn:"天星小轮",ns:"日出时的渡轮穿越",nst:"乘坐渡船观看香港点亮",nt:"早上6点乘坐，站在外面观看"},
+  {id:18,n:"Kowloon Walled City Park",a:"Kowloon City",v:["history", "beautiful"],d:45,s:"Former walled city now a park, preserving the history and design",st:"Walking through the gardens, reading about the history of the walled city",im:"Traditional Chinese garden, paths winding through green, history plaques",t:"Visit early morning for quiet, sit in the tea pavilion",c:["beautiful"],r:"g",nn:"九龙城寨公园",ns:"前城墙现在的公园",nst:"走过花园，阅读城市历史",nt:"早上访问，在茶亭坐下"},
+  {id:19,n:"Aberdeen Floating Village Remnants",a:"Aberdeen",v:["history", "weird"],d:30,s:"Remnants of the floating village, mostly gone but boats still fish here",st:"Taking a sampan ride through the harbor, seeing traditional boats",im:"Boats of all kinds, fishermen casting nets, water reflecting lights at night",t:"Hire a sampan at dusk, enjoy the evening light, eat dinner at a float",c:["romantic_water"],r:"y",nn:"香港仔浮村",ns:"浮村的残余",nst:"乘坐三文鱼穿过港口",nt:"黄昏租赁三文鱼，吃晚餐"},
+  {id:20,n:"Mui Wo Lantau Cycling Flat Island",a:"Lantau",v:["local", "hidden"],d:90,s:"Flat island with cycling trails, no tourist crowds, local villages",st:"Cycling the island, visiting villages, swimming at quiet beaches",im:"Flat trails winding through villages, water views, quiet everywhere",t:"Take the ferry to Mui Wo, rent bikes, cycle the entire island",c:["nature"],r:"y",nn:"梅窝兰屿自行车",ns:"平坦岛屿的自行车步道",nst:"骑自行车穿过岛屿",nt:"租赁自行车，骑遍整个岛屿"},
+  {id:21,n:"Mong Kok Street Chaos",a:"Mong Kok",v:["weird", "local"],d:30,s:"Chaotic street market with haggling, crowds, energy, local life exposed",st:"Wandering through the chaos, watching people, buying snacks",im:"Rows of stalls, people pushing, voices calling prices, neon signs",t:"Go during the day, bring a backpack, expect chaos and crowds",c:["local_only"],r:"g",nn:"旺角",ns:"混乱的街道市场",nst:"在混乱中漫步，观看人群",nt:"白天去，带背包，预期混乱"},
+  {id:22,n:"Central Soho District Gentrified",a:"Central",v:["local", "night"],d:45,s:"Gentrified neighbourhood with bars and restaurants, expensive but lively",st:"Walking the narrow streets, peeking into bars, experiencing nightlife",im:"Neon signs, crowds spilling out of bars, the energy of evening",t:"Go after 9pm, bring money, explore the side alleys",c:["night"],r:"y",nn:"中环苏豪区",ns:"酒吧和餐厅的地区",nst:"走过狭窄的街道，探索",nt:"晚上9点后去，带钱"},
+  {id:23,n:"Hollywood Road Antique Shops",a:"Central",v:["history", "local"],d:30,s:"Long street lined with antique shops, art galleries, used bookstores",st:"Browsing antiques, discovering hidden shops, finding treasures",im:"Shop windows full of old things, narrow storefronts, quiet street",t:"Walk slowly, go into every shop, spend hours browsing",c:["local_only"],r:"y",nn:"荷里活道古董街",ns:"满是古董店的街道",nst:"浏览古董，发现隐藏的店铺",nt:"慢慢走，进入每家店"},
+  {id:24,n:"Central Mid-Levels Escalator Sky",a:"Central",v:["weird", "local"],d:25,s:"The longest escalator system climbing the hillside, people go to work on it",st:"Riding the escalators up the hill, watching the city change elevation",im:"Metal stairs climbing endlessly, the city getting smaller below",t:"Ride it all the way up, exit and walk around, experience the height",c:["high_spots"],r:"g",nn:"中环半山自动扶梯",ns:"世界上最长的自动扶梯系统",nst:"乘坐自动扶梯上山",nt:"一直往上乘坐，步行周围"},
+  {id:25,n:"Lan Kwai Fong Bar Street",a:"Central",v:["night"],d:30,s:"Famous bar street, crowded with expatriates and tourists, expensive drinks",st:"Walking the street, choosing a bar, experiencing the nightlife",im:"Neon signs, crowds of people, music pouring out of bars",t:"Go after 10pm, bring money, expect crowds and expense",c:["night"],r:"y",nn:"兰桂坊",ns:"著名的酒吧街",nst:"走过街道，选择一家酒吧",nt:"晚上10点后去，带钱"},
+  {id:26,n:"Causeway Bay Typhoon Shelter Boats",a:"Causeway Bay",v:["local", "weird"],d:30,s:"Shelter with hundreds of junks and fishing boats, local life preserved",st:"Walking the harbor, observing boats, watching fishermen",im:"Boats packed tight, lines and nets, weathered faces, the smell of fish",t:"Walk the entire shelter, photograph carefully, respect the workers",c:["local_only"],r:"g",nn:"铜锣湾台风避难所",ns:"数百艘帆船和渔船",nst:"走过港口，观察船只",nt:"尊重地走，尊重工人"},
+  {id:27,n:"Peak Tram to the Viewpoint",a:"Central",v:["high_spots", "beautiful"],d:30,s:"Historic tram to the Peak, most famous viewpoint in Hong Kong",st:"Taking the tram, watching the city rise, reaching the peak at sunset",im:"The tram climbing impossibly steep, the city appearing below, sunset spreading",t:"Go at sunset, buy tickets online, arrive early",c:["high_spots"],r:"y",nn:"山顶缆车",ns:"香港最著名的观点",nst:"乘坐缆车到山顶",nt:"日落时去，提前到达"},
+  {id:28,n:"Repulse Bay Beach Colonial",a:"Repulse Bay",v:["beautiful"],d:45,s:"Famous crescent beach with colonial hotels, swimmers and walkers",st:"Swimming or wading, walking the beach, sitting in the colonial setting",im:"Blue water, sand beach, old colonial buildings, people from around the world",t:"Go in the morning, bring swimwear, eat at the beachfront cafes",c:["romantic_water"],r:"y",nn:"浅水湾",ns:"著名的新月形海滩",nst:"游泳或涉水，走沙滩",nt:"早上去，带泳衣"},
+  {id:29,n:"Star House Shopping Traditional",a:"Tsim Sha Tsui",v:["weird"],d:30,s:"Old shopping complex, traditional Hong Kong style, electronic goods and chaos",st:"Browsing the stalls, watching merchants, discovering electronics and goods",im:"Narrow aisles, piles of goods, merchants calling out, organized chaos",t:"Go early morning, bring a backpack, haggle prices",c:["local_only"],r:"g",nn:"星光行",ns:"传统香港风格的旧购物中心",nst:"浏览摊位，观察商人",nt:"早上去，砍价商品"},
+  {id:30,n:"Ocean Park Morning Tai Chi",a:"Wong Chuk Hang",v:["free", "local"],d:30,s:"Park where locals do tai chi at dawn before tourists arrive",st:"Joining tai chi groups, learning movements, watching sunrise",im:"People moving slowly, morning mist, the feeling of group harmony",t:"Arrive before 7am, observe and learn, sit after and meditate",c:["parks"],r:"g",nn:"海洋公园晨练",ns:"当地人黎明做太极的公园",nst:"加入太极小组，学习动作",nt:"早上7点前到达，观察和学习"}
+];
+const PHRASES = [{native:"早上好",en:"good morning"},{native:"多谢晒",en:"thank you very much"},{native:"唔好意思",en:"excuse me"},{native:"几多钱",en:"how much is this"},{native:"洗手间喺边",en:"where is the bathroom"},{native:"好好味",en:"very delicious"},{native:"再嚟一碗",en:"another bowl please"},{native:"谢谢",en:"thank you"},{native:"我明白",en:"I understand"},{native:"冇关系",en:"it is okay"},{native:"拜拜",en:"goodbye"},{native:"加油",en:"do your best"}];
+const AREAS = ["Aberdeen", "Causeway Bay", "Central", "Cheung Chau", "Chi Lin", "Diamond Hill", "Kennedy Town", "Kowloon City", "Lamma Island", "Lantau", "Mai Po", "Mong Kok", "New Territories", "Ping Shan", "Repulse Bay", "Sai Kung", "Sham Shui Po", "Sheung Wan", "Tsim Sha Tsui", "Tsuen Wan", "Wong Chuk Hang", "Wong Tai Sin", "Yau Ma Tei"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"Hidden Kowloon Exploration",desc:"Discover real Kowloon away from tourists. Sham Shui Po electronics, Apliu Street chaos, Temple Street night market, Lei Cheng Uk ancient tomb.",places:[1, 2, 3, 6],time:"5 hours"},
+  {id:2,title:"Island Escape Days",desc:"Take day trips to the islands. Cheung Chau car-free village, Lamma Island hiking and seafood, Pulau Ubin traditional life, or Sentosa beaches.",places:[9, 10],time:"8 hours"},
+  {id:3,title:"Heritage Trail New Territories",desc:"Explore Hong the past of Kong. Ping Shan clan village 700-year trail, Sam Tung Uk Hakka museum, Mai Po wetlands, Wong Tai Sin temple.",places:[12, 14, 15, 16],time:"6 hours"},
+  {id:4,title:"Urban Hikes Peak Views",desc:"Climb for views. Lion Rock hike to summit, Peak Tram experience, Central Soho, Mid-Levels Escalator, Harbor views from various heights.",places:[8, 24, 27],time:"4 hours"},
+  {id:5,title:"Markets and Neighbourhoods",desc:"Experience real Hong Kong. Sham Shui Po market chaos, Yau Ma Tei night market, Mong Kok streets, Causeway Bay harbor, Chinatown antiques.",places:[1, 2, 21, 23, 26, 29],time:"6 hours"},
+  {id:6,title:"Temples and Spiritual Hong Kong",desc:"Explore Hong Kong spirituality. Wong Tai Sin Taoist temple, Chi Lin Nunnery wooden buildings, Temples along heritage trails, spiritual energy.",places:[7, 12, 13],time:"3 hours"},
+  {id:7,title:"Water and Harbor Views",desc:"Experience Hong Kong from the water. Star Ferry sunrise crossing, Sampan boats at Aberdeen, Sai Kung waterfront, Repulse Bay beach.",places:[11, 17, 19, 28],time:"5 hours"},
+  {id:8,title:"Night Life and Nighttime Hong Kong",desc:"See the city after dark. Temple Street night market, Yau Ma Tei evenings, Soho bar district, Lan Kwai Fong bars, neon and nightlife.",places:[2, 22, 25],time:"4 hours"},
+  {id:9,title:"Weird and Unique Hong Kong",desc:"Discover the strange side. Lei Cheng Uk ancient tomb, Sheung Wan funeral street, Mid-Levels escalator, Kowloon Walled City park history.",places:[3, 4, 18, 24],time:"4 hours"},
+  {id:10,title:"The Full Hong Kong Experience",desc:"Three days exploring every angle. Islands, peaks, markets, temples, water views, neighborhoods, history, food, nightlife, and spiritual Hong Kong.",places:[1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 17, 18, 19, 22, 25, 27, 28],time:"20 hours"}
+];
+const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="廣東話";
+const CITY_EN="Hong Kong";
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(10,8,30,0.72) 0%,rgba(10,8,30,0.20) 45%,rgba(10,8,30,0.10) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-sm font-bold tracking-widest" style={{color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"3px"}}>Go Do Stuff</h1>
+<p className="text-6xl font-black mt-1 leading-none" style={{color:"white",textShadow:"0 2px 16px rgba(0,0,0,0.7)",letterSpacing:"-1px"}}>Hong Kong Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0",lineHeight:1.5,textShadow:"0 1px 8px rgba(0,0,0,0.9)"}}>Activities are free.<br/><span style={{fontSize:"11px",opacity:0.7}}>Travel & food recommendations: low budget.</span></p>
+<p className="text-xs mt-2" style={{color:"#a5b4fc",textShadow:"0 1px 6px rgba(0,0,0,0.9)"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#c8c0e0",lineHeight:1.6,maxWidth:340,textShadow:"0 1px 8px rgba(0,0,0,0.95)"}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<div className="rounded-2xl p-6 mt-8 mx-4 text-left" style={{background:"rgba(10,10,30,0.72)",border:"1px solid rgba(255,255,255,0.15)",maxWidth:380}}>
+<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
+<p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to hidden places. Content is curated for curiosity — not as instructions.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>为了安全享受香港，请遵守所有通知和警告。</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Some locations include natural environments, heights, water, or areas that may be restricted or unsafe. You explore at your own risk.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Always follow local laws, respect private property, and check current conditions before visiting any place.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#e8c0f0"}}>If you are under 18, please explore responsibly.</p>
+</div>
+<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore<br/><span style={{fontSize:"12px",opacity:0.85}}>我明白了</span></button>
+</div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p>
+<a href={`https://maps.google.com/?q=${encodeURIComponent(p.n+', '+CITY_EN)}`} target="_blank" rel="noopener noreferrer"
+  className="mt-3 flex items-center gap-2 text-sm font-bold"
+  style={{color:"#166534",textDecoration:"none",display:"inline-flex",marginTop:"10px"}}>
+  🗺 Get directions
+</a>
+</div>}
+{p.ef&&<p className="text-xs mt-3 pt-3" style={{color:"#555",lineHeight:1.7,borderTop:"1px solid #dcfce7"}}>🍔 {p.ef}</p>}
+{p.sf&&<p className="text-xs mt-2" style={{color:"#555",lineHeight:1.7}}>🏠 {p.sf}</p>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);const[spinning,setSpinning]=useState(false);const[spinPlace,setSpinPlace]=useState(null);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
+if(showPicker){const rp=spinPlace||P[0];const _bgs=["https://mariavheland.github.io/godostuff/dice/bg1.jpg","https://mariavheland.github.io/godostuff/dice/bg2.jpg","https://mariavheland.github.io/godostuff/dice/bg3.jpg"];const _bg=_bgs[Math.floor(Math.random()*_bgs.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backgroundImage:`url(${_bg})`,backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.55)",pointerEvents:"none"}}/>
+<span style={{position:"absolute",top:"8%",left:"6%",fontSize:48,color:"#c8102e",animation:"floatSuit 6.2s ease-in-out infinite",pointerEvents:"none"}}>♥</span>
+<span style={{position:"absolute",top:"12%",right:"8%",fontSize:40,color:"#1a1a1a",animation:"floatSuit2 5.8s ease-in-out infinite .8s",pointerEvents:"none"}}>♠</span>
+<span style={{position:"absolute",bottom:"18%",left:"5%",fontSize:36,color:"#c8102e",animation:"floatSuit 7.1s ease-in-out infinite 1.5s",pointerEvents:"none"}}>♦</span>
+<span style={{position:"absolute",bottom:"15%",right:"6%",fontSize:44,color:"rgba(255,255,255,.18)",animation:"floatSuit2 6.5s ease-in-out infinite 2.2s",pointerEvents:"none"}}>♣</span>
+<div style={{position:"absolute",inset:16,border:"1px solid rgba(212,175,55,.18)",borderRadius:24,pointerEvents:"none"}}/>
+<p className={spinning?"text-5xl mb-6 dice-spin":"text-5xl mb-6 final-land"} style={{lineHeight:1}}>🎲</p>
+{!spinPlace&&<p style={{color:"rgba(212,175,55,.6)",fontSize:14,letterSpacing:"2px",textTransform:"uppercase"}}>rolling…</p>}
+{spinPlace&&<div className={spinning?"slot-flicker text-center":"final-land text-center"} style={{maxWidth:320,position:"relative",zIndex:1}}>
+<div style={{background:"rgba(0,0,0,.35)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(212,175,55,.25)",padding:"20px 24px"}}>
+<h2 className="text-2xl font-black" style={{color:"#fff",letterSpacing:"-.5px",lineHeight:1.15}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-xs font-bold mt-2 uppercase" style={{color:"#d4af37",letterSpacing:"2px"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3" style={{color:"rgba(255,255,255,.75)",lineHeight:1.65}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+</div></div>}
+<div className="flex gap-3 mt-8" style={{position:"relative",zIndex:1}}>
+<button onClick={()=>{setShowPicker(false);setSpinPlace(null);setSpinning(false);}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>✕ Close</button>
+{!spinning&&spinPlace&&<button onClick={()=>{setSelected(rp);setShowPicker(false);setSpinPlace(null);}} className="px-6 py-2 rounded-full text-sm font-black" style={{background:"linear-gradient(135deg,#d4af37,#f0c040)",color:"#0e3a1e",border:"none",cursor:"pointer"}}>Let's go →</button>}
+{!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>🎲 Again</button>}
+</div></div>}
+
+return <div style={{minHeight:"100vh",backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Hong Kong Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={startSpin} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Hong Kong Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script>
+</body>
+</html>
