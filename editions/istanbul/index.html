@@ -118,7 +118,7 @@ const CITY_EN="Istanbul";
 const LangToggle=({lang,setLang})=>(
 <div className="lang-toggle">
 <button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
-<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{Türkçe}</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{LANG_NAME}</button>
 </div>);
 
 const PhrasesCard=()=>(
