@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go Do Stuff">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="Sibiu's hidden world. 30 free places. For the curious.">
+<meta property="og:title" content="Go Do Stuff — Sibiu">
+<meta property="og:description" content="30 hidden, free, historically rich places in Sibiu.">
+<link rel="manifest" href="manifest.json">
+<title>Go Do Stuff — Sibiu</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#faf8f4;min-height:100%;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .35s ease both}
+::-webkit-scrollbar{width:0;height:0}
+#loading{position:fixed;inset:0;background:linear-gradient(180deg,#1a1a2e 0%,#2d1b69 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{color:white;font-size:2rem;font-weight:800}
+#loading p{color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:8px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes diceShake{0%,100%{transform:rotate(0deg) scale(1)}15%{transform:rotate(-18deg) scale(1.35)}30%{transform:rotate(16deg) scale(1.35)}45%{transform:rotate(-12deg) scale(1.25)}60%{transform:rotate(10deg) scale(1.2)}75%{transform:rotate(-6deg) scale(1.1)}}
+@keyframes diceSpin{0%{transform:rotateY(0deg) scale(1.1)}100%{transform:rotateY(360deg) scale(1.1)}}
+@keyframes slotFlicker{0%,100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0px)}50%{opacity:.55;transform:translateY(-6px) scale(.96);filter:blur(1.5px)}}
+@keyframes finalLand{0%{opacity:0;transform:scale(.75) translateY(28px)}65%{transform:scale(1.08) translateY(-4px)}85%{transform:scale(.97) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.dice-shake{animation:diceShake .7s ease forwards}
+.dice-spin{animation:diceSpin .18s linear infinite}
+.slot-flicker{animation:slotFlicker .12s ease infinite}
+.final-land{animation:finalLand .55s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes floatSuit{0%,100%{transform:translateY(0) rotate(0deg);opacity:.12}50%{transform:translateY(-18px) rotate(8deg);opacity:.22}}
+@keyframes floatSuit2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.08}50%{transform:translateY(14px) rotate(-6deg);opacity:.18}}
+@keyframes feltShimmer{0%,100%{opacity:0}50%{opacity:.07}}
+#loading .dot{animation:pulse 1.2s infinite}
+.lang-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1.5px solid #e4e4ed}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#6366F1;color:white}
+.lang-btn:not(.active){background:white;color:#888}
+</style>
+</head>
+<body>
+<div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Sibiu...</p></div>
+<div id="root"></div>
+<script>
+const P = [
+  {id:1,n:"Piața Mare — the great square",a:"Old Town Upper",v:["beautiful", "history", "local"],d:30,s:"The baroque heart of a medieval Saxon city still running on slow time",st:"Sibiu was built by Saxon colonists in the 12th century and Piața Mare was their commercial centre. The pastel facades, the Council Tower, and the sheer scale of the square for a city this small all speak to how wealthy and self-confident this community once was. Today the terraces fill up, children chase pigeons, and the square does exactly what a great European square should.",im:"It is 1500 and you are a Saxon merchant in one of the richest cities north of the Danube. You stand in this square surrounded by guild halls and churches, watching caravans arrive from the east.",t:"The square is the centre of everything — walk from anywhere in the old town. Sit at a terrace, order a coffee, and spend an hour watching the square work.",c:[],r:"g",nn:"Piața Mare",ns:"Inima barocă a orașului saxon medieval",nst:"Construită de coloniștii sași în secolul al XII-lea, Piața Mare era centrul comercial al unuia dintre cele mai bogate orașe nord-dunărene.",nt:"Centrul orașului vechi — accesibil pe jos din orice direcție."},
+  {id:2,n:"Piața Mică — the little square",a:"Old Town Upper",v:["beautiful", "history", "hidden"],d:20,s:"Cobblestones, eye-windows and the Bridge of Lies in a square that feels unchanged for 500 years",st:"Piața Mică sits just below Piața Mare, connected by a covered passage. Its sloping cobblestones, the old houses with their distinctive dormer windows shaped like hooded eyelids, and the cast-iron Bridge of Lies at one end make it the most atmospheric corner of Sibiu. Less visited than the main square, yet more genuinely medieval.",im:"The dormer windows stare down at you like half-closed eyes. Every house in this square has them. They watch. They have been watching since the 1400s.",t:"Walk through Pasajul Scărilor from the south side of Piața Mare. Free, always open.",c:[],r:"g",nn:"Piața Mică",ns:"Piatra de pavaj, ochii și Podul Minciunilor",nst:"Piața Mică se află chiar sub Piața Mare. Ferestrele mansardei, în formă de ochi, privesc în jos spre vizitatori de secole.",nt:"Accesibilă prin Pasajul Scărilor de pe latura sudică a Pieței Mari."},
+  {id:3,n:"Podul Minciunilor — Bridge of Lies",a:"Old Town Upper",v:["history", "local", "beautiful"],d:10,s:"The oldest cast-iron bridge in Romania, where legend says liars will be exposed",st:"Built in 1859, this was the first cast-iron bridge in Romania. It connects Piața Mică to Strada Ocnei and gets its name from a local legend: merchants would lie about their wares here, and the bridge would groan and collapse beneath a liar. It has not collapsed yet, which says something about Sibiu.",im:"You stand on the bridge. You think of something you have been avoiding saying. The iron does not move.",t:"Find it at the end of Piața Mică where the square drops toward Strada Ocnei. Free, always accessible.",c:[],r:"g",nn:"Podul Minciunilor",ns:"Cel mai vechi pod din fier turnat din România",nst:"Construit în 1859, primul pod din fier turnat din România. Legenda spune că minciunile spuse pe pod îl vor prăbuși.",nt:"La capătul Pieței Mici, unde piața coboară spre Strada Ocnei."},
+  {id:4,n:"Turnul Sfatului — Council Tower",a:"Old Town Upper",v:["history", "beautiful", "views"],d:25,s:"Climb 53 metres for rooftop views over red tiles and the Carpathian foothills",st:"The Council Tower dates to the 13th century and once guarded the passage between the upper and lower towns. Its current form with the baroque roof is from the 18th century. Climb the steep interior stairs to the top platform for a panoramic view of Sibiu's terracotta roofline against the Fagaras Mountains on the horizon.",im:"From the top you count the rooftops. Every one is terracotta red. The mountains are blue in the distance. The square below is a toy.",t:"Entrance on the Piața Mică side. Small admission fee. Stairs are steep and narrow — not suitable for those with limited mobility.",c:[],r:"g",nn:"Turnul Sfatului",ns:"53 de metri pentru panorame peste acoperișurile roșii",nst:"Turnul datează din secolul al XIII-lea. Urcă scările abrupte pentru o priveliște panoramică a Sibiului cu Munții Făgăraș în fundal.",nt:"Intrare pe latura Pieței Mici. Taxă mică de intrare. Scări abrupte și înguste."},
+  {id:5,n:"Ochii din Sibiu — the eyes of Sibiu",a:"Old Town Upper",v:["hidden", "beautiful", "local"],d:20,s:"Dormer windows shaped like lidded eyes that stare down from every rooftop",st:"This is not a building or a monument — it is an observation. Walk any street in Sibiu's old town and look up. The attic dormer windows are shaped like half-open eyelids with a curved hood above and a rectangular lower lip. They seem to watch every street. They are unique to Sibiu and have become the city's most recognisable symbol.",im:"You are being watched. But not by cameras. By windows that have been looking down at this street since the 18th century.",t:"Walk Strada Ocnei, Strada Cetății and around Piața Mică to see the best examples. Free, always visible.",c:[],r:"g",nn:"Ochii Sibiului",ns:"Ferestrele mansardă în formă de ochi care privesc de pe acoperișuri",nst:"Ferestrele mansardei în formă de ochi sunt simbolul cel mai recunoscut al Sibiului. Plimbați-vă pe Strada Ocnei și priviți în sus.",nt:"Vizibile pe orice stradă din orașul vechi. Cele mai bune exemple pe Strada Ocnei și Strada Cetății."},
+  {id:6,n:"Catedrala Evanghelică — Lutheran Cathedral",a:"Old Town Upper",v:["history", "beautiful", "architecture"],d:30,s:"The largest Gothic church in Transylvania, with the tomb of Vlad the Impaler's son",st:"The Lutheran Cathedral of Saint Mary was built over two centuries and completed in the 15th century. At 73 metres, its tower dominates the Sibiu skyline. Inside: an impressive baroque organ, medieval tombstones including that of Mihnea cel Rău — the son of Vlad the Impaler — and the quiet of a church that has been in use for 500 years. Climb the tower for the best views in the city.",im:"You are standing where Vlad's son was buried after being stabbed in the street outside. The organ pipes rise 12 metres. The vaulting is 500 years old.",t:"On Piața Huet behind the Town Hall. Small fee for tower access. Check opening hours as services may restrict entry.",c:["history_big"],r:"g",nn:"Catedrala Evanghelică",ns:"Cea mai mare biserică gotică din Transilvania",nst:"Construită pe parcursul a două secole, cu turnul de 73 m și mormântul lui Mihnea cel Rău, fiul lui Vlad Țepeș.",nt:"Pe Piața Huet, în spatele primăriei. Taxă mică pentru accesul la turn."},
+  {id:7,n:"Muzeul Brukenthal — national art museum",a:"Old Town Upper",v:["history", "art", "architecture"],d:60,s:"One of the oldest museums in Europe, in a grand baroque palace on the main square",st:"Baron Samuel von Brukenthal, Habsburg governor of Transylvania, opened his art collection to the public in 1817 — one of the first museums in southeastern Europe. The palace on Piața Mare houses old masters, Flemish paintings, Romanian art and decorative arts. For a city of 150,000, the quality of the collection is remarkable.",im:"A Habsburg governor builds a baroque palace and fills it with European paintings in the 18th century. In a Saxon city. In Transylvania. The collection is real.",t:"Located directly on Piața Mare. Closed Mondays. Buy a combined ticket to access multiple Brukenthal buildings across the city.",c:[],r:"g",nn:"Muzeul Național Brukenthal",ns:"Unul dintre cele mai vechi muzee din Europa",nst:"Baronul Samuel von Brukenthal și-a deschis colecția de artă pentru public în 1817. Palatul baroc de pe Piața Mare adăpostește capodopere europene.",nt:"Pe Piața Mare. Închis lunea. Bilet combinat disponibil pentru mai multe clădiri Brukenthal."},
+  {id:8,n:"Pasajul Scărilor — the stairway passage",a:"Old Town Upper",v:["hidden", "history", "local"],d:5,s:"A covered medieval passageway cut through the city wall, connecting the two squares",st:"Sibiu has several covered passages — pasaje — cut through the old town walls, used since the Middle Ages by merchants and residents moving between the upper and lower parts of the city. Pasajul Scărilor is the most used, connecting Piața Mare to Piața Mică via a short vaulted stairway. It feels quietly ancient even when crowded.",im:"You step from the bright square into a covered tunnel. The stone vaulting is above you. A few steps down and you emerge in a different square. Medieval shortcut.",t:"Entrance on the south side of Piața Mare. Short walk-through, always open and free.",c:[],r:"g",nn:"Pasajul Scărilor",ns:"Un pasaj medieval acoperit prin zidul orașului",nst:"Unul dintre pasajele acoperite ale Sibiului, care leagă Piața Mare de Piața Mică printr-o scară boltită.",nt:"Intrare pe latura sudică a Pieței Mari. Scurt pasaj, deschis și gratuit."},
+  {id:9,n:"Zidul Cetății — the medieval walls",a:"Old Town Lower",v:["history", "hidden", "local"],d:30,s:"Walking the remains of one of the most fortified medieval cities in Transylvania",st:"Sibiu was ringed by three rows of walls, towers and bastions — each guild was responsible for defending its own tower. Large sections survive in the lower town, including the Potters Tower, Carpenters Tower and Arquebusiers Tower. Walking the surviving stretch along Strada Cetății gives a sense of the city's extraordinary military investment in the 14th and 15th centuries.",im:"Every craft guild had its own tower to defend. The coopers, the potters, the carpenters, the musketeers. Each tower still stands.",t:"Walk from Piața Mică down Strada Cetății in the lower town. Free and accessible at all times.",c:["history_big"],r:"g",nn:"Zidul Cetății",ns:"Rămășițele celui mai puternic sistem de fortifiare din Transilvania",nst:"Sibiu era înconjurat de trei rânduri de ziduri. Fiecare breaslă era responsabilă pentru apărarea propriului turn.",nt:"Mergeți de la Piața Mică în jos pe Strada Cetății în orașul de jos. Gratuit."},
+  {id:10,n:"Piața Huet — the forgotten square",a:"Old Town Upper",v:["hidden", "history", "local"],d:15,s:"A cobblestone square behind the cathedral that feels unchanged for centuries",st:"Piața Huet sits behind the Evangelical Cathedral and is named after a Saxon bishop. Surrounded by the cathedral apse, old school buildings and the wall of the old town, it is one of the quietest spots in Sibiu — usually empty except for a few students. The paving stones are ancient and the proportions medieval.",im:"You walk through an arched passage from the main square and find yourself in a smaller world. No terraces, no tourists, just cobblestones and the back of the cathedral.",t:"Walk through the arched passage from Piața Mare on the south side. Always open and free.",c:[],r:"g",nn:"Piața Huet",ns:"Piața cobblestone tăcută în spatele catedralei",nst:"Piața Huet se află în spatele Catedralei Evanghelice, numită după un episcop sas. Este unul dintre cele mai liniștite colțuri din Sibiu.",nt:"Mergeți prin pasajul boltit de pe latura sudică a Pieței Mari."},
+  {id:11,n:"Strada Ocnei — the eye-window street",a:"Old Town Lower",v:["beautiful", "history", "local"],d:20,s:"The cobblestone descent from the Bridge of Lies to the lower town, watched by rows of eye-windows",st:"Strada Ocnei begins at the Bridge of Lies and descends to the lower town via steep steps and narrow passages. It is lined with old Saxon houses, every one fitted with the distinctive hooded dormer windows. Walking it at dusk, when the street lights come on and the eyes of Sibiu glow from the rooftops, is one of the best experiences the city offers.",im:"You walk downhill on wet cobblestones. Above you on both sides, the eyelid windows watch. The street narrows. The city breathes.",t:"Starts at Podul Minciunilor and descends to the lower town. Best walked slowly — cobblestones can be slippery when wet.",c:[],r:"g",nn:"Strada Ocnei",ns:"Coborârea pavată de la Podul Minciunilor la orașul de jos",nst:"Strada Ocnei coboară de la Podul Minciunilor spre orașul de jos. Seara, ferestrele în formă de ochi luminează de pe acoperișuri.",nt:"Începe la Podul Minciunilor. Pietrișul poate fi alunecos când e umed."},
+  {id:12,n:"Piața Cibin — the weekly market",a:"Old Town Lower",v:["local", "hidden", "food"],d:30,s:"Local farmers sell cheese, honey and sausages at the oldest market in Sibiu",st:"The Cibin market is held in the lower town near the Cibin river and is where Sibiu's residents actually shop. Local farmers bring vegetables, cheese, sour cream, smoked sausages, honey and seasonal produce. A window into everyday life that exists completely separately from the tourist circuit in the upper town.",im:"A woman from a village 20 kilometres away has been selling her cheese at this market every Saturday since 1988. She does not speak English. The cheese is excellent.",t:"Located in the lower town near the Cibin river. Open daily in the morning, busiest on Saturdays. Cash preferred.",c:[],r:"g",nn:"Piața Cibin",ns:"Piața locală unde sibenii cumpără de fapt",nst:"Piața Cibin este în orașul de jos, lângă râul Cibin. Fermierii locali aduc brânzeturi, miere și cârnați afumați.",nt:"În orașul de jos lângă râul Cibin. Deschis zilnic dimineața, mai aglomerat sâmbăta. Se preferă numerar."},
+  {id:13,n:"Catedrala Ortodoxă — Romanian Orthodox Cathedral",a:"Old Town Upper",v:["history", "beautiful", "architecture"],d:20,s:"A neo-Byzantine cathedral built in 1906 as a statement of Romanian identity in a Saxon city",st:"The large Romanian Orthodox Cathedral was built between 1902 and 1906, modelled loosely on the Hagia Sophia in Istanbul. Its blue and gold interior with large frescoes reflects the Romanian Orthodox community reasserting its presence in this historically Saxon-dominated city. The contrast between this cathedral and the Gothic Lutheran one three streets away tells the whole story of Transylvanian identity.",im:"Two cathedrals. One Gothic, built by Saxons. One Byzantine, built by Romanians. Three streets apart. Same sky.",t:"On Bulevardul Victoriei, a short walk from Piața Mare. Open daily. Sunday morning services are particularly atmospheric.",c:[],r:"g",nn:"Catedrala Mitropolitană",ns:"O catedrală neo-bizantică din 1906 ca afirmare a identității române",nst:"Construită între 1902-1906, modelată după Hagia Sophia. Interiorul albastru și auriu reflectă prezența comunității ortodoxe române în acest oraș dominat de sași.",nt:"Pe Bulevardul Victoriei. Deschisă zilnic. Slujbele de duminică dimineața sunt deosebite."},
+  {id:14,n:"Parcul Sub Arini — the city park",a:"Sub Arini",v:["local", "hidden", "nature"],d:30,s:"Sibiu's beloved city park where locals jog, families picnic, and time slows down",st:"Sub Arini is Sibiu's main green space — wide, tree-lined and unhurried. Old silver firs give the park its name. On weekend mornings you will find joggers, elderly couples on benches, children on bicycles and students in the grass. It is the kind of city park that makes you understand why people love living here.",im:"Sunday morning. An elderly man sits on a bench and reads a newspaper. A dog sleeps at his feet. The trees are very old. Nothing is happening. It is perfect.",t:"Short walk south-east from Piața Mare. Free to enter, open at all hours.",c:[],r:"g",nn:"Parcul Sub Arini",ns:"Parcul iubit al Sibiului unde localnicii petrec weekendurile",nst:"Sub Arini este spațiul verde principal al Sibiului, cu brazi vechi, alei și bănci. Weekend-urile aduc familii, alergători și studenți.",nt:"La câteva minute de mers pe jos spre sud-est de Piața Mare. Gratuit, deschis non-stop."},
+  {id:15,n:"Muzeul ASTRA — open-air village museum",a:"Dumbrava",v:["history", "nature", "local"],d:180,s:"96 hectares of forest with 300 traditional Romanian houses relocated from villages across the country",st:"The ASTRA National Museum Complex in the Dumbrava forest is one of the largest open-air museums in Europe. Over 300 authentic houses, mills, workshops, churches and barns were relocated here from villages across Romania — a vast living atlas of vernacular architecture. Spend a morning walking among water mills, wine presses, painted beehives and Saxon farmsteads. You will not see half of it.",im:"A 200-year-old wooden church from Maramureș stands next to a wind mill from Dobrogea next to a Saxon barn from near Sibiu. All moved here. All real.",t:"Take the local bus or taxi from the centre to Dumbrava forest, about 4 km south. Allow at least 3 hours. Wear comfortable walking shoes.",c:["history_big"],r:"g",nn:"Complexul Național Muzeal ASTRA",ns:"96 de hectare de pădure cu 300 de case tradiționale românești",nst:"Unul dintre cele mai mari muzee în aer liber din Europa. Peste 300 de case, mori, ateliere și biserici aduse din sate din toată România.",nt:"Autobuz local sau taxi din centru spre pădurea Dumbrava, circa 4 km sud. Rezervați cel puțin 3 ore."},
+  {id:16,n:"Pădurea Dumbrava — the forest",a:"Dumbrava",v:["nature", "local", "hidden"],d:60,s:"The forest south of Sibiu where families walk, the ASTRA museum spreads, and the city breathes",st:"The Dumbrava forest is a large natural area that begins where the city ends. It contains the ASTRA museum, a small zoo, walking trails, a lake and picnic areas. On summer weekends it fills with Sibiu families. In winter it is quiet snow and silence. It is the green lung that makes living in a compact historic city feel possible.",im:"You leave the cobblestones behind. Pine trees begin. The city sound fades. Children run ahead on a forest path.",t:"Bus from Piața Unirii or taxi. ASTRA museum and the zoo both have their own opening times and fees — check separately.",c:[],r:"g",nn:"Pădurea Dumbrava",ns:"Plămânul verde al Sibiului la capătul orașului",nst:"Pădurea Dumbrava conține muzeul ASTRA, o mică grădină zoologică, alei de plimbare și un lac. Weekendurile de vară o umplu cu familii sibiene.",nt:"Autobuz de la Piața Unirii sau taxi. Verificați separat orele de deschidere ale muzeului ASTRA și grădinii zoologice."},
+  {id:17,n:"Biertan — fortified Saxon church",a:"Day Trips",v:["history", "beautiful", "hidden"],d:120,s:"A UNESCO-listed fortified church rising above a Saxon village that time forgot",st:"The Saxon village of Biertan, 25 km from Sibiu, grew wealthy on wine and trade in the Middle Ages. Its fortified church is one of the most impressive in Transylvania — three concentric rings of defensive walls surround a Gothic church whose sacristy lock mechanism won a prize at the 1900 Paris World Fair. The village below the walls is quiet and almost unchanged.",im:"A lock mechanism so clever it won a prize in Paris in 1900. It is still in the sacristy door. Turn it yourself.",t:"Drive or join a day tour from Sibiu — about 40 minutes by car. No direct bus. Best combined with other Saxon villages along the route.",c:["history_big"],r:"g",nn:"Biertan",ns:"O biserică sătească SAXonă fortificată, sit UNESCO",nst:"La 25 km de Sibiu, Biertan are una dintre cele mai impresionante biserici-cetate din Transilvania. Mecanismul de blocare al sacristiei a câștigat un premiu la Expoziția Universală de la Paris din 1900.",nt:"Mașină sau excursie organizată din Sibiu — circa 40 minute cu mașina. Fără autobuz direct."},
+  {id:18,n:"Viscri — the village Prince Charles loved",a:"Day Trips",v:["hidden", "beautiful", "history"],d:180,s:"An untouched Saxon village with a UNESCO church, where Prince Charles bought a house and returned every year",st:"Viscri is 65 km from Sibiu and feels three times further in time. The village's unpaved main street, painted houses in blues and greens, and the white fortified church on the hill above have remained almost unchanged for 300 years. Prince Charles of Wales discovered it in the 1990s, bought a house and has returned almost every year since. His presence has helped preserve it rather than ruin it.",im:"The road to the village is not paved. Geese cross it. The church on the hill has been there since the 13th century. Prince Charles sleeps in a small house at the end of the street.",t:"About 65 km from Sibiu by car, partly on unpaved road. No public transport. Day trips bookable from Sibiu. Plan the full day.",c:["history_big"],r:"g",nn:"Viscri",ns:"Satul saxon UNESCO pe care Prințul Charles l-a iubit",nst:"La 65 km de Sibiu, Viscri are o stradă principală nepavată, case colorate și o biserică-cetate albă pe deal. Prințul Charles o vizitează aproape în fiecare an.",nt:"Circa 65 km cu mașina, parțial pe drum neasfaltat. Fără transport public. Excursii de zi disponibile din Sibiu."},
+  {id:19,n:"Sighișoara — the Dracula citadel",a:"Day Trips",v:["history", "beautiful", "local"],d:240,s:"The best-preserved medieval citadel in Transylvania and birthplace of Vlad the Impaler",st:"Sighișoara is one hour from Sibiu by train or car. Its medieval citadel, a UNESCO World Heritage Site, sits on a hill above the Târnava Mare river. The Clock Tower, the coloured houses, the covered wooden staircase to the hilltop church, and the house where Vlad the Impaler was born are all within a few hundred metres of each other. Do not go on a weekend in summer without booking lunch in advance.",im:"Vlad the Impaler was born in the house on the main street. It is now a restaurant. The Clock Tower has been there since the 14th century. Both are open.",t:"One hour by train from Sibiu — trains run several times daily. The citadel is a short uphill walk from the station.",c:["history_big"],r:"g",nn:"Sighișoara",ns:"Cea mai bine conservată cetate medievală din Transilvania",nst:"Sighișoara, la o oră de Sibiu, este locul nașterii lui Vlad Țepeș. Cetatea sa medievală este sit UNESCO.",nt:"O oră cu trenul din Sibiu. Cetatea e la câteva minute de mers pe jos de la gară."},
+  {id:20,n:"Sanctuarul Libearty — bear sanctuary",a:"Day Trips",v:["nature", "local", "hidden"],d:180,s:"The largest bear sanctuary in the world — former dancing bears living in a forested reserve",st:"The Libearty Bear Sanctuary near Zărnești, 90 km from Sibiu, shelters over 100 rescued brown bears — former dancing bears from the streets, bears from illegal zoos, bears saved from concrete cages. They live in a large forested enclosure and are observed on guided walks along raised platforms through the trees. The contrast between their past and present is striking and the experience unlike anything else in the region.",im:"A bear that spent 12 years performing in a street circus now sits in a forest and eats apples. That is all that needs to be said.",t:"Pre-booking is essential — guided visits are timed. Drive from Sibiu about 90 minutes via Fagaras. Day tours available from Sibiu and Brașov.",c:[],r:"g",nn:"Sanctuarul de Urși Libearty",ns:"Cel mai mare sanctuar de urși din lume",nst:"Lângă Zărnești, la 90 km de Sibiu, sanctuarul adăpostește peste 100 de urși bruni salvați. Vizite ghidate pe platforme suspendate prin pădure.",nt:"Rezervare obligatorie. Circa 90 minute cu mașina din Sibiu. Excursii de zi disponibile din Sibiu și Brașov."},
+  {id:21,n:"Transfăgărășan — the mountain road",a:"Day Trips",v:["nature", "beautiful", "hidden"],d:240,s:"One of the world's great mountain roads, built by a dictator and inherited by everyone",st:"Nicolae Ceaușescu built the Transfăgărășan road in the 1970s for military reasons — it was dug through the Fagaras Mountains in just three years, at great cost to many lives. It now draws drivers and cyclists from across Europe for the switchbacks, tunnels, mountain lakes and summit views. It is open only July to October. The drive from Sibiu over the pass and back is one of the great half-days in Romania.",im:"This road was built by a dictator who wanted tanks to cross the mountains in 72 hours. It took the lives of many workers. Now you drive it for pleasure. Both things are true.",t:"Drive south on DN1 from Sibiu, then follow signs for the Transfăgărășan. Open July to October only — closed the rest of the year due to snow. Budget half a day.",c:[],r:"g",nn:"Transfăgărășan",ns:"Unul dintre cele mai spectaculoase drumuri de munte din lume",nst:"Construit de Ceaușescu în anii 1970 din motive militare, Transfăgărășanul atrage acum șoferi și cicliști din toată Europa.",nt:"Mergeți spre sud pe DN1 din Sibiu, apoi urmați indicatoarele. Deschis doar iulie-octombrie. Pregătiți jumătate de zi."},
+  {id:22,n:"Turnul Dogarilor — Coopers Tower",a:"Old Town Lower",v:["history", "hidden", "local"],d:15,s:"One of the best-preserved guild towers from Sibiu's medieval fortification system",st:"In medieval Sibiu, craft guilds were assigned specific towers in the city walls to maintain and defend. The Coopers Tower — belonging to the barrel-makers guild — is one of the more intact survivors. Walking the lower town walls and finding these towers gives you a concrete sense of how the medieval city organised its own defence through collective civic responsibility.",im:"The barrel-makers guild was responsible for this tower. They had to defend it in case of siege. They drilled. They stored weapons. The tower still stands.",t:"Walk along Strada Cetății in the lower town. Viewable from outside; occasionally open for temporary exhibitions.",c:[],r:"g",nn:"Turnul Dogarilor",ns:"Unul dintre turnurile breslelor din sistemul de fortifiare medieval al Sibiului",nst:"Turnul Dogarilor, aparținând breslei butoiarilor, este unul dintre cele mai bine conservate turnuri medievale ale Sibiului.",nt:"Pe Strada Cetății în orașul de jos. Vizibil din exterior."},
+  {id:23,n:"Piața Unirii — the everyday square",a:"Old Town Lower",v:["local", "hidden", "food"],d:20,s:"Sibiu's working-class square — fruit stalls, bus connections, and no tourists",st:"Piața Unirii is one of Sibiu's secondary squares, away from the upper town tourist circuit. It has a fruit market, small stalls and the everyday rhythm of a Romanian provincial city — people waiting for buses, buying plums, arguing about football. It is completely ignored by guidebooks, which makes it interesting.",im:"You are the only person in this square who has a map on their phone. Everyone else knows exactly where they are going. Watch them.",t:"Short walk from the train station. Bus connections to Dumbrava forest and other parts of the city depart from here.",c:[],r:"g",nn:"Piața Unirii",ns:"Piața de zi cu zi a Sibiului — fără turiști",nst:"Piața Unirii are o piață de fructe, tarabe mici și ritmul obișnuit al unui oraș de provincie românesc. Ignorată de ghiduri.",nt:"Scurt mers pe jos de la gară. Conexiuni de autobuz spre pădurea Dumbrava pleacă de aici."},
+  {id:24,n:"Casa Artelor — the courtyard of arts",a:"Old Town Upper",v:["hidden", "beautiful", "art"],d:20,s:"A restored Saxon building whose courtyard is one of the most elegant secrets in the old town",st:"The House of Arts is a beautifully restored Saxon building near Piața Mare used for concerts, exhibitions and cultural events. Even when nothing is on, the courtyard is worth stepping into. It is arcaded, proportional and quiet in a way that feels designed for the particular pleasures of doing very little in a beautiful space.",im:"You walk through an unmarked door off a side street and find yourself in an arcaded courtyard. No crowd. No entrance fee. Just a very good building.",t:"Located near Piața Mare on Strada Tribunei. Courtyard is free to enter during the day. Check cultural programme for events.",c:[],r:"g",nn:"Casa Artelor",ns:"Curtea arcadată tăcută din inima orașului vechi",nst:"O clădire sașă frumos restaurată cu o curte arcadată elegantă lângă Piața Mare. Intrarea la curte este gratuită.",nt:"Pe Strada Tribunei, lângă Piața Mare. Curtea este gratuită în timpul zilei."},
+  {id:25,n:"Râul Cibin — the city river",a:"Old Town Lower",v:["local", "nature", "hidden"],d:20,s:"The small river that gave Sibiu its name, running through the lower town past old mill houses",st:"The Cibin river is modest — not the Danube or even the Olt — but it runs through the lower town and past the backs of old houses in a way that rewards a slow walk along its banks. Sibiu takes its name from this river. In spring it runs high and clear. The mill houses and old bridges along its course have been here for centuries.",im:"The city is named for this river. You walk along the bank. The houses back onto the water. It has always been this way.",t:"Walk from the Cibin market along the riverbank. Connect onward to the lower town walls and back up to the old town via Strada Ocnei.",c:[],r:"g",nn:"Râul Cibin",ns:"Râul care a dat numele orașului, curgând prin orașul de jos",nst:"Râul Cibin trece prin orașul de jos. Sibiu își ia numele de la acest râu. Malurile sale răsplătesc o plimbare lentă.",nt:"Mergeți de la piața Cibin de-a lungul malului râului. Continuați spre zidurile orașului de jos și înapoi sus pe Strada Ocnei."},
+  {id:26,n:"Piața Gării — the station square",a:"New Town",v:["local", "history", "hidden"],d:15,s:"The handsome Austro-Hungarian station that reminds you Sibiu was once part of a larger empire",st:"Sibiu's train station was built in 1872 during the Austro-Hungarian period and its facade still speaks of imperial confidence. The station square and the broad avenue leading from it toward the old town give a sense of the civic investment of the period. Today it is a transit space, but an elegant one — and a good starting point for understanding the city's layered identities.",im:"In 1872 this station connected a Saxon city in the Carpathians to Vienna, Budapest, and the rest of the empire. The trains now go to Bucharest.",t:"Walk from the station to the old town takes about 20 minutes on foot. Taxi stand outside the main entrance. Bus connections from Piața Unirii.",c:[],r:"g",nn:"Piața Gării",ns:"Gara austro-ungară din 1872",nst:"Gara din Sibiu a fost construită în 1872. Fațada sa vorbește încă de încrederea imperială. Astăzi leagă Sibiu de București și Cluj.",nt:"Mersul pe jos până în orașul vechi durează circa 20 de minute. Taxi la ieșirea principală."},
+  {id:27,n:"Turnul Archebuzierilor — Arquebusiers Tower",a:"Old Town Lower",v:["history", "hidden", "local"],d:15,s:"The musketeers guild tower, part of Sibiu's extraordinary chain of defended bastion walls",st:"The Arquebusiers Tower belonged to the guild of musketeers — early firearms specialists — and is one of the more intact guild towers in the lower town wall circuit. Finding each of the named towers (coopers, potters, carpenters, arquebusiers) while walking the lower town walls is a satisfying way to understand how medieval civic defence actually worked in practice.",im:"The musketeers guild trained here. They stored their weapons in this tower. In case of siege, they reported here. That was the deal.",t:"Walk along Strada Cetății in the lower town. Find it between the Coopers and Potters towers. Viewable from outside.",c:[],r:"g",nn:"Turnul Archebuzierilor",ns:"Turnul breslei muschetarilor din sistemul de fortifiare",nst:"Turnul Archebuzierilor aparținea breslei muschetarilor. Parte din circuitul de turnuri ale breslelor din zidul orașului de jos.",nt:"Pe Strada Cetății în orașul de jos, între Turnul Dogarilor și Turnul Olarilor."},
+  {id:28,n:"Muzeul de Istorie — History Museum",a:"Old Town Upper",v:["history", "local", "art"],d:45,s:"Sibiu's history from Roman Dacia through Saxon colonisation to the present day",st:"The History Museum occupies the old city hall on Piața Mare and traces the story of the city and region from prehistoric times through Roman Dacia, the Saxon colonisation of the 12th century, the guild system, the Ottoman sieges, the Habsburg administration and into the 20th century. The medieval artefacts and guild records are particularly strong.",im:"In the basement there is a Roman altar stone found in the valley. Above it, a Saxon guild contract from 1420. Above that, a Habsburg administrative decree. Three empires in one room.",t:"On Piața Mare. Check current opening hours as they vary by season. Combined Brukenthal ticket may cover entry.",c:["history_big"],r:"g",nn:"Muzeul de Istorie",ns:"Istoria Sibiului de la Dacia Romană până în prezent",nst:"Muzeul de Istorie din fosta primărie de pe Piața Mare prezintă istoria orașului din timpuri preistorice până în secolul XX.",nt:"Pe Piața Mare. Verificați orele de deschidere. Biletul combinat Brukenthal poate include intrarea."},
+  {id:29,n:"Hermannstadt — the ghost of the Saxon city",a:"Old Town Upper",v:["history", "hidden", "local"],d:20,s:"The German name for Sibiu still echoes in street signs, names and the city's remarkable political history",st:"Sibiu's German name is Hermannstadt and the city's Saxon identity — though the community has shrunk from 30,000 to a few thousand since 1989 — still shapes the place profoundly. Bilingual Romanian-German street signs appear throughout the old town. The city elected Klaus Johannis, an ethnic Saxon, as its mayor for 14 years before he became President of Romania. The Saxon legacy is not a museum exhibit — it is still running the place.",im:"The city elected an ethnic Saxon German as mayor for 14 years. Then he became President of Romania. The Saxons built this city. Their descendants still govern it.",t:"Not a single location but a lens for the whole city. Look for bilingual Romanian-German street signs throughout the old town.",c:["history_big"],r:"g",nn:"Hermannstadt",ns:"Moștenirea saxonă care încă modelează Sibiul",nst:"Numele german al Sibiului este Hermannstadt. Comunitatea saxonă a scăzut dramatic după 1989, dar moștenirea ei modelează profund orașul.",nt:"Nu un singur loc, ci o perspectivă pentru tot orașul. Căutați indicatoarele stradale bilingve română-germană."},
+  {id:30,n:"Piața Mare by night — the square after dark",a:"Old Town Upper",v:["local", "beautiful", "food"],d:60,s:"Return to the great square at 10pm, order wine, and watch the city stop performing",st:"Piața Mare in daylight belongs to tourists and day-trippers. After 9pm something shifts. The tour groups are gone. The terraces are occupied by locals and a smaller, quieter visitor who has stayed on. The square empties slowly. The baroque facades glow in warm light. Order a glass of local red and stay until midnight. This is when Sibiu shows you what it actually is.",im:"It is 11pm. The square is half-empty. The lights are warm. A couple at the next table are arguing quietly in Romanian. The wine is good. You have nowhere to be.",t:"Return to any terrace on Piața Mare after 9pm. Order local wine — Transylvanian red or white. Stay as long as you can.",c:[],r:"g",nn:"Piața Mare noaptea",ns:"Piața cea mare după ora 22, când orașul nu mai performează",nst:"După ora 21, Piața Mare aparține localnicilor. Terasele se liniștesc, grupurile de turiști dispar, vinul e bun.",nt:"Reveniți la orice terasă de pe Piața Mare după ora 21. Comandați vin local transilvănean."}
+];
+const PHRASES = [{native:"Bună ziua",en:"Good day"},{native:"Mulțumesc",en:"Thank you"},{native:"Te rog",en:"Please"},{native:"Cât costă?",en:"How much?"},{native:"Un bere, vă rog",en:"A beer, please"},{native:"Unde este...?",en:"Where is...?"},{native:"Nu înțeleg",en:"I do not understand"},{native:"Da / Nu",en:"Yes / No"},{native:"O cafea, vă rog",en:"A coffee, please"},{native:"La revedere",en:"Goodbye"},{native:"Noroc!",en:"Cheers!"}];
+const AREAS = ["Day Trips", "Dumbrava", "New Town", "Old Town Lower", "Old Town Upper", "Sub Arini"];
+const VIBES=[{id:"hidden",l:"Hidden",e:"🔎"},{id:"history",l:"History",e:"📜"},{id:"beautiful",l:"Beautiful",e:"✨"},{id:"weird",l:"Weird",e:"👁"},{id:"quiet",l:"Quiet",e:"🤫"},{id:"free",l:"Free entry",e:"🎟"},{id:"local",l:"Locals only",e:"📍"},{id:"night",l:"Night",e:"🌙"},{id:"nature",l:"Nature",e:"🌿"}];
+const COLLECTIONS = [
+  {id:"history_big",name:"History That Hits Hard",desc:"Events that shaped the world",emoji:"💥",color:"#ef4444"},
+  {id:"high_spots",name:"Highest Points & Views",desc:"See the whole city for free",emoji:"🏔️",color:"#3b82f6"},
+  {id:"parks",name:"Green & Hidden Gardens",desc:"Nature inside the city",emoji:"🌿",color:"#22c55e"},
+  {id:"romantic_water",name:"Waterfront & Romantic",desc:"Rivers, canals, and calm",emoji:"💧",color:"#06b6d4"},
+  {id:"famous_dead",name:"Famous Graves & Memorials",desc:"Where legends rest",emoji:"⚰️",color:"#6b7280"},
+  {id:"street_art",name:"Street Art & Murals",desc:"The city as canvas",emoji:"🎨",color:"#ec4899"},
+  {id:"free_museum",name:"Free Museums & Galleries",desc:"Culture costs nothing",emoji:"🏛️",color:"#6366f1"},
+  {id:"local_only",name:"Locals Only",desc:"Where tourists never go",emoji:"📍",color:"#f59e0b"},
+  {id:"architecture",name:"Architecture Gems",desc:"Buildings that make you stop",emoji:"🏗️",color:"#14b8a6"}
+];
+const M = [
+  {id:1,title:"The Eye-Counter Walk",desc:"Walk from Pia\u021ba Mare through Pia\u021ba Mic\u0103 and down Strada Ocnei. Count every dormer window shaped like a lidded eye that you can spot on the rooftops. Do not look at your phone.",places:[1, 2, 5, 11],time:"1.5 hours"},
+  {id:2,title:"Tower Day",desc:"Climb both the Council Tower and the Evangelical Cathedral tower in the same morning. Compare the views from the top of each. Decide which rooftop panorama is better.",places:[4, 6],time:"2 hours"},
+  {id:3,title:"The Market Meal",desc:"Buy your entire lunch from the Cibin market \u2014 bread, cheese, tomatoes, maybe a smoked sausage. Carry it to Sub Arini park and eat it on a bench under the trees.",places:[12, 14],time:"2 hours"},
+  {id:4,title:"Wall Walk",desc:"Walk the full surviving circuit of the medieval lower town walls from the Bridge of Lies to the end of Strada Cet\u0103\u021bii. Find and photograph all four named guild towers.",places:[3, 9, 22, 27],time:"1.5 hours"},
+  {id:5,title:"Saxon Village Day",desc:"Drive to Biertan and Viscri in the same day. Enter both fortified churches. Eat lunch in Biertan. Return to Sibiu for dinner. Do not rush either village.",places:[17, 18],time:"Full day"},
+  {id:6,title:"The Museum Morning",desc:"Spend a morning between the Brukenthal Palace on Pia\u021ba Mare and the History Museum. Buy the combined ticket. Find the oldest object in each collection.",places:[7, 28],time:"3 hours"},
+  {id:7,title:"ASTRA Half-Day",desc:"Go to the ASTRA open-air museum in Dumbrava forest and spend at least three hours walking among the relocated houses, churches and mills. Find a working watermill and a painted beehive.",places:[15, 16],time:"4 hours"},
+  {id:8,title:"Two Cathedrals",desc:"Visit both the Lutheran and the Orthodox cathedrals in the same morning. Two different communities, two different architectural traditions, three streets apart. Stand inside each and think about what you see.",places:[6, 13],time:"1.5 hours"},
+  {id:9,title:"The Night Square",desc:"Return to Pia\u021ba Mare at 10pm. Order a glass of local Transylvanian red wine at a terrace. Stay until the square is nearly empty. Do not leave before midnight.",places:[1, 30],time:"2 hours"},
+  {id:10,title:"The Mountain Road",desc:"Drive the Transf\u0103g\u0103r\u0103\u0219an mountain road to the summit pass (July to October only). Stop at the top, get out, feel the altitude and the scale of what one dictator built. Drive back before dark.",places:[21],time:"Full day"}
+];
+const PLACE_IMAGES={};
+</script>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const LANG_NAME="Română";
+const CITY_EN="Sibiu";
+
+const LangToggle=({lang,setLang})=>(
+<div className="lang-toggle">
+<button className={`lang-btn ${lang==="en"?"active":""}`} onClick={()=>setLang("en")}>EN</button>
+<button className={`lang-btn ${lang==="native"?"active":""}`} onClick={()=>setLang("native")}>{Română}</button>
+</div>);
+
+const PhrasesCard=()=>(
+PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-3" style={{color:"#a78bfa"}}>🗣️ Useful {LANG_NAME} Phrases</h3>
+<div className="flex flex-col gap-2">{PHRASES.map((ph,i)=><div key={i} className="flex justify-between items-center">
+<div><span className="text-xs font-bold" style={{color:"white"}}>{ph.native}</span>
+<span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
+
+const EntryGate=({onAccept})=>(
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(10,8,30,0.72) 0%,rgba(10,8,30,0.20) 45%,rgba(10,8,30,0.10) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<h1 className="text-sm font-bold tracking-widest" style={{color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"3px"}}>Go Do Stuff</h1>
+<p className="text-6xl font-black mt-1 leading-none" style={{color:"white",textShadow:"0 2px 16px rgba(0,0,0,0.7)",letterSpacing:"-1px"}}>Sibiu Edition</p>
+<p className="text-sm mt-2" style={{color:"#b8b0d0",lineHeight:1.5,textShadow:"0 1px 8px rgba(0,0,0,0.9)"}}>Activities are free.<br/><span style={{fontSize:"11px",opacity:0.7}}>Travel & food recommendations: low budget.</span></p>
+<p className="text-xs mt-2" style={{color:"#a5b4fc",textShadow:"0 1px 6px rgba(0,0,0,0.9)"}}>🌍 Bilingual: English + {LANG_NAME}</p>
+<p className="text-xs mt-6 px-4" style={{color:"#c8c0e0",lineHeight:1.6,maxWidth:340,textShadow:"0 1px 8px rgba(0,0,0,0.95)"}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>Free. Curated. No tourist traps.</p>
+<div className="rounded-2xl p-6 mt-8 mx-4 text-left" style={{background:"rgba(10,10,30,0.72)",border:"1px solid rgba(255,255,255,0.15)",maxWidth:380}}>
+<h2 className="text-base font-bold mb-3" style={{color:"white"}}>Before you start</h2>
+<p className="text-sm leading-relaxed" style={{color:"#c8c0e0"}}>This app is a creative guide to hidden places. Content is curated for curiosity — not as instructions.</p>
+<p className="text-xs leading-relaxed mt-1" style={{color:"#9990b8",fontStyle:"italic"}}>Această aplicație este un ghid creativ al locurilor ascunse. Conținutul este selectat din curiozitate, nu ca instrucțiuni.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Some locations include natural environments, heights, water, or areas that may be restricted or unsafe. You explore at your own risk.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#c8c0e0"}}>Always follow local laws, respect private property, and check current conditions before visiting any place.</p>
+<p className="text-sm leading-relaxed mt-3" style={{color:"#e8c0f0"}}>If you are under 18, please explore responsibly.</p>
+</div>
+<button onClick={onAccept} className="mt-6 w-full py-4 rounded-xl text-sm font-bold text-white" style={{background:"linear-gradient(135deg,#6366F1,#8B5CF6)",border:"none",cursor:"pointer",maxWidth:380,fontSize:"15px"}}>I understand — let me explore<br/><span style={{fontSize:"12px",opacity:0.85}}>Am înțeles — să explorăm</span></button>
+</div>);
+
+const PlaceCard=({place:p,idx,onOpen,lang})=>(
+<button onClick={()=>onOpen(p)} className="text-left w-full rounded-2xl p-4 fade-up" style={{background:"white",border:"1.5px solid #e4e4ed",cursor:"pointer",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div style={{flex:1}}>
+<h3 className="text-base font-bold" style={{color:"#1a1a2e",lineHeight:1.3}}>{lang==="native"&&p.nn?p.nn:p.n}</h3>
+{lang==="native"&&p.nn&&<p className="text-xs" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-xs mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p></div>
+<span className="text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0" style={{background:p.r==="g"?"#dcfce7":"#fef9c3",color:p.r==="g"?"#166534":"#854d0e"}}>{p.r==="g"?"Green":"Yellow"}</span></div>
+<p className="text-sm mt-2" style={{color:"#555",lineHeight:1.5}}>{lang==="native"&&p.ns?p.ns:p.s}</p>
+<div className="flex gap-1.5 mt-2 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-2 py-0.5 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</button>);
+
+const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
+<div style={{position:"fixed",inset:0,zIndex:1000,backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat",overflowY:"auto"}}>
+<div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex justify-between items-center mb-4">
+<button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
+<div className="flex gap-2">
+<button onClick={onPrev} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>←</button>
+<button onClick={onNext} style={{background:"#f0f0ff",border:"none",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontSize:14}}>→</button></div></div>
+<h1 className="text-2xl font-black" style={{color:"#1a1a2e"}}>{lang==="native"&&p.nn?p.nn:p.n}</h1>
+{lang==="native"&&p.nn&&<p className="text-sm font-medium" style={{color:"#6366F1"}}>{p.n}</p>}
+<p className="text-sm mt-1" style={{color:"#888"}}>{p.a} · {p.d} min</p>
+{PLACE_IMAGES[p.id]&&<div className="mt-4 rounded-xl overflow-hidden" style={{maxHeight:"400px"}}>
+<img src={`images/${PLACE_IMAGES[p.id]}`} alt={p.n} style={{width:"100%",maxHeight:"360px",objectFit:"contain",display:"block",borderRadius:"8px"}}/>
+<p className="text-xs mt-1" style={{color:"#aaa",textAlign:"center"}}>AI-generated illustration</p></div>}
+<div className="mt-4 p-4 rounded-xl" style={{background:"#f8f8ff"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#1a1a2e"}}>The Story</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nst?p.nst:p.st}</p></div>
+{p.im&&<div className="mt-3 p-4 rounded-xl" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#a78bfa"}}>Imagine This</h3>
+<p className="text-sm" style={{color:"#b8b0d0",lineHeight:1.7,fontStyle:"italic"}}>{p.im}</p></div>}
+{p.t&&<div className="mt-3 p-4 rounded-xl" style={{background:"#f0fdf4"}}>
+<h3 className="text-sm font-bold mb-2" style={{color:"#166534"}}>{lang==="native"?"Tips / "+LANG_NAME:"Tips"}</h3>
+<p className="text-sm" style={{color:"#555",lineHeight:1.7}}>{lang==="native"&&p.nt?p.nt:p.t}</p>
+<a href={`https://maps.google.com/?q=${encodeURIComponent(p.n+', '+CITY_EN)}`} target="_blank" rel="noopener noreferrer"
+  className="mt-3 flex items-center gap-2 text-sm font-bold"
+  style={{color:"#166534",textDecoration:"none",display:"inline-flex",marginTop:"10px"}}>
+  🗺 Get directions
+</a>
+</div>}
+{p.ef&&<p className="text-xs mt-3 pt-3" style={{color:"#555",lineHeight:1.7,borderTop:"1px solid #dcfce7"}}>🍔 {p.ef}</p>}
+{p.sf&&<p className="text-xs mt-2" style={{color:"#555",lineHeight:1.7}}>🏠 {p.sf}</p>}
+<div className="flex gap-2 mt-4 flex-wrap">{p.v.map(v=><span key={v} className="text-xs px-3 py-1 rounded-full" style={{background:"#f0f0ff",color:"#6366F1"}}>{VIBES.find(x=>x.id===v)?.e} {v}</span>)}</div>
+</div></div>);
+
+const MissionCard=({m,idx})=>(
+<div className="rounded-2xl p-4 fade-up" style={{background:"linear-gradient(135deg,#1a1a2e,#2d1b69)",animationDelay:`${idx*40}ms`}}>
+<div className="flex items-start justify-between"><div>
+<h3 className="text-base font-bold" style={{color:"white"}}>{m.title}</h3>
+<p className="text-xs mt-1" style={{color:"#b8b0d0"}}>{m.places.length} places · {m.time}</p></div>
+<span className="text-2xl">⚡</span></div>
+<p className="text-sm mt-2" style={{color:"#8b7fb8"}}>{m.desc}</p></div>);
+
+const CollectionView=({col,onOpenPlace,lang})=>{
+const places=P.filter(p=>p.c?.includes(col.id));
+return <div><div className="flex items-center gap-2 mb-3">
+<span className="text-2xl">{col.emoji}</span>
+<div><h2 className="text-lg font-bold" style={{color:col.color}}>{col.name}</h2>
+<p className="text-xs" style={{color:"#888"}}>{col.desc} · {places.length} places</p></div></div>
+<div className="flex flex-col gap-3">{places.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+const TripPlanner=({onOpenPlace,lang})=>{
+const[hrs,setHrs]=useState(3);
+const plan=useMemo(()=>{const s=[...P].sort(()=>Math.random()-0.5);let t=0;const picks=[];
+for(const p of s){if(t+p.d>hrs*60)continue;picks.push(p);t+=p.d;if(picks.length>=8)break}return picks},[hrs]);
+return <div className="mt-3">
+<h2 className="text-lg font-bold" style={{color:"#1a1a2e"}}>🧭 Trip Planner</h2>
+<p className="text-sm mt-1 mb-3" style={{color:"#888"}}>How many hours do you have?</p>
+<div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
+<div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
+
+function App(){
+const[accepted,setAccepted]=useState(false);
+const[tab,setTab]=useState("places");
+const[vibe,setVibe]=useState("all");
+const[area,setArea]=useState(null);
+const[search,setSearch]=useState("");
+const[selected,setSelected]=useState(null);
+const[showPicker,setShowPicker]=useState(false);const[spinning,setSpinning]=useState(false);const[spinPlace,setSpinPlace]=useState(null);
+const[activeCol,setActiveCol]=useState(null);
+const[lang,setLang]=useState("en");
+
+const filtered=useMemo(()=>P.filter(p=>{
+if(vibe!=="all"&&!p.v.includes(vibe))return false;
+if(area&&p.a!==area)return false;
+if(search){const s=search.toLowerCase();const name=lang==="native"&&p.nn?p.nn:p.n;const hook=lang==="native"&&p.ns?p.ns:p.s;const story=lang==="native"&&p.nst?p.nst:p.st;return name.toLowerCase().includes(s)||hook.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||story.toLowerCase().includes(s)}
+return true}),[vibe,area,search,lang]);
+
+const filteredM=useMemo(()=>{if(!search)return M;const s=search.toLowerCase();return M.filter(m=>m.title.toLowerCase().includes(s)||m.desc.toLowerCase().includes(s))},[search]);
+
+const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i+1)%a.length])};
+const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
+
+useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
+if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
+
+const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
+if(showPicker){const rp=spinPlace||P[0];const _bgs=["https://mariavheland.github.io/godostuff/dice/bg1.jpg","https://mariavheland.github.io/godostuff/dice/bg2.jpg","https://mariavheland.github.io/godostuff/dice/bg3.jpg"];const _bg=_bgs[Math.floor(Math.random()*_bgs.length)];
+return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backgroundImage:`url(${_bg})`,backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
+<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.55)",pointerEvents:"none"}}/>
+<span style={{position:"absolute",top:"8%",left:"6%",fontSize:48,color:"#c8102e",animation:"floatSuit 6.2s ease-in-out infinite",pointerEvents:"none"}}>♥</span>
+<span style={{position:"absolute",top:"12%",right:"8%",fontSize:40,color:"#1a1a1a",animation:"floatSuit2 5.8s ease-in-out infinite .8s",pointerEvents:"none"}}>♠</span>
+<span style={{position:"absolute",bottom:"18%",left:"5%",fontSize:36,color:"#c8102e",animation:"floatSuit 7.1s ease-in-out infinite 1.5s",pointerEvents:"none"}}>♦</span>
+<span style={{position:"absolute",bottom:"15%",right:"6%",fontSize:44,color:"rgba(255,255,255,.18)",animation:"floatSuit2 6.5s ease-in-out infinite 2.2s",pointerEvents:"none"}}>♣</span>
+<div style={{position:"absolute",inset:16,border:"1px solid rgba(212,175,55,.18)",borderRadius:24,pointerEvents:"none"}}/>
+<p className={spinning?"text-5xl mb-6 dice-spin":"text-5xl mb-6 final-land"} style={{lineHeight:1}}>🎲</p>
+{!spinPlace&&<p style={{color:"rgba(212,175,55,.6)",fontSize:14,letterSpacing:"2px",textTransform:"uppercase"}}>rolling…</p>}
+{spinPlace&&<div className={spinning?"slot-flicker text-center":"final-land text-center"} style={{maxWidth:320,position:"relative",zIndex:1}}>
+<div style={{background:"rgba(0,0,0,.35)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(212,175,55,.25)",padding:"20px 24px"}}>
+<h2 className="text-2xl font-black" style={{color:"#fff",letterSpacing:"-.5px",lineHeight:1.15}}>{lang==="native"&&rp.nn?rp.nn:rp.n}</h2>
+<p className="text-xs font-bold mt-2 uppercase" style={{color:"#d4af37",letterSpacing:"2px"}}>{rp.a} · {rp.d} min</p>
+<p className="text-sm mt-3" style={{color:"rgba(255,255,255,.75)",lineHeight:1.65}}>{lang==="native"&&rp.ns?rp.ns:rp.s}</p>
+</div></div>}
+<div className="flex gap-3 mt-8" style={{position:"relative",zIndex:1}}>
+<button onClick={()=>{setShowPicker(false);setSpinPlace(null);setSpinning(false);}} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>✕ Close</button>
+{!spinning&&spinPlace&&<button onClick={()=>{setSelected(rp);setShowPicker(false);setSpinPlace(null);}} className="px-6 py-2 rounded-full text-sm font-black" style={{background:"linear-gradient(135deg,#d4af37,#f0c040)",color:"#0e3a1e",border:"none",cursor:"pointer"}}>Let's go →</button>}
+{!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer"}}>🎲 Again</button>}
+</div></div>}
+
+return <div style={{minHeight:"100vh",backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat"}}>
+<div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
+<div className="flex items-start justify-between">
+<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Sibiu Edition</p>
+<p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
+<div className="flex flex-col items-end gap-2">
+<button onClick={startSpin} className="text-3xl" style={{background:"none",border:"none",cursor:"pointer"}}>🎲</button>
+<LangToggle lang={lang} setLang={setLang}/>
+</div></div>
+
+<div className="flex gap-0 mt-5 rounded-xl overflow-hidden" style={{border:"1.5px solid #e4e4ed"}}>
+{[{k:"places",l:`🗺 All (${filtered.length})`},{k:"collections",l:"📚 Collections"},{k:"phrases",l:"🗣️ Phrases"},{k:"plan",l:"🧭 Plan"},{k:"missions",l:"⚡ Missions"}].map(t=>
+<button key={t.k} onClick={()=>{setTab(t.k);setActiveCol(null)}} className="flex-1 py-2.5 text-xs font-bold"
+style={{background:tab===t.k?"#1a1a2e":"white",color:tab===t.k?"white":"#888",border:"none",cursor:"pointer",borderLeft:t.k!=="places"?"1.5px solid #e4e4ed":"none"}}>{t.l}</button>)}</div>
+
+{(tab==="places"||tab==="missions")&&<div className="mt-3 relative">
+<input type="text" placeholder={tab==="places"?"Search places, areas, stories...":"Search missions..."} value={search} onChange={e=>setSearch(e.target.value)}
+className="w-full rounded-xl px-4 py-3 text-sm" style={{border:"1.5px solid #e4e4ed",background:"white",outline:"none",color:"#1a1a2e"}}/>
+{search&&<button onClick={()=>setSearch("")} className="absolute right-3 top-1/2 text-sm" style={{transform:"translateY(-50%)",color:"#aaa",background:"none",border:"none",cursor:"pointer"}}>✕</button>}</div>}
+
+{tab==="places"&&<>
+<div className="flex gap-2 mt-3 pb-1" style={{overflowX:"auto"}}>{VIBES.map(v=><button key={v.id} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold" style={{background:vibe===v.id?"#1a1a2e":"white",color:vibe===v.id?"white":"#555",border:"1.5px solid #e4e4ed",cursor:"pointer"}} onClick={()=>setVibe(vibe===v.id?"all":v.id)}>{v.e} {v.l}</button>)}</div>
+<div className="flex gap-2 mt-2 pb-1" style={{overflowX:"auto"}}>
+<button className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:!area?"#1a1a2e":"transparent",color:!area?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(null)}>All areas</button>
+{AREAS.map(a=><button key={a} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium" style={{background:area===a?"#1a1a2e":"transparent",color:area===a?"white":"#888",border:"1px solid #ddd",cursor:"pointer"}} onClick={()=>setArea(area===a?null:a)}>{a}</button>)}</div></>}
+</div>
+
+<div className="px-5 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
+{tab==="places"?(filtered.length===0?<div className="text-center py-16"><div className="text-4xl mb-3">🔍</div><p className="text-base font-bold" style={{color:"#1a1a2e"}}>Nothing found</p></div>
+:<div className="flex flex-col gap-3 mt-3">{filtered.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}</div>
+):tab==="collections"?(activeCol?<div className="mt-3">
+<button onClick={()=>setActiveCol(null)} className="text-sm font-bold mb-3" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← All collections</button>
+<CollectionView col={COLLECTIONS.find(c=>c.id===activeCol)} onOpenPlace={x=>setSelected(x)} lang={lang}/></div>
+:<div className="grid gap-3 mt-3" style={{gridTemplateColumns:"1fr 1fr"}}>
+{COLLECTIONS.map((col,i)=>{const cnt=P.filter(p=>p.c?.includes(col.id)).length;
+return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-left rounded-2xl p-4 fade-up" style={{background:"white",border:`1.5px solid ${col.color}20`,cursor:"pointer",animationDelay:`${i*40}ms`}}>
+<div className="text-2xl mb-1">{col.emoji}</div>
+<h3 className="text-sm font-bold" style={{color:col.color}}>{col.name}</h3>
+<p className="text-xs mt-1" style={{color:"#888"}}>{col.desc}</p>
+<p className="text-xs mt-2 font-semibold" style={{color:"#bbb"}}>{cnt} places</p></button>})}</div>
+):tab==="phrases"?(<div className="mt-3"><PhrasesCard/></div>
+):tab==="missions"?(<div className="flex flex-col gap-3 mt-3">{filteredM.map((m,i)=><MissionCard key={m.id} m={m} idx={i}/>)}</div>
+):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
+
+<div className="mt-8 mb-4 text-center">
+<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Sibiu Edition</p>
+<p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
+</div></div>}
+
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script>
+</body>
+</html>
