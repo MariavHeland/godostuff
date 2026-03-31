@@ -1,0 +1,25 @@
+name: Enrich European Cities
+
+on:
+  workflow_dispatch:
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install requests
+
+      - name: Run enrichment
+        env:
+          PPLX_API_KEY: ${{ secrets.PPLX_API_KEY }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: python scripts/enrich_european.py
