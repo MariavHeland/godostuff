@@ -338,7 +338,7 @@ PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"line
 <span className="text-xs ml-2" style={{color:"#8b7fb8"}}>— {ph.en}</span></div></div>)}</div></div>);
 
 const EntryGate=({onAccept})=>(
-<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(10,8,30,0.72) 0%,rgba(10,8,30,0.20) 45%,rgba(10,8,30,0.10) 100%),url('images/01_hero.png') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+<div style={{minHeight:"100vh",background:"linear-gradient(180deg,rgba(10,8,30,0.72) 0%,rgba(10,8,30,0.20) 45%,rgba(10,8,30,0.10) 100%),url('images/01_hero_new.jpeg') center/cover no-repeat",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
 <h1 className="text-sm font-bold tracking-widest" style={{color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"3px"}}>Go Do Stuff</h1>
 <p className="text-6xl font-black mt-1 leading-none" style={{color:"white",textShadow:"0 2px 16px rgba(0,0,0,0.7)",letterSpacing:"-1px"}}>Berlin Edition</p>
 <p className="text-sm mt-2" style={{color:"#b8b0d0",lineHeight:1.5,textShadow:"0 1px 8px rgba(0,0,0,0.9)"}}>Activities are free.<br/><span style={{fontSize:"11px",opacity:0.7}}>Travel & food recommendations: low budget.</span></p>
@@ -506,7 +506,7 @@ return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
 
 <div className="mt-4 -mx-5 overflow-x-auto pb-2" style={{scrollBehavior:"smooth"}}>
 <div className="flex gap-2 px-5" style={{minWidth:"fit-content"}}>
-{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_abstract.png"].map((img,i)=>
+{["02_detail.png","03_explorer.png","04_night.png","05_timetravel.png","06_aerial.png","07_new.jpeg"].map((img,i)=>
 <div key={i} className="flex-shrink-0" style={{width:"110px",height:"160px"}}>
 <img src={`images/${img}`} alt={`Mood ${i+1}`} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"10px",display:"block"}}/>
 </div>)}
