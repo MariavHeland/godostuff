@@ -50,17 +50,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Coimbra...</p></div>
 <div id="root"></div>
 <script>
-const P = [,
-  {name:'Miradouro do Calvario',area:'Alta de Coimbra',desc:'Tucked away in the historic upper neighborhood, this hidden viewpoint offers sweeping panoramas of Coimbra's red rooftops and the Mondego River without the university crowds. Locals head here at dusk for quiet reflection, climbing the narrow stone steps past old walls. Free access; reachable by bus 30 from the city center.',tags:['viewpoint','hidden','free','local'],lat:40.2095,lng:-8.4272},
-  {name:'Parque de Vale de Canas',area:'Eiras',desc:'A serene local park in the residential Eiras area, perfect for slow picnics under pine trees with playgrounds and a small pond where kids feed ducks. Neighborhood families gather on weekends for casual chats; it's their go-to for escaping the city buzz. Completely free; bus 42 stops nearby.',tags:['park','local','free'],lat:40.194,lng:-8.432},
-  {name:'Pátio das Escolas Secret Courtyard',area:'Solum',desc:'Behind the bustling university gates lies this overlooked courtyard with ancient arches and ivy-covered benches, where students linger reading between classes. Locals cherish its peaceful vibe away from tourist paths, ideal for a slow coffee break. Free to wander; walkable or bus 1 from Baixa.',tags:['courtyard','hidden','free','local'],lat:40.2078,lng:-8.4265},
-  {name:'Mercado D. Pedro V',area:'Baixa de Coimbra',desc:'This everyday market hums with locals bargaining for fresh cheese, olives, and seasonal fruits in a colorful, no-frills hall. Vendors share stories and samples, making it a true community heartbeat far from tourist menus. Free entry; bus 27 or tram from Santa Clara.',tags:['market','local','free'],lat:40.204,lng:-8.43},
-  {name:'Street Art Beco do Chão dos Caídos',area:'Arregaça',desc:'Narrow alley bursting with vibrant murals by local artists depicting fado singers and river scenes, stumbled upon by curious walkers. Neighborhood youth use it as a canvas for expression, drawing slow explorers for photos. Free; bus 33 from center.',tags:['street art','hidden','free','local'],lat:40.1985,lng:-8.428},
-  {name:'Jardim da Estação Nova',area:'Santa Clara',desc:'Overlooked pocket park near the train station with wildflowers, benches, and views of passing trams, where elders play cards in the shade. Locals love its unpretentious calm for reading or people-watching. Free; right by bus 34 stop.',tags:['park','local','free','hidden'],lat:40.2025,lng:-8.435},
-  {name:'Miradouro de Santa Clara',area:'Santa Clara',desc:'Secret riverside perch with elevated stone seats overlooking the Mondego's bends and distant bridges, popular among locals for sunset picnics. It's a whispered spot for quiet contemplation away from main paths. Free; bus 30 or walk from ponte.',tags:['viewpoint','hidden','free','local'],lat:40.2,lng:-8.437},
-  {name:'Pátio do Olho do Povo',area:'Sé Nova',desc:'Charming hidden courtyard off a side street with laundry lines, flower pots, and gossiping neighbors—feels like stepping into a postcard. Locals treasure it for its authentic daily life pulse. Free; bus 1 or 22 nearby.',tags:['courtyard','hidden','free','local'],lat:40.208,lng:-8.424},
-  {name:'Horta Comunitária das Eiras',area:'Eiras',desc:'Community garden where locals tend shared veggie plots, swap seeds, and host free harvest barbecues in a lush green haven. It's a slow living hub fostering neighborly bonds. Free to visit and chat; bus 42 direct.',tags:['community space','park','local','free'],lat:40.195,lng:-8.431},
-  {name:'Escadinhas do Almedina Street Art',area:'Almedina',desc:'Steep historic steps adorned with colorful graffiti and poetry by underground artists, echoing with fado vibes. Locals pause here for inspiration during uphill treks. Free; central, bus 1.',tags:['street art','hidden','free','local'],lat:40.21,lng:-8.4285},
+const P = [
   {id:1,n:"Joanina Library — University",a:"University",v:["history", "beautiful"],d:27,s:"500-year-old library with bats that eat moths",st:"1717. Red and gold. Bats inherited.",im:"Coimbra University, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["famous_dead"],r:"g",nn:"Biblioteca Joanina — University",ns:"500-year-old library with bats that eat moths",nst:"1717. Red and gold. Bats inherited.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
   {id:2,n:"University Courtyard — University",a:"University",v:["history", "quiet"],d:9,s:"Medieval courtyard, 700 years of debate",st:"Founded 1290. Stones worn by millions.",im:"Coimbra University, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["history_big"],r:"g",nn:"Pátio das Escolas — University",ns:"Medieval courtyard, 700 years of debate",nst:"Founded 1290. Stones worn by millions.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
   {id:3,n:"Sé Velha — City Center",a:"City Center",v:["history", "beautiful"],d:3,s:"Romanesque fortress-cathedral built 1162",st:"Looks like castle. Inside: echoing peace.",im:"Coimbra City Center, 100 years ago",t:"Ask locals. Come back at sunset. Explore alleys.",c:["abandoned"],r:"y",nn:"Sé Velha — City Center",ns:"Romanesque fortress-cathedral built 1162",nst:"Looks like castle. Inside: echoing peace.",nt:"Fragen Sie Locals. Erkunden Sie Gassen."},
@@ -327,7 +317,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex14.webp') center/cover fixed no-repeat","collections":"url('../../textures/tex15.webp') center/cover fixed no-repeat","missions":"url('../../textures/tex16.webp') center/cover fixed no-repeat","plan":"url('../../textures/tex17.webp') center/cover fixed no-repeat","phrases":"url('../../textures/tex18.webp') center/cover fixed no-repeat","default":"url('../../textures/tex14.webp') center/cover fixed no-repeat"};function App(){
+function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
@@ -388,7 +378,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
