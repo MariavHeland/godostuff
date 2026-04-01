@@ -50,17 +50,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Wrocław...</p></div>
 <div id="root"></div>
 <script>
-const P = [,
-  {name:'Bastion Sakwowy',area:'Wzgórze Partyzantów',desc:'Remontowany bastion na Wzgórzu Partyzantów wznosi się 14 metrów nad miastem, oferując darmową panoramę centrum z kawiarniami w tle. Lokalni mieszkańcy kochają to miejsce za spokojne wieczory z widokiem na Odę i miasto. Dojedź autobusem 119 lub tramwajem 8 do ul. Piotra Skargi 18a. Free.',tags:['viewpoint','hidden','free','local'],lat:51.109,lng:17.038},
-  {name:'Góra Gajowa',area:'Południe Wrocławia',desc:'Dawna 'Górka Śmieciowa' na wysypisku, dziś najwyższe wzniesienie południa (152 m n.p.m.) z unikalną, szeroką panoramą całego miasta i wieżami katedr. Odkrywcy lokalni cenią dziką wspinaczkę i nietypowe kadry poza utartymi szlakami. Bus 119 lub 248 do okolic. Free.',tags:['viewpoint','hidden','free','local'],lat:51.055,lng:17.012},
-  {name:'Bastion Ceglarski',area:'Stare Miasto',desc:'Zapomniany bastion nad Odrą z widokiem na rzekę i mosty, idealny na leniwe popołudnia. Wrocławianie przychodzą tu na pikniki i street art w okolicy, unikając tłumów. Tramwaj 2 lub 10 do pl. Grunwaldzkiego. Free.',tags:['viewpoint','hidden','free','local'],lat:51.113,lng:17.046},
-  {name:'Dach Galerii Dominikańskiej',area:'Śródmieście',desc:'Taras na dachu galerii z nieoczekiwanym widokiem na Rynek i katedry, wolny od turystów. Lokalni robią tu zdjęcia i chillują z kawą. Bus 106 lub tramwaj 9 do Dominikańskiej. Free.',tags:['viewpoint','hidden','free','local'],lat:51.108,lng:17.035},
-  {name:'Park Skowroni',area:'Sępolno',desc:'Cichy neighborhood park z dzikimi łąkami i stawami, gdzie locals spacerują z psami i piknikują. Ukryty klejnot dla slow travel, pełen ptaków. Bus 119 do Skowroniej. Free.',tags:['park','local','free','hidden'],lat:51.142,lng:17.068},
-  {name:'Dziedziniec Nadodrze',area:'Nadodrze',desc:'Sekretny dziedziniec z muralami i starymi kamienicami, ulubione miejsce locals na kawę w ukryciu. Street art i community vibe przyciągają artystów. Tramwaj 17 do pl. Staszica. Free.',tags:['courtyard','street art','local','free'],lat:51.126,lng:17.068},
-  {name:'Targ na Nowym Dworze',area:'Nowy Dwór',desc:'Lokalny bazar z tanimi warzywami, pierogami i rękodziełem, gdzie mieszkańcy handlują codziennie. Prawdziwy klimat osiedla, zero turystów. Bus 901 do ul. Nowodworskiej. Very cheap.',tags:['market','local','free'],lat:51.135,lng:17.085},
-  {name:'Muralowa Ściana Fabryczna',area:'Grabiszyn',desc:'Ogromny ukryty mural na starej fabryce, odkryty przez lokalnych influencerów na Insta. Idealny spot na foto dla curious explorers. Bus 5 do Grabiszyńskiej. Free.',tags:['street art','hidden','free','local'],lat:51.098,lng:17.01},
-  {name:'Ogród Sąsiedzki Partynice',area:'Partynice',desc:'Community space z wspólnymi grządkami i hamakami, gdzie locals dzielą się plonami. Slow travel heaven z warsztatami. Bus 249 do Wojszyckiej. Free.',tags:['park','community','local','free'],lat:51.078,lng:17.042},
-  {name:'Wieża Matematyczna',area:'Politechnika',desc:'Niski, ale magiczny punkt widokowy z kampusu politechniki, z panoramą na południe miasta. Studenci i locals wspinają się tu na secret views. Tramwaj 10 do Politechniki. Free.',tags:['viewpoint','hidden','free','local'],lat:51.103,lng:17.027},
+const P = [
   {id:1,n:"Wrocław Location 1 — Ostrów Tumski",a:"Ostrów Tumski",v:["beautiful", "history"],d:1,s:"Authentic Wrocław location with Polish character.",st:"You\'re experiencing Central European culture at location 1. History and modernity share space.",im:"It\'s a moment of resilient beauty in a reimagined city.",t:"You\'re experiencing Central European culture at location 1. History and modernity share space.\",im:\"It\'s a moment of resilient beauty in a reimagined city.\",t:\"Best visited afternoon. Many locations free. Photography welcomed.",c:["street_art"],r:"g",nn:"",ns:"",nst:"",nt:""},
   {id:2,n:"Wrocław Location 2 — Nadodrze",a:"Nadodrze",v:["street_art", "local"],d:2,s:"Authentic Wrocław location with Polish character.",st:"You\'re experiencing Central European culture at location 2. History and modernity share space.",im:"It\'s a moment of resilient beauty in a reimagined city.",t:"You\'re experiencing Central European culture at location 2. History and modernity share space.\",im:\"It\'s a moment of resilient beauty in a reimagined city.\",t:\"Best visited afternoon. Many locations free. Photography welcomed.",c:["architecture"],r:"g",nn:"",ns:"",nst:"",nt:""},
   {id:3,n:"Wrocław Location 3 — Śródmieście",a:"Śródmieście",v:["quiet", "nature"],d:3,s:"Authentic Wrocław location with Polish character.",st:"You\'re experiencing Central European culture at location 3. History and modernity share space.",im:"It\'s a moment of resilient beauty in a reimagined city.",t:"You\'re experiencing Central European culture at location 3. History and modernity share space.\",im:\"It\'s a moment of resilient beauty in a reimagined city.\",t:\"Best visited afternoon. Many locations free. Photography welcomed.",c:["free_museum"],r:"g",nn:"",ns:"",nst:"",nt:""},
@@ -310,7 +300,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex2.webp') center/cover fixed no-repeat","collections":"url('../../textures/tex3.webp') center/cover fixed no-repeat","missions":"url('../../textures/tex4.webp') center/cover fixed no-repeat","plan":"url('../../textures/tex5.webp') center/cover fixed no-repeat","phrases":"url('../../textures/tex6.webp') center/cover fixed no-repeat","default":"url('../../textures/tex2.webp') center/cover fixed no-repeat"};function App(){
+function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
@@ -371,7 +361,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
