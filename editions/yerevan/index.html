@@ -163,10 +163,7 @@ const P = [
   {id:109,n:"Hrazdan Gorge Park Walking",a:"Centro",v:["free","local","hidden"],d:15,s:"Canyon park with trails and sculpture viewpoints",st:"Deep canyon park with nature trails and viewpoints",im:"Time-travel: Historic significance or local transformation.",t:"Free to visit/explore. Check local guides for hours.",c:["local_only","hidden"],r:"g",nn:"Երևան",ns:"Túnel peatonal con graffiti en distrito Kond",nst:"Deep canyon park with nature trails and viewpoints",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:110,n:"Cascade Steps & Modern Art",a:"Centro",v:["free","local","hidden"],d:15,s:"Giant staircase with fountains and art",st:"Giant staircase with fountains and contemporary sculptures",im:"Time-travel: Historic significance or local transformation.",t:"Free to visit/explore. Check local guides for hours.",c:["local_only","hidden"],r:"g",nn:"Երևան",ns:"Túnel peatonal con graffiti en distrito Kond",nst:"Giant staircase with fountains and contemporary sculptures",nt:"Acceso gratuito. Consejos locales aplican."},
   {id:111,n:"Republic Square Free Walking Route",a:"Centro",v:["free","local","hidden"],d:15,s:"Historic plaza with free walking tour routes",st:"Historic plaza and free walking tour starting point",im:"Time-travel: Historic significance or local transformation.",t:"Free to visit/explore. Check local guides for hours.",c:["local_only","hidden"],r:"g",nn:"Երևան",ns:"Túnel peatonal con graffiti en distrito Kond",nst:"Historic plaza and free walking tour starting point",nt:"Acceso gratuito. Consejos locales aplican."}
-
-,{id:121,n:"Shengavit Archaeological Site",a:"14/9 Hrant Shahinyan St, Yerevan 0084, Armenia",v:["40.1425", "44.5123"],d:5,s:"A little-known treasure dating back to the Bronze Age, this serene site offers a fascinating look at early Armenian civilization, often overlooked by tourists[2].",st:"Open daily during daylight hours",im:"https://example.com/shengavit.jpg",t:"Archaeological Site",c:["history", "archaeology", "free"],r:"g",nn:"Շենգավիթի հնագիտական հուշարձան",ns:"4.2",nst:"12",nt:"Ancient settlement ruins with excavation insights"},
-{id:122,n:"Yerevan Botanical Garden",a:"Italy St, Yerevan 0101, Armenia",v:["40.1998", "44.4992"],d:7,s:"Often missed by tourists, this lush garden features diverse plants, serene walking paths, and striking architecture, ideal for a peaceful visit[2].",st:"Open daily 9AM-6PM",im:"https://example.com/botanical.jpg",t:"Botanical Garden",c:["nature", "garden", "relaxation"],r:"y",nn:"Երևանի բուսաբանական այգի",ns:"4.5",nst:"25",nt:"Tranquil paths amid exotic flora"},
-{id:123,n:"Hovhannes Tumanyan Museum",a:"Paranyan St, 7/14, Yerevan 0009, Armenia",v:["40.1812", "44.5178"],d:4,s:"This calm museum dedicated to Armenia’s great poet offers deep insights into Tumanyan’s life and works, a charming hidden spot[2].",st:"Tue-Sun 11AM-5PM, closed Mon",im:"https://example.com/tumanyan.jpg",t:"Literary Museum",c:["museum", "literature", "culture"],r:"g",nn:"Հովհաննես Թումանյանի տուն-հիշատակ",ns:"4.6",nst:"18",nt:"Poet's home with personal artifacts"}];
+];
 const PHRASES = [
   {native:"Բարեւ",en:"Hello"},
   {native:"Շնորհակալ",en:"Thank you"},
@@ -309,7 +306,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex3.webp') center/cover fixed no-repeat","collections":"url('../../textures/tex4.webp') center/cover fixed no-repeat","missions":"url('../../textures/tex5.webp') center/cover fixed no-repeat","plan":"url('../../textures/tex6.webp') center/cover fixed no-repeat","phrases":"url('../../textures/tex7.webp') center/cover fixed no-repeat","default":"url('../../textures/tex3.webp') center/cover fixed no-repeat"};function App(){
+function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
@@ -370,7 +367,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
