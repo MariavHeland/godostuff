@@ -50,17 +50,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
 <div id="loading"><h1>Go Do Stuff</h1><p class="dot">Loading Düsseldorf...</p></div>
 <div id="root"></div>
 <script>
-const P = [,
-  {name:'Paradiesstrand',area:'Hafen',desc:'Düsseldorfs eigener versteckter Strand am Rhein, wo Locals bei gutem Wetter baden gehen und die Skyline bewundern. Perfekt für entspannte Sonnenuntergänge mit Blick auf die Stadt. Erreichbar mit Bus 805 Richtung Hafen, total kostenlos und ein Insider-Tipp aus lokalen Blogs.',tags:['viewpoint','hidden','free','local'],lat:51.219,lng:6.762},
-  {name:'Zeitfeld',area:'Oberbilk',desc:'Ein dauerhaftes Kunstwerk mit 24 Uhren aus der Bundesgartenschau 1987, umgeben von Grünflächen im Volksgarten. Locals lieben es für Spaziergänge und das Spiel mit der Zeit. Tram 706 oder Bus 834 bringt dich hin, gratis und ruhig.',tags:['street art','park','free','local'],lat:51.208,lng:6.775},
-  {name:'Rheinpark Sonnenuntergangspunkt',area:'Golzheim',desc:'Am Rheinufer im Rheinpark der beste Spot für magische Sonnenuntergänge mit Skyline-Panorama. Locals kommen her, um die Seele baumeln zu lassen. Bus 705 oder 834, komplett free und ein slow-travel-Favorit.',tags:['viewpoint','park','free','local'],lat:51.236,lng:6.786},
-  {name:'Trödelmarkt Aachener Platz',area:'Unterbilk',desc:'Wöchentlicher Flohmarkt mit Antiquitäten, Live-Musik und Schatzsuche unter Locals. Perfekt für gemütliches Schlendern und Entdecken. Bus 801 oder 802, entry free, nur Schnäppchen kosten extra.',tags:['market','local','free'],lat:51.202,lng:6.769},
-  {name:'Kuppelgewächshaus',area:'Bilk',desc:'Im Botanischen Garten ein tropisches Gewächshaus mit Mittelmeer-Blütenpracht, ein verstecktes Juwel für Pflanzenliebhaber. Locals entspannen hier slow und gratis. Bus 736, free entry.',tags:['park','hidden','free','local'],lat:51.212,lng:6.766},
-  {name:'Rheintreppen',area:'Altstadt',desc:'Versteckte Treppen am Rhein neben den Kasematten, wo Locals abends mit Bier aus dem Büdchen chillen und Street-Performances genießen. Breakdance und Clowns sorgen für Stimmung. Tram 704 oder 709, total kostenlos.',tags:['viewpoint','hidden','free','local'],lat:51.226,lng:6.774},
-  {name:'Japanischer Garten',area:'Nordpark Golzheim',desc:'Zen-Hidden-Gem im Nordpark mit Teichen und Pagoden, wo Locals die Seele baumeln lassen. Am Rheinufer perfekt zum Abschalten. Bus 705, free und ein slow-travel-Must.',tags:['park','hidden','free','local'],lat:51.242,lng:6.783},
-  {name:'Kiefernstraße Street Art',area:'Flingern',desc:'Versteckte Straße mit urbaner Street-Art und Kiez-Vibes, ein Geheimtipp für Locals auf Instagram. Spaziere slow durch die Werke. Bus 801, gratis Erkundung.',tags:['street art','hidden','free','local'],lat:51.215,lng:6.8},
-  {name:'Anlage am Schloss Eller',area:'Eller',desc:'Geheimer Park um das Schloss mit Wiesen und alten Bäumen, wo Locals picknicken und chillen. Ruhiger als Touristen-Spots. Bus 733 oder 735, free und neighborhood-fühlbar.',tags:['park','hidden','free','local'],lat:51.196,lng:6.822},
-  {name:'Hornet Wandkunst',area:'Stadtmitte',desc:'180m² farbige Fliesen-Kunst von Sarah Morris am Paul-Klee-Platz, oft auf Local-Insta geteilt. Locals checken es für den urbanen Kick. Tram 711, free street art.',tags:['street art','hidden','free','local'],lat:51.23,lng:6.78},
+const P = [
   {id:1,n:"Altstadt Longest Bar",a:"Centre",v:["local", "night"],d:5,s:"Medieval quarter, one continuous bar",st:"Drink along meter-long bar",im:"Medieval: Taverns forever",t:"Weekends packed",c:["night"],r:"g",nn:"Längste Theke",ns:"Längste Kneipe",nst:"Trinken an Theke",nt:"Wochenende"},
   {id:2,n:"Düsseldorf Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Zeit",t:"Geh",c:["history_big"],r:"g",nn:"Ort",ns:"Ort",nst:"Besuche",nt:"Geh"},
   {id:3,n:"Düsseldorf Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Zeit",t:"Geh",c:["history_big"],r:"g",nn:"Ort",ns:"Ort",nst:"Besuche",nt:"Geh"},
@@ -301,7 +291,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex5.webp') center/cover fixed no-repeat","collections":"url('../../textures/tex6.webp') center/cover fixed no-repeat","missions":"url('../../textures/tex7.webp') center/cover fixed no-repeat","plan":"url('../../textures/tex8.webp') center/cover fixed no-repeat","phrases":"url('../../textures/tex9.webp') center/cover fixed no-repeat","default":"url('../../textures/tex5.webp') center/cover fixed no-repeat"};function App(){
+function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
@@ -362,7 +352,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
