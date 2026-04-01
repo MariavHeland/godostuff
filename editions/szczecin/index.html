@@ -319,7 +319,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex3.png') center/cover no-repeat","collections":"url('../../textures/tex4.png') center/cover no-repeat","missions":"url('../../textures/tex2.png') center/cover no-repeat","plan":"url('../../textures/tex1.png') center/cover no-repeat","phrases":"url('../../textures/tex3.png') center/cover no-repeat","default":"url('../../textures/tex3.png') center/cover no-repeat"};function App(){
+const TBGS={"places":"url('../../textures/tex2.png') center/cover no-repeat","collections":"url('../../textures/tex3.png') center/cover no-repeat","missions":"url('../../textures/tex4.png') center/cover no-repeat","plan":"url('../../textures/tex5.png') center/cover no-repeat","phrases":"url('../../textures/tex6.png') center/cover no-repeat","default":"url('../../textures/tex2.png') center/cover no-repeat"};function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
