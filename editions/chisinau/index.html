@@ -156,10 +156,7 @@ const P = [
   {id:103,n:"Chișinău Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Time",t:"Go",c:["history_big"],r:"y",nn:"Loc",ns:"Loc",nst:"Vezi",nt:"Mergi"},
   {id:104,n:"Chișinău Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Time",t:"Go",c:["history_big"],r:"y",nn:"Loc",ns:"Loc",nst:"Vezi",nt:"Mergi"},
   {id:105,n:"Chișinău Place",a:"Area",v:["history"],d:15,s:"Spot",st:"Visit",im:"Time",t:"Go",c:["history_big"],r:"y",nn:"Loc",ns:"Loc",nst:"Vezi",nt:"Mergi"}
-
-,{id:115,n:"Jewish Cemetery",a:"Strada Milano 63, Chișinău",v:["Take bus from center, then walk"],d:45,s:"Large forgotten cemetery with overgrown graves and hidden abandoned synagogue, offering a peaceful, eerie exploration of history.",st:"abandoned, historical, overgrown",im:"Overgrown Jewish graves in lush vegetation, abandoned synagogue corner",t:"hidden cemetery",c:["history", "abandoned", "photography"],r:"g",nn:"Cimitirul Evreiesc",ns:"Do not enter unsafe structures",nst:"Rainy weather may make paths slippery",nt:"Respect graves and avoid littering"},
-{id:116,n:"Old Abandoned Cafe in Riscani Park",a:"Riscani Park, near charming lanes",v:["Walk through park lanes from center"],d:25,s:"Decrepit abandoned cafe amidst charming park paths, perfect for urban explorers seeking forgotten Soviet-era ruins.",st:"abandoned, ruins, atmospheric",im:"Weathered concrete structure overtaken by nature in green park",t:"abandoned cafe",c:["urban exploration", "photography", "nature"],r:"y",nn:"Cafenea Abandonată Veche",ns:"View only from outside, no entry",nst:"Park popular on weekends",nt:"Bring camera for moody shots"},
-{id:117,n:"Big Oak Tree Spot near B Mall",a:"Behind B Mall gas station, Chisinau",v:["Go to B Mall gas station, then descend path"],d:20,s:"Secret serene spot with massive ancient oak tree, ideal for quiet picnics away from crowds.",st:"secret, natural, tranquil",im:"Towering old oak tree in secluded green area",t:"hidden tree spot",c:["nature", "relaxation", "picnic"],r:"g",nn:"Locul cu Stejarul Mare",ns:"Keep location private to avoid crowds",nst:"Afternoon best for shade",nt:"Pack snacks from nearby gas station"}];
+];
 const PHRASES = [
   {native:"Bună",en:"Hello"},
   {native:"Mulțumesc",en:"Thank you"},
@@ -294,7 +291,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex13.webp') center/cover fixed no-repeat","collections":"url('../../textures/tex14.webp') center/cover fixed no-repeat","missions":"url('../../textures/tex15.webp') center/cover fixed no-repeat","plan":"url('../../textures/tex16.webp') center/cover fixed no-repeat","phrases":"url('../../textures/tex17.webp') center/cover fixed no-repeat","default":"url('../../textures/tex13.webp') center/cover fixed no-repeat"};function App(){
+function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
@@ -355,7 +352,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
