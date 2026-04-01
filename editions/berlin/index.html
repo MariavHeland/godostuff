@@ -328,7 +328,7 @@ PHRASES.length>0&&<div className="rounded-2xl p-4 mt-3" style={{background:"line
 
 const EntryGate=({onAccept})=>(
 <div className="entry-gate-bg" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
-<h1 className="text-sm font-bold tracking-widest" style={{color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"3px"}}>Go Do Stuff</h1>
+<img src="images/logo.webp" alt="Go Do Stuff" style={{width:"260px",maxWidth:"80vw",display:"block",margin:"0 auto 4px",filter:"drop-shadow(0 4px 24px rgba(0,0,0,0.7)) brightness(1.08)"}}/>
 <p className="text-6xl font-black mt-1 leading-none" style={{color:"white",textShadow:"0 2px 16px rgba(0,0,0,0.7)",letterSpacing:"-1px"}}>Berlin Edition</p>
 <p className="text-sm mt-2" style={{color:"#b8b0d0",lineHeight:1.5,textShadow:"0 1px 8px rgba(0,0,0,0.9)"}}>Activities are free.<br/><span style={{fontSize:"11px",opacity:0.7}}>Travel & food recommendations: low budget.</span></p>
 <p className="text-xs mt-2" style={{color:"#a5b4fc",textShadow:"0 1px 6px rgba(0,0,0,0.9)"}}>🌍 Bilingual: English + {LANG_NAME}</p>
@@ -485,7 +485,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
-<div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
+<div><img src="images/logo.webp" alt="Go Do Stuff" style={{height:"56px",maxWidth:"200px",objectFit:"contain",display:"block",filter:"drop-shadow(0 2px 6px rgba(0,0,0,0.18))"}}/>
 <p className="text-xs font-bold mt-0.5" style={{color:"#6366F1",letterSpacing:"1px",textTransform:"uppercase"}}>Berlin Edition</p>
 <p className="text-sm mt-1.5" style={{color:"#888",lineHeight:1.4}}>{P.length} hidden places. {M.length} missions. {COLLECTIONS.length} collections.<br/>For the curious. All free.</p></div>
 <div className="flex flex-col items-end gap-2">
@@ -536,7 +536,7 @@ return <button key={col.id} onClick={()=>setActiveCol(col.id)} className="text-l
 ):(<TripPlanner onOpenPlace={x=>{setSelected(x);setActiveCol(null)}} lang={lang}/>)}
 
 <div className="mt-8 mb-4 text-center">
-<p className="text-xs" style={{color:"#bbb"}}>Go Do Stuff — Berlin Edition</p>
+<img src="images/logo.webp" alt="Go Do Stuff" style={{height:"32px",objectFit:"contain",display:"inline-block",opacity:0.65,filter:"drop-shadow(0 1px 3px rgba(0,0,0,0.15))"}}/><p className="text-xs mt-1" style={{color:"#bbb"}}>Berlin Edition</p>
 <p className="text-xs mt-1" style={{color:"#ddd"}}>{P.length} places · {M.length} missions · {COLLECTIONS.length} collections</p></div>
 </div></div>}
 
