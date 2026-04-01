@@ -158,11 +158,7 @@ const P = [
   {id:105,n:"Place 105 — Area0",a:"Area0",v:["history"],d:20,s:"Azerbaijani site with heritage",st:"Historic location from 1125 AD",im:"1125 AD: trade routes passing through",t:"Visit respectfully, learn history",c:["parks"],r:"y",nn:"Yer 105 — Sahə0",ns:"Azərbaycanlı məkan miras ilə",nst:"Tarixi məkan 1125 ilindən",nt:"Hörmətlə ziyarət edin"}
 ,
   {id:106,n:"Icherisheher Old City Backstreets",a:"Centrum",v:["history","hidden","local"],d:15,s:"Medieval walled city within the capital — get lost in narrow alleys",st:"Icherisheher is a UNESCO-listed inner city with crumbling facades and hidden courtyards. Skip the main tourist plaza and wander the side streets where daily life happens. Each corner reveals another era.",im:"Time-travel: Inhabited since the 12th century, the walls still protect ancient bazaars.",t:"Free to walk. Free entry to grounds. Paid entry to specific sites.",c:["architecture","history_big"],r:"g",nn:"İçərişəhər Eski Şəhər",ns:"Medieval ümürlü şəhər — dar xanlarda itərlərin",nst:"Əsir şəkildə soyuq qapılı hara yapılaşmalarında dolaş.",nt:"Pulsuz yürüyüş. Pulsuz girişi. Spesifik saytlar ödəniş edilir."}
-
-,{id:116,n:"Nardaran Fortress",a:"North",v:["hidden"],d:15,s:"Ancient mosque fortress.",st:"14th-century fortress-mosque in fishing village, offbeat defensive site.",im:"Towering stone walls by Caspian.",t:"Bus from Suraxanı, free entry.",c:["history"],r:"g",nn:"Nərdəran Qalası",ns:"Qədim məscid qalası",nst:"14-cu əsr qalası-məscidi balıqçı kəndində.",nt:"Suraxanından avtobus, giriş pulsuz."},
-{id:117,n:"Ateshgah Fire Temple",a:"Surakhany",v:["hidden"],d:20,s:"Ancient Zoroastrian fire shrine.",st:"Historic temple where flames burned eternally from natural gas.",im:"Courtyard with eternal flames.",t:"Metro to Suraxanı + marshrutka, free.",c:["history"],r:"g",nn:"Atəşgah",ns:"Qədim zoroastr məbədi",nst:"Təbii qazdan əbədi alovlar yanan tarixi məbəd.",nt:"Metro Suraxanı + marşrutka, pulsuz."},
-{id:118,n:"Bibi-Heybat Mosque",a:"Səbail",v:["hidden"],d:10,s:"Seaside 19th-century mosque.",st:"Restored Shiite mosque on Caspian shore with ocean views.",im:"Dome reflecting sea waves.",t:"Walk from port or bus, free.",c:["history"],r:"g",nn:"Bibiheybət Məscidi",ns:"Dəniz kənarında məscid",nst:"Xəzər sahilində bərpa edilmiş şiə məscidi.",nt:"Limanından piyada və ya avtobus, pulsuz."},
-{id:119,n:"Montana Lake",a:"Xətai",v:["hidden"],d:12,s:"Secret urban fishing lake.",st:"Quiet reservoir in city for relaxed angling amid greenery.",im:"Reeds and birds by water.",t:"Bus to Xətai, free access.",c:["nature"],r:"g",nn:"Montana Gölü",ns:"Şəhər içində balıq gölü",nst:"Yaşıl arasında sakit balıqçılıq gölü.",nt:"Xətai avtobusu, giriş pulsuz."}];
+];
 const PHRASES = [
   {native:"Salam",en:"Hello"},
   {native:"Təşəkkür",en:"Thank you"},
@@ -305,7 +301,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex4.webp') center/cover fixed no-repeat","collections":"url('../../textures/tex5.webp') center/cover fixed no-repeat","missions":"url('../../textures/tex6.webp') center/cover fixed no-repeat","plan":"url('../../textures/tex7.webp') center/cover fixed no-repeat","phrases":"url('../../textures/tex8.webp') center/cover fixed no-repeat","default":"url('../../textures/tex4.webp') center/cover fixed no-repeat"};function App(){
+function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
@@ -366,7 +362,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
