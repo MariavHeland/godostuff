@@ -158,12 +158,7 @@ const P = [
   {id:105,n:"Botanical Garden  (var 95) — Botanical",a:"Botanical",v:["beautiful", "nature"],d:2,s:"Tropical plants from around the world (Georgia subtropical)",st:"€3 entry. 13 hectares. Palms, bamboo, exotic plants. Walking paths. Benches overlook sea. No crowds. Water features. Peacocks roam. Real tropical escape in Georgia.",im:"Russian era: Botanists collected specimens. 2024: Still growing, still lush.",t:"Go afternoon (4pm). Bring water. Explore all paths (slow pace). Peacock watching. Stay 2 hours.",c:["parks", "nature"],r:"g",nn:"ბოტანიკური ბაღი  (var 95) — Botanical",ns:"ტროპიკული მცენარეები (საქართველო სუბტროპიკული)",nst:"€3. 13 ჰექტარი. პალმები, ბამბუკი. ზღვის ხედი. მშვიდი. ფრინველი. ტროპიკული საქართველოში.",nt:"სამე (16h). წყალი. ფრინველი უყურე. 2 საათი."}
 ,
   {id:106,n:"Italian Courtyards of Old Batumi",a:"Centro Histórico",v:["beautiful","hidden","quiet"],d:10,s:"Venetian-style architecture hidden in alleyways — a secret European pocket",st:"Batumi\'s Old Town preserves 19th-century Italian merchant houses with courtyards. Duck through unmarked doors to find fountains, balconies, and bougainvillea. It\'s like stepping into a Venetian dream transported to Georgia.",im:"Time-travel: Italian traders built this in the 1880s during Batumi\'s port boom.",t:"Free to explore. Walk behind the main promenade.",c:["architecture","romantic_water"],r:"g",nn:"იტალიური კვარტალი",ns:"ვენეციური არქიტექტურა ხიდან",nst:"აღმოაჩინე დაფარული იტალიური ეზოები.",nt:"თავისუფალი შესვლა. ძველი ქალაქის უკან."}
-
-,{id:116,n:"Europe Square",a:"Old Town",v:["hidden"],d:0,s:"Medea Statue Mosaic",st:"Vibrant square with 106m² marble mosaic of sea-urban harmony, largest figurative in Europe, surrounded by 19th-20th century architecture.",im:"Expansive plaza alive with cafes, fountains, and Medea's golden statue.",t:"Wander freely, photo mosaic at center.",c:["squares"],r:"g",nn:"ევროპის მოედანი",ns:"მედეას მოზაიკა",nst:"ცოცხალი მოედანი 106მ² მარმარილო მოზაიკით, ევროპის უდიდესი ფიგურაციული.",nt:"დაიძინე თავისუფლად, ფოტო მოზაიკა ცენტრში.",fixes:[]},
-{id:117,n:"6 May Park",a:"City Center",v:["hidden"],d:1,s:"Oldest Lush Park",st:"Georgia's oldest public park near Black Sea, serene greenery escape from bustling streets.",im:"Tranquil paths under ancient trees by the shore.",t:"Short walk from boulevard, relax amid nature.",c:["parks"],r:"g",nn:"6 მაისის პარკი",ns:"უძველესი მწვანე პარკი",nst:"საქართველოს უძველესი საზოგადოებრივი პარკი შავი ზღვის სანაპიროსთან.",nt:"ბულვარდიდან მოკლე სეირნობა, დასვენება ბუნებაში.",fixes:[]},
-{id:118,n:"Batumi Mosque",a:"Boulevard",v:["hidden"],d:0,s:"Orta Jami Minaret",st:"Historic 19th-century mosque near boulevard and port, Ottoman-era architecture.",im:"Slender minaret piercing skyline amid palms.",t:"Free entry, respectful dress, quick visit.",c:["mosques"],r:"g",nn:"ბათუმის მეჩეთი",ns:"ორთა ჯამი მინარეტი",nst:"ისტორიული XIX ს. მეჩეთი ბულვარდთან.",nt:"უფასო შესვლა, პატივისცემით.",fixes:[]},
-{id:119,n:"Batumi Synagogue",a:"City Center",v:["hidden"],d:0,s:"Ashkenazi Heritage",st:"1904 Amsterdam-inspired synagogue, rare Jewish landmark in Batumi.",im:"Ornate facade echoing Dutch synagogues.",t:"Exterior view free, peek inside if open.",c:["synagogues"],r:"g",nn:"ბათუმის სინაგოგა",ns:"აშკენაზური მემკვიდრეობა",nst:"1904 სინაგოგა ამსტერდამის შთაგონებით.",nt:"გარე ხედი უფასო.",fixes:[]},
-{id:120,n:"Church of the Holy Spirit",a:"City",v:["hidden"],d:1,s:"Modern Catholic Gem",st:"2000 consecrated Roman Catholic church blending contemporary design and serenity.",im:"Striking modern lines in peaceful setting.",t:"Free visit, quiet contemplation spot.",c:["churches"],r:"g",nn:"სულიწმინდის ეკლესია",ns:" თანამედროვე კათოლიკური",nst:"2000 წ. კონსეკრირებული თანამედროვე ეკლესია.",nt:"უფასო, სიმშვიდის ადგილი.",fixes:[]}];
+];
 const PHRASES = [
   {native:"გამარჯობა",en:"Hello"},
   {native:"სად არის...?",en:"Where is...?"},
@@ -310,7 +305,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex8.webp') center/cover fixed no-repeat","collections":"url('../../textures/tex9.webp') center/cover fixed no-repeat","missions":"url('../../textures/tex10.webp') center/cover fixed no-repeat","plan":"url('../../textures/tex11.webp') center/cover fixed no-repeat","phrases":"url('../../textures/tex12.webp') center/cover fixed no-repeat","default":"url('../../textures/tex8.webp') center/cover fixed no-repeat"};function App(){
+function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
@@ -371,7 +366,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
