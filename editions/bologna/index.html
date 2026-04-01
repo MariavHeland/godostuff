@@ -159,11 +159,7 @@ const P = [
 ,
   {id:106,n:"Seven Secrets of Bologna Self-Guided",a:"Centro Histórico",v:["hidden","history","local"],d:15,s:"Hidden details in medieval buildings and alleyways — a local folklore hunt",st:"Bologna has seven \"secrets\" local kids learn about: a tiny statue on a corner, a hidden relief, a forbidden sight. These are urban folklore, marked with informal signs. Hunt them as a treasure game; the city reveals itself through careful looking.",im:"Time-travel: Medieval Bologna was a center of learning; these symbols protected guild secrets.",t:"Free. Self-guided using local blogs/apps (search \"Seven Secrets Bologna\").",c:["history_big","local_only"],r:"g",nn:"Sette Segreti di Bologna",ns:"Secretos ocultos en el antiguo Bologna",nst:"Caza los siete secretos escondidos en la ciudad.",nt:"Gratis. Guía de blogs locales."},
   {id:107,n:"Arcades (Portici) Covered Walks",a:"Centro Histórico",v:["architecture","quiet","beautiful"],d:20,s:"UNESCO porticoes creating 40+ km of covered walkways — medieval and modern",st:"Bologna\'s arcades are its signature: 40 km of covered walkways where you can stroll rain-free. From medieval narrow passages to modern wide porticoes, each section has a different character. It\'s architecture as urban planning.",im:"Time-travel: Arcades began in the 11th century for flood protection and have expanded ever since.",t:"Free. Walk at any time. Various routes through different districts.",c:["architecture","history_big"],r:"g",nn:"Portici di Bologna",ns:"Columnatas cubiertas — 40 km de paseos",nst:"Camina bajo los pórticos históricos de Bologna.",nt:"Gratis. Accesible cualquier hora."}
-
-,{id:117,n:"Finestrella di Via Piella",a:"Centro Storico",v:["hidden"],d:15,s:"Piccola Venezia bolognese.",st:"Antica finestra che si apre su un canale nascosto usato per secoli per muovere il grano ai mulini, creando un'illusione di Venezia nel cuore di Bologna.",im:"Immagina case medievali affacciate su acque tranquille.",t:"Apri lo sportellino con delicatezza, meglio al tramonto.",c:["hidden", "history"],r:"g",nn:"Finestrella di Via Piella",ns:"La piccola Venezia bolognese.",nst:"Finestra antica su canale nascosto per il grano ai mulini, illusione veneziana a Bologna.",nt:"Apri con cura lo sportellino, ideale al tramonto.",fixes:[]},
-{id:118,n:"Complesso delle Sette Chiese",a:"Centro Storico",v:["hidden"],d:25,s:"Antico complesso di sette chiese.",st:"Insieme di sette chiese del IV secolo scavate nella roccia, uno dei siti paleocristiani più misteriosi e meno noti di Bologna.",im:"Immagina sette cappelle scavate nel tufo interconnesse.",t:"Esplora i passaggi sotterranei con luce propria.",c:["history", "churches"],r:"g",nn:"Complesso delle Sette Chiese",ns:"Complesso antico di sette chiese.",nst:"Sette chiese del IV secolo scavate nella roccia, sito paleocristiano misterioso.",nt:"Porta luce propria per i passaggi sotterranei.",fixes:[]},
-{id:119,n:"Museo Civico Archeologico Cortile",a:"Centro Storico",v:["hidden"],d:20,s:"Cortile archeologico nascosto.",st:"Cortile interno del museo con reperti etruschi e romani esposti gratuitamente, un'oasi di storia antica nel centro affollato.",im:"Immagina statue romane tra palme e colonne antiche.",t:"Entra dal Palazzo Galvani, gratis sempre.",c:["museums", "history"],r:"g",nn:"Cortile Museo Civico Archeologico",ns:"Cortile archeologico segreto.",nst:"Cortile con reperti etruschi-romani gratuiti, oasi storica.",nt:"Accesso da Palazzo Galvani, sempre libero.",fixes:[]},
-{id:120,n:"Basilica di San Martino Maggiore",a:"Centro Storico",v:["hidden"],d:18,s:"Chiesa romanica dimenticata.",st:"Piccola basilica romanica del X secolo con affreschi medievali, rifugio tranquillo vicino alle torri affollate.",im:"Immagina navate silenziose con luce soffusa su affreschi antichi.",t:"Visita in pausa pranzo per massima pace.",c:["churches"],r:"g",nn:"Basilica di San Martino Maggiore",ns:"Chiesa romanica dimenticata.",nst:"Basilica X secolo con affreschi, rifugio vicino alle torri.",nt:"Ideale in pausa pranzo per tranquillità.",fixes:[]}];
+];
 const PHRASES = [
   {native:"Ciao! Come stai?",en:""},
   {native:"Grazie tante",en:""},
@@ -315,7 +311,7 @@ return <div className="mt-3">
 <div className="flex gap-2 mb-4">{[2,3,4,6,8].map(h=><button key={h} onClick={()=>setHrs(h)} className="px-3 py-1.5 rounded-full text-xs font-bold" style={{background:hrs===h?"#1a1a2e":"white",color:hrs===h?"white":"#888",border:"1.5px solid #e4e4ed",cursor:"pointer"}}>{h}h</button>)}</div>
 <div className="flex flex-col gap-3">{plan.map((p,i)=><PlaceCard key={p.id} place={p} idx={i} onOpen={onOpenPlace} lang={lang}/>)}</div></div>};
 
-const TBGS={"places":"url('../../textures/tex16.webp') center/cover fixed no-repeat","collections":"url('../../textures/tex17.webp') center/cover fixed no-repeat","missions":"url('../../textures/tex18.webp') center/cover fixed no-repeat","plan":"url('../../textures/tex1.webp') center/cover fixed no-repeat","phrases":"url('../../textures/tex2.webp') center/cover fixed no-repeat","default":"url('../../textures/tex16.webp') center/cover fixed no-repeat"};function App(){
+function App(){
 const[accepted,setAccepted]=useState(false);
 const[tab,setTab]=useState("places");
 const[vibe,setVibe]=useState("all");
@@ -376,7 +372,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:TBGS[tab]||TBGS.default}}>
+return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
