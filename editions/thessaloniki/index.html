@@ -250,7 +250,7 @@ const PlaceCard=({place:p,idx,onOpen,lang})=>(
 </button>);
 
 const PlaceDetail=({place:p,onClose,onNext,onPrev,lang})=>(
-<div style={{position:"fixed",inset:0,zIndex:1000,backgroundColor:"#faf8f4",backgroundImage:"url('https://mariavheland.github.io/godostuff/bg/letter.jpg')",backgroundPosition:"top left",backgroundSize:"900px",backgroundRepeat:"repeat",overflowY:"auto"}}>
+<div style={{position:"fixed",inset:0,zIndex:1000,background:"url('https://mariavheland.github.io/godostuff/textures/tex11.png') center/cover no-repeat",overflowY:"auto"}}>
 <div className="px-5 pt-6 pb-24" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex justify-between items-center mb-4">
 <button onClick={onClose} className="text-sm font-bold" style={{color:"#6366F1",background:"none",border:"none",cursor:"pointer"}}>← Back</button>
@@ -330,7 +330,7 @@ const goN=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;
 const goP=()=>{const a=activeCol?P.filter(p=>p.c?.includes(activeCol)):filtered;const i=a.findIndex(p=>p.id===selected.id);setSelected(a[(i-1+a.length)%a.length])};
 
 useEffect(()=>{document.getElementById("loading")?.classList.add("done")},[]);
-if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
+const TBGS={"places":"https://mariavheland.github.io/godostuff/textures/tex10.png","collections":"https://mariavheland.github.io/godostuff/textures/tex06.png","missions":"https://mariavheland.github.io/godostuff/textures/tex06.png","plan":"https://mariavheland.github.io/godostuff/textures/tex06.png","phrases":"https://mariavheland.github.io/godostuff/textures/tex10.png","default":"https://mariavheland.github.io/godostuff/textures/tex10.png"};if(!accepted)return <EntryGate onAccept={()=>setAccepted(true)}/>;
 if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)} onNext={goN} onPrev={goP} lang={lang}/>;
 
 const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
@@ -368,7 +368,7 @@ return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backg
 {!spinning&&spinPlace&&<button onClick={startSpin} className="px-5 py-2 rounded-full text-sm font-bold" style={{background:"rgba(0,0,0,.4)",color:"rgba(255,255,255,.6)",border:"1px solid rgba(212,175,55,.3)",cursor:"pointer",backdropFilter:"blur(4px)"}}>🎲 Again</button>}
 </div></div>}
 
-return <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#F5EDD8 0%,#EDE0C8 100%)"}}>
+return <div style={{minHeight:"100vh",background:`url(\'${TBGS[tab]||TBGS.default}\') center/cover no-repeat`}}>
 <div className="px-5 pt-8 pb-2" style={{maxWidth:540,margin:"0 auto"}}>
 <div className="flex items-start justify-between">
 <div><h1 className="text-3xl font-black" style={{color:"#1a1a2e",letterSpacing:"-.5px",lineHeight:1.1}}>Go Do Stuff</h1>
