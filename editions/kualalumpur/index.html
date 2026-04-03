@@ -294,17 +294,17 @@ if(selected)return <PlaceDetail place={selected} onClose={()=>setSelected(null)}
 
 const startSpin=()=>{setShowPicker(true);setSpinning(true);setSpinPlace(null);const delays=[55,60,70,80,95,115,140,170,210,265,340,440,580];let i=0;const tick=()=>{if(i<delays.length){setSpinPlace(P[Math.floor(Math.random()*P.length)]);setTimeout(tick,delays[i++]);}else{const fin=P[Math.floor(Math.random()*P.length)];setSpinPlace(fin);setSpinning(false);}};tick();};
 if(showPicker){const rp=spinPlace||P[0];const _bgs=["https://mariavheland.github.io/godostuff/dice/bg1.jpg","https://mariavheland.github.io/godostuff/dice/bg2.jpg","https://mariavheland.github.io/godostuff/dice/bg3.jpg"];const _bg=_bgs[Math.floor(Math.random()*_bgs.length),
-  {id:607,n:"Petronas Twin Towers Skyline",a:"KLCC",v:['famous', 'high_spots'],d:45,s:"Iconic 452-meter towers with sky bridge and observation deck.",st:"Take elevator 10am. Up to 41st floor sky bridge. City spread below. Humidity makes distance hazy.\n\nWalk bridge. Feel height. Sit at viewing gallery. Watch sunset if staying.",im:"Tower observation, city spread below, sky bridge walkway.",t:"Walk to Petronas Towers KLCC. 10am. Entry 72 MYR sky bridge. 1-1.5 hours.",c:['greatest_hits', 'high_spots', 'modern'],r:"g",nn:"Petronas Twin Towers",ns:"Towers iconic skyline",nst:"10am elevator start.",nt:"KLCC station nearby."},
-  {id:608,n:"Place 2",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:609,n:"Place 3",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:610,n:"Place 4",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:611,n:"Place 5",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:612,n:"Place 6",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:613,n:"Place 7",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:614,n:"Place 8",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:615,n:"Place 9",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:616,n:"Place 10",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
-  {id:617,n:"Place 11",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:['greatest_hits'],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"}];
+  {id:607,n:"Petronas Twin Towers Skyline",a:"KLCC",v:['famous', 'high_spots'],d:45,s:"Iconic 452-meter towers with sky bridge and observation deck.",st:"Take elevator 10am. Up to 41st floor sky bridge. City spread below. Humidity makes distance hazy.\n\nWalk bridge. Feel height. Sit at viewing gallery. Watch sunset if staying.",im:"Tower observation, city spread below, sky bridge walkway.",t:"Walk to Petronas Towers KLCC. 10am. Entry 72 MYR sky bridge. 1-1.5 hours.",c:["greatest_hits", 'high_spots', 'modern'],r:"g",nn:"Petronas Twin Towers",ns:"Towers iconic skyline",nst:"10am elevator start.",nt:"KLCC station nearby."},
+  {id:608,n:"Place 2",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:609,n:"Place 3",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:610,n:"Place 4",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:611,n:"Place 5",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:612,n:"Place 6",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:613,n:"Place 7",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:614,n:"Place 8",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:615,n:"Place 9",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:616,n:"Place 10",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"},
+  {id:617,n:"Place 11",a:"Area",v:['famous'],d:30,s:"d",st:"s\n\nd",im:"i",t:"t",c:["greatest_hits"],r:"g",nn:"N",ns:"s",nst:"s",nt:"t"}];
 return <div style={{position:"fixed",inset:0,zIndex:1000,overflow:"hidden",backgroundImage:`url(${_bg})`,backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px"}}>
 <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.55)",pointerEvents:"none"}}/>
 <span style={{position:"absolute",top:"8%",left:"6%",fontSize:48,color:"#c8102e",animation:"floatSuit 6.2s ease-in-out infinite",pointerEvents:"none"}}>♥</span>
